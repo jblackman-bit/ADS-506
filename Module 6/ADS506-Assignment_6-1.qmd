@@ -1,0 +1,198 @@
+---
+title: "ADS-506 Assignment 6.1 - Advanced Forecasting Methods"
+author: "Jordan Blackman"
+format: 
+    pdf:
+        geometry: "top=1in, bottom=1in, left=0.75in, right=0.75in"
+execute: 
+  cache: false
+---
+
+```{r}
+#| message: false
+library(tidyverse)
+library(fpp3)
+library(gt) #disabled for PDF
+library(fable.prophet)
+library(tictoc)
+tic("Total Run Time")
+```
+
+# Module 6 Assignment: Advanced Forecasting Methods
+
+This assignment builds upon Assignment 4.1's analysis of Australian wine sales, focusing specifically on the Fortified wine series. You will explore advanced forecasting methods from [Chapter 13 - Advanced forecasting methods](https://otexts.com/fpp3/advanced.html) and compare them with your best performing model from Assignment 4.1.
+
+Use the same Australian wine data from Assignment 4.1. Your submission should show all code executed and must not exceed 12 pages.
+
+```{r data_prep}
+#| echo: false
+aus_wine <- read_csv(
+  here::here("data/AustralianWines.csv"),
+  na = "*",
+  col_types = cols(Rose = col_number()),
+  show_col_types = FALSE
+) |>
+  fill(Rose, .direction = "down") |>
+  mutate(Month = mdy(str_replace(Month, '-', '-01-')) |> yearmonth())
+
+wines_ts <- aus_wine |>
+  pivot_longer(cols = -Month, names_to = 'Varietal', values_to = 'Sales') |>
+  as_tsibble(index = Month, key = Varietal) 
+
+wines_ts |>
+  autoplot(Sales) +
+  labs(title = "Australian Fortified Wine Sales",
+       y = "Sales (thousands of liters)") +
+        facet_wrap(~Varietal, nrow = 2, scales = "free_y")
+```
+
+## 1) Prophet Model Implementation
+
+### a) Fit a Prophet model to the Fortified wine series
+
+-   Use the same training period (until December 1993) as in Assignment 4.1
+-   Fit a Prophet model with default settings and no transformations
+-   Plot the fitted model components (trend, seasonal, remainder, etc.)
+
+```{r prophet_basic}
+# Create fortified wine time series
+
+# Training data (through Dec 1993)
+
+# Fit Prophet model
+
+# Plot components
+```
+
+**Describe what patterns the Prophet model identified in the data.**
+
+*\[Your answer here\]*
+
+### b) Compare Prophet with your best model from Assignment 4.1
+
+Review Assignment 4.1 for the best performing model. Compare this with a Prophet model:
+
+-   Decide whether to use log transformation with Prophet based on validation metrics
+-   Fit both models on the training data
+-   Forecast 1994 (12 months ahead)
+-   Calculate and compare accuracy metrics (RMSE, MAE, MAPE)
+-   Create a plot showing actual vs predicted values for both models with prediction intervals (PI)
+-   use `library(tictoc)` to time the model fitting and forecasting steps
+
+```{r prophet_comparison}
+tic("Prophet + ARIMA for 1994")
+# Fit both models
+
+# Generate forecasts for 1994
+
+toc()
+
+# Calculate accuracy metrics
+
+# Plot comparison
+
+```
+
+**Which model performs better on the 1994 validation period?**
+
+*\[Your answer here\]*
+
+**How long does the model and forecast computation take for Fortified wine for the 1994 validation period?**
+
+*\[Your answer here\]*
+
+### c) Compare Prophet results across varietals using Cross-Validation
+
+-   Use cross-validation to determine which varietal Prophet performs best for over time.
+-   Initialize with 5 years of data, then add 2 years at a time (total of 5 folds)
+-   Forecast (12 months ahead) for all the folds
+-   Determine the appropriate metric and report in a table suitable for presentation
+-   use `library(tictoc)` to time the model fitting and forecasting steps
+
+```{r prophet_cv_all}
+# Fit both models
+
+# report accuracy
+  
+```
+
+**Which varietal does Prophet best forecast across the training period?**
+
+*\[Your answer here\]*
+
+**How long does the model and forecast computation take for all varietals and all folds?**
+
+*\[Your answer here\]*
+
+## 2) NNETAR Model Implementation
+
+### a) Fit a NNETAR model to the Fortified wine series
+
+-   Use the same training period (until December 1993) as in Assignment 4.1
+-   Fit an NNETAR model with default settings and no transformations
+-   Report the fitted model summary
+
+```{r nnetar_basic}
+# Fit NNETAR model
+
+# report the model
+```
+
+### b) Compare NNETAR with your best model from Assignment 4.1
+
+Review Assignment 4.1 for the best performing model. Compare this with an NNETAR model:
+
+-   Fit both models on the training data
+-   Forecast 1994 (12 months ahead)
+-   Calculate and compare accuracy metrics (RMSE, MAE, MAPE)
+-   Create a plot showing actual vs predicted values for both models
+
+```{r nnetar_comparison}
+# Fit both models
+
+# Generate forecasts for 1994
+
+# Calculate accuracy metrics
+
+# Plot comparison
+
+```
+
+**Which model performs better on the 1994 validation period?**
+
+*\[Your answer here\]*
+
+**How does the commutation time compare between NNETAR and Prophet?**
+
+*\[Your answer here\]*
+
+### c) Compare NNETAR results across varietals using Cross-Validation
+
+-   Use cross-validation to determine which varietal NNETAR performs best for over time.
+-   Initialize with 5 years of data, then add 2 years at a time (total of 5 folds)
+-   Forecast (12 months ahead) for all the folds
+-   Determine the appropriate metric and report in a table suitable for presentation
+-   time the model fitting and forecasting steps
+-   hint: set the forecast(times = 100,...) to reduce computation time
+
+```{r nnetar_all}
+set.seed(506)
+# Fit both models
+
+# report accuracy metrics
+
+```
+
+**Which varietal does NNETAR best forecast across the training period?**
+
+*\[Your answer here\]*
+
+**Change `seed` value to `999` and re-run the code for 2.c. Comment on what you observe and how it affects your confidence in your prior answer?**
+
+*\[Your answer here\]*
+
+
+```{r}
+# total notebook run time
+toc()
+```

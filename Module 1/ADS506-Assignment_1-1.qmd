@@ -1,0 +1,84 @@
+---
+title: "ADS506 Assignment 1.1"
+author: "Jordan Blackman"
+format: pdf
+editor: visual
+---
+
+```{r}
+#| message: false
+#| warning: false
+library(readxl)
+library(fpp3)
+```
+
+# ADS 506 Module 1 Assignment
+
+This assignment is due on Day 7 of the learning week. The assignment for this module consists of code, outputs and short prose responses. Use R with [tidyverts](tidyverts.org) (`fpp3`) Complete the assignment in a [Quarto Document](quarto.org). You will need to include the question and number that you are answering within your submitted assignment. Once completed, you will render your deliverable to a PDF file such that the text in the document is selectable.
+
+Your submission should show all code executed and must not exceed 6 pages.
+
+## 1) Shipments of Household Appliance:
+
+The file ApplianceShipments.xls contains the series of quarterly shipments (in millions of USD) of U.S. household appliances between 1985-1989.
+
+### a) Read the data into a `tsibble` and replace this plot with one that is created from code. Be sure to reproduce the plot exactly as it appears.
+
+![(Remove this plot from your submission)](images/appliance-shipments-by-qtr.png)
+
+```{r ex1-a}
+shipments <- read_excel("../data/ApplianceShipments.xlsx") |>
+    mutate(Quarter = yearquarter(Quarter)) |> 
+    select(Quarter, Shipments) |> 
+    as_tsibble(index = Quarter)
+# plot shipments ...
+```
+
+### b) Which of the four components (level, trend, seasonality, noise) seem to be present in this series? Show a plot to that supports your conclusions.
+
+*Your answer here...*
+
+```{r ex1-b}
+
+```
+
+## 2) `fpp3` datasets
+
+### a) Show the default tsibble output from the `vic_elec` dataset
+
+```{r ex2-a}
+
+```
+
+### b) What is time interval for this series.
+
+Interval: *answer...*\
+`paste the relevant line from above to support your answer`
+
+### c) Use the `gafa_stock` dataset from `fpp3` to reproduce/replace the following plot
+
+![(Remove this plot from your submission)](images/gafa_stock_plot.png)
+
+```{r ex2-c}
+ 
+```
+
+### d) Plot The `us_total` from `USgas` package
+
+-   Install the `USgas` package. **IMPORTANT:** Comment or omit any code you use to do this, so the package is only installed once.
+-   Create a `tsibble` from `us_total` with `year` as the `index` and `state` as the `key`.
+-   Plot the annual natural gas consumption by state for the New England area (comprising the states of Maine, Vermont, New Hampshire, Massachusetts, Connecticut and Rhode Island). Ensure the y-axis is scaled and labeled appropriately with correct units. The objective of the plot is for the reader to compare consumption by state and estimate values over time.
+
+```{r ex2-d}
+
+```
+
+## 3) Reflections
+
+a)  What was the most challenging part of this assignment?
+
+b)  What is the most important takeaway from this assignment?
+
+c)  What would you recommend changing for future cohorts?
+
+d)  What LLMs did you use (if any) to help you complete this assignment?

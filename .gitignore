@@ -1,0 +1,25 @@
+# History and workspace data
+.Rhistory
+.RData
+.Ruserdata
+
+# RStudio project configuration user files
+.Rproj.user/
+
+# Quarto and knitr intermediate build artifacts
+.quarto/
+*_files/
+*_cache/
+
+# LaTeX / PDF rendering artifacts
+*.synctex.gz
+*.aux
+*.log
+*.bbl
+*.blg
+
+# macOS metadata
+.DS_Store
+.AppleDouble
+.LSOverride
+._*

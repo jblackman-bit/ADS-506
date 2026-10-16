@@ -1,0 +1,201 @@
+---
+title: "ADS-506 Assignment 3.1"
+author: "Jordan Blackman"
+format: pdf
+editor: visual
+---
+
+```{r}
+#| message: false
+library(tidyverse)
+library(fpp3)
+library(gt)
+```
+
+# Module 3 Assignment Exercises
+
+This assignment is due on Day 7 of the learning week. The assignment for this module consists of code, outputs and short prose responses. Use R with [tidyverts](tidyverts.org) (`fpp3`) Complete the assignment in a [Quarto Document](quarto.org). Leave the questions and instructions intact so that it is clear which sections your response is addressing. Once completed, you will render your deliverable to a PDF file such that the text in the document is selectable.
+
+Your submission should show all code executed and must not exceed 14 pages.
+
+## 1) Forecasting Australian Wine Sales : Exponential Smoothing
+
+The figure below shows time plots of monthly sales of six types of Australian wines (red, rose, sweet white, dry white, sparkling, and fortified) for 1980-1994. Data available in AustralianWines.xls. The units are thousands of liters.
+
+```{r ch5_fig}
+#| echo: false
+aus_wine <- read_csv(here::here("data/AustralianWines.csv"), na = "*",
+                     col_types = cols(Rose = col_number()),
+                     show_col_types = FALSE) |> 
+    fill(Rose, .direction = "down") |> 
+    mutate(Month = mdy(str_replace(Month, '-', '-01-')) |> yearmonth()) 
+
+aus_wine |> 
+    pivot_longer(cols = -Month, names_to = 'Varietal', values_to = 'Sales') |> 
+    ggplot(aes(Month, Sales)) +
+    geom_line() +
+    facet_wrap(~ Varietal, scales = "free_y") +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Fortified wine has the largest market share of the six types of wine. Focus on fortified wine sales alone and produce as accurate a monthly forecast as possible for the next year using ARIMA models.
+
+### a) Create ACF/PACF plots from a training set.
+
+-   Start by partitioning the data using the period until December 1993 as the training period.
+-   Determine the differencing (if any) required to make the data stationary (show any test output).
+-   Plot the ACF/PACF on the stationary time series
+-   Specify the models suggested by the ACF and PACF plots respectively
+
+```{r wine_fort_acf}
+#| warning: false
+
+# create a time series object for fortified wine sales (tsibble)
+
+# create training/validation sets for the model
+
+# check stationarity (fabletools::feature(...))
+
+# plot differenced series and ACF/PACF plots 
+
+```
+
+**What tests or reasoning did you use to determine the differencing required?**
+
+*Answer here...*
+
+**What models do the ACF and PCF suggest would be best, respectively?**
+
+*ACF: Answer here...*
+
+*PCF: Answer here...*
+
+### b) Build the suggest models and an auto selected model
+
+```{r}
+# model fit
+
+# report auto-arima model
+```
+
+**What model did the ARIMA auto-select choose?**
+
+*Answer here...*
+
+### c) Compare the models with both RMSE and AICc.
+
+-   Print the model metrics. Sort the report from best to worst based on `AICc`
+
+```{r fit_aic}
+
+```
+
+-   Print the model metrics. Sort the report from best to worst based on `RMSE`
+
+```{r fit_rmse}
+
+```
+
+### d) Forecast the data for each month of 1994 for each model and compare the resulting metrics.
+
+-   Report RMSE, MAE, and MAPE for all models, ordered by best RMSE.
+-   Present your results in a well formatted table (suitable for presentation).
+
+```{r ets_results}
+# forecast the validation period 
+
+# review accuracy to select the best model
+
+```
+
+**Which model produces the best mean forecast? How did that compare with the training goodness-of-fit metrics?**
+
+*Answer here...*
+
+### e) Use the best performing model to create a forecast for each month in 1995.
+
+-   Fit a model against the full dataset.
+-   Forecast the next year of data.
+-   Create a plot showing forecast values and intervals (80%, 95%) for 1995 alongside actual values from 1992 onwards.
+
+```{r arima-fc-plt}
+
+# Use the full data set to fit the best model
+
+# forecast the next 12 months
+
+# plot the forecast
+
+```
+
+### f) Output the mean forecast values for 1995 in a well formatted table.
+
+```{r ets-fc-table}
+
+```
+
+\newpage
+
+## 2) Forecasting Australian Wine Sales: ARIMA comparison against other models
+
+-   Use your existing partitioned data for the fortified wine series (training through December 1993).
+-   Fit an ARIMA model - use the best model from the previous problem
+-   Also fit time series linear model with trend and seasonal components and an auto-selected exponential smoothing model. (Hint: see the assignment from the previous module).
+
+### a) Create the "actual vs. forecast" plot for validation period.
+
+-   (Hint) It may be easier to create a new `mable` object by refitting the data
+-   plot all 3 models together with the actual data
+-   remove the confidence intervals for clarity
+
+```{r fortified-compare}
+# build the models
+
+# forecast the validation period
+
+# plot the forecasts
+
+```
+
+-   Compare the RSME, MAE and MAPE metrics in the validation period for each model in a well formatted table (suitable for presentation). Sort from best to worst RMSE.
+
+```{r tbl-3a}
+
+```
+
+***Which model produced the best forecast based on RMSE?***
+
+*Answer ...*
+
+### b) Produce a forecast for all wine types for sales in all months of 1995 using an auto ARIMA model.
+
+-   Output a presentable table with wine varietals as columns and months as rows
+
+```{r ch6-6c}
+# create a tsibble for all the wine types
+
+# fit auto-arima
+
+# forecast
+
+#use pivot wider to shape the output
+
+```
+
+\newpage
+
+-   Plot the forecast for each varietal along with 3 years of historical data.
+
+```{r}
+
+```
+
+## 3) Reflections
+
+a)  What was the most challenging part of this assignment?
+
+b)  What was your most valuable takeaway from this assignment?
+
+c)  What improvements do you suggest for future courses?
+
+d)  What LLMs did you use (if any) to help you complete this assignment?
