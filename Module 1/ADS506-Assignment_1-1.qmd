@@ -1,5 +1,5 @@
 ---
-title: "ADS506 Assignment 1.1"
+title: "Assignment_1-1_Blackman_Jordan"
 author: "Jordan Blackman"
 format: pdf
 editor: visual
@@ -8,8 +8,10 @@ editor: visual
 ```{r}
 #| message: false
 #| warning: false
+# Load in packages
 library(readxl)
 library(fpp3)
+library(USgas)
 ```
 
 # ADS 506 Module 1 Assignment
@@ -24,22 +26,34 @@ The file ApplianceShipments.xls contains the series of quarterly shipments (in m
 
 ### a) Read the data into a `tsibble` and replace this plot with one that is created from code. Be sure to reproduce the plot exactly as it appears.
 
-![(Remove this plot from your submission)](images/appliance-shipments-by-qtr.png)
-
 ```{r ex1-a}
+# Read data into a tsibble
 shipments <- read_excel("../data/ApplianceShipments.xlsx") |>
     mutate(Quarter = yearquarter(Quarter)) |> 
     select(Quarter, Shipments) |> 
     as_tsibble(index = Quarter)
-# plot shipments ...
+
+# Plot shipments
+shipments |> autoplot(Shipments) +
+  geom_point() +
+  labs(title = "Appliance Shipments")
+
 ```
 
 ### b) Which of the four components (level, trend, seasonality, noise) seem to be present in this series? Show a plot to that supports your conclusions.
 
-*Your answer here...*
+Based on the output below:
+
+- Level is present, the shipments data exists between approximately 4,000 and 4,800 shipments per quarter.
+- Trend is present, there is general upward trend over time.
+- Seasonality is present, there is a consistent Q2 peak and a Q4 trough. Q3 is generally higher than Q1 as well.
+- There is noise present in the time series as well, most noticeably in Q3 and Q4 1986, but noise is present throughout the time series.
 
 ```{r ex1-b}
-
+# Create components plot
+shipments |> model(stl = STL(Shipments)) |>
+  components() |>
+  autoplot()
 ```
 
 ## 2) `fpp3` datasets
@@ -47,38 +61,67 @@ shipments <- read_excel("../data/ApplianceShipments.xlsx") |>
 ### a) Show the default tsibble output from the `vic_elec` dataset
 
 ```{r ex2-a}
-
+# Show default tsibble of vic_elec dataset
+vic_elec
 ```
 
 ### b) What is time interval for this series.
 
-Interval: *answer...*\
-`paste the relevant line from above to support your answer`
+Interval: \[30M\], meaning there is a data point every 30 minutes.
 
 ### c) Use the `gafa_stock` dataset from `fpp3` to reproduce/replace the following plot
 
-![(Remove this plot from your submission)](images/gafa_stock_plot.png)
-
 ```{r ex2-c}
- 
+# Create gafa_stock plot
+gafa_stock |> autoplot(Close) +
+  facet_grid(vars(Symbol), scales = "free_y") +
+  labs(x = "Date")
 ```
 
 ### d) Plot The `us_total` from `USgas` package
 
--   Install the `USgas` package. **IMPORTANT:** Comment or omit any code you use to do this, so the package is only installed once.
--   Create a `tsibble` from `us_total` with `year` as the `index` and `state` as the `key`.
--   Plot the annual natural gas consumption by state for the New England area (comprising the states of Maine, Vermont, New Hampshire, Massachusetts, Connecticut and Rhode Island). Ensure the y-axis is scaled and labeled appropriately with correct units. The objective of the plot is for the reader to compare consumption by state and estimate values over time.
+- Install the `USgas` package. **IMPORTANT:** Comment or omit any code you use to do this, so the package is only installed once.
+- Create a `tsibble` from `us_total` with `year` as the `index` and `state` as the `key`.
+- Plot the annual natural gas consumption by state for the New England area (comprising the states of Maine, Vermont, New Hampshire, Massachusetts, Connecticut and Rhode Island). Ensure the y-axis is scaled and labeled appropriately with correct units. The objective of the plot is for the reader to compare consumption by state and estimate values over time.
 
 ```{r ex2-d}
+# Create the tsibble
+us_gas <- us_total |> as_tsibble(key = state, index = year)
 
+# Ensure y-axis is not in scientific notation
+options(scipen = 999)
+
+# Create New England Subset
+new_england <- c("Maine", "Vermont", "New Hampshire",
+                 "Massachusetts", "Connecticut", "Rhode Island")
+
+# Plot NE annual natural gas consumption, scaling the y-axis
+us_gas |> filter(state %in% new_england) |>
+  autoplot(y/1e6) + 
+  labs(y = "Natural Gas Consumption (Million Cubic Feet)",
+       title = "New England Natural Gas Consumption")
 ```
 
 ## 3) Reflections
 
 a)  What was the most challenging part of this assignment?
 
+- Creating the grids in question 2c required research and researching the units that the USgas data used were the most challenging parts of this assignment. I consulted the textbook for use of facet_grid() and looked at the USgas GitHub to figure out the units.
+
 b)  What is the most important takeaway from this assignment?
+
+- I have seen the trend, seasonality, and noise plot before, but did not know how to create one. This seems like a very useful plot, rather than trying to eyeball these elements, this is a more objective way to view a time series decomposition. I think this chart and its usefulness are my most important takeaways from this assignment.
 
 c)  What would you recommend changing for future cohorts?
 
+- I went through this assignment rather quickly, I think a few more practice problems would help others practice R syntax if it is new to them. I am sure that other assignments will be more complex, so more syntax would be good practice in week 1.
+
 d)  What LLMs did you use (if any) to help you complete this assignment?
+
+- I did not use any LLMs to complete this assignment, I consulted the textbook and USgas package documentation.
+
+References
+
+Hyndman, R.J., & Athanasopoulos, G. (2021) *Forecasting: principles and practice*, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3. Accessed on 18 October 2026.
+
+Krispin, R. (2022). USgas: The demand for natural gas in the US (Version 0.1.2) \[Computer software\]. GitHub. <https://github.com/RamiKrispin/USgas>
