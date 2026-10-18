@@ -67,6 +67,8 @@ vic_elec
 
 ### b) What is time interval for this series.
 
+\`# A tsibble: 52,608 x 5 \[30m\] \<Australia/Melbourne\>\`
+
 Interval: \[30M\], meaning there is a data point every 30 minutes.
 
 ### c) Use the `gafa_stock` dataset from `fpp3` to reproduce/replace the following plot
@@ -97,7 +99,7 @@ new_england <- c("Maine", "Vermont", "New Hampshire",
 
 # Plot NE annual natural gas consumption, scaling the y-axis
 us_gas |> filter(state %in% new_england) |>
-  autoplot(y/1e6) + 
+  autoplot(y) + 
   labs(y = "Natural Gas Consumption (Million Cubic Feet)",
        title = "New England Natural Gas Consumption")
 ```
