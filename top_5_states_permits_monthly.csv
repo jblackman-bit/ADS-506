@@ -1,0 +1,2321 @@
+Month,state,permits
+1988 Jan,California,13840
+1988 Feb,California,15857
+1988 Mar,California,21863
+1988 Apr,California,23003
+1988 May,California,21325
+1988 Jun,California,25993
+1988 Jul,California,19697
+1988 Aug,California,24146
+1988 Sep,California,18614
+1988 Oct,California,24274
+1988 Nov,California,22018
+1988 Dec,California,17694
+1989 Jan,California,16639
+1989 Feb,California,15969
+1989 Mar,California,21154
+1989 Apr,California,20885
+1989 May,California,22996
+1989 Jun,California,22458
+1989 Jul,California,20880
+1989 Aug,California,19348
+1989 Sep,California,17140
+1989 Oct,California,21022
+1989 Nov,California,16277
+1989 Dec,California,21109
+1990 Jan,California,17626
+1990 Feb,California,14907
+1990 Mar,California,18785
+1990 Apr,California,15901
+1990 May,California,15766
+1990 Jun,California,17583
+1990 Jul,California,13201
+1990 Aug,California,12635
+1990 Sep,California,10156
+1990 Oct,California,9881
+1990 Nov,California,7536
+1990 Dec,California,7653
+1991 Jan,California,7472
+1991 Feb,California,6215
+1991 Mar,California,11518
+1991 Apr,California,10159
+1991 May,California,11117
+1991 Jun,California,10856
+1991 Jul,California,10155
+1991 Aug,California,8892
+1991 Sep,California,7679
+1991 Oct,California,9665
+1991 Nov,California,6244
+1991 Dec,California,7733
+1992 Jan,California,6818
+1992 Feb,California,7268
+1992 Mar,California,8494
+1992 Apr,California,9630
+1992 May,California,7924
+1992 Jun,California,11322
+1992 Jul,California,8246
+1992 Aug,California,7971
+1992 Sep,California,7095
+1992 Oct,California,7763
+1992 Nov,California,6263
+1992 Dec,California,9216
+1993 Jan,California,6433
+1993 Feb,California,4884
+1993 Mar,California,9105
+1993 Apr,California,7709
+1993 May,California,7003
+1993 Jun,California,9856
+1993 Jul,California,7002
+1993 Aug,California,7103
+1993 Sep,California,6674
+1993 Oct,California,6452
+1993 Nov,California,6036
+1993 Dec,California,7442
+1994 Jan,California,5585
+1994 Feb,California,5813
+1994 Mar,California,9526
+1994 Apr,California,8028
+1994 May,California,8421
+1994 Jun,California,13438
+1994 Jul,California,6666
+1994 Aug,California,8998
+1994 Sep,California,8147
+1994 Oct,California,7679
+1994 Nov,California,7390
+1994 Dec,California,6814
+1995 Jan,California,4504
+1995 Feb,California,5847
+1995 Mar,California,6353
+1995 Apr,California,6951
+1995 May,California,7762
+1995 Jun,California,8189
+1995 Jul,California,7403
+1995 Aug,California,9570
+1995 Sep,California,6801
+1995 Oct,California,7010
+1995 Nov,California,6992
+1995 Dec,California,7695
+1996 Jan,California,6074
+1996 Feb,California,5305
+1996 Mar,California,8173
+1996 Apr,California,8813
+1996 May,California,8230
+1996 Jun,California,8528
+1996 Jul,California,8647
+1996 Aug,California,8217
+1996 Sep,California,7619
+1996 Oct,California,9528
+1996 Nov,California,6386
+1996 Dec,California,6219
+1997 Jan,California,5875
+1997 Feb,California,7267
+1997 Mar,California,8345
+1997 Apr,California,9413
+1997 May,California,9210
+1997 Jun,California,10019
+1997 Jul,California,10292
+1997 Aug,California,9804
+1997 Sep,California,9945
+1997 Oct,California,11705
+1997 Nov,California,7564
+1997 Dec,California,9277
+1998 Jan,California,6346
+1998 Feb,California,6968
+1998 Mar,California,10024
+1998 Apr,California,11045
+1998 May,California,10055
+1998 Jun,California,13999
+1998 Jul,California,11281
+1998 Aug,California,11897
+1998 Sep,California,11022
+1998 Oct,California,10987
+1998 Nov,California,9180
+1998 Dec,California,10251
+1999 Jan,California,9373
+1999 Feb,California,8122
+1999 Mar,California,11483
+1999 Apr,California,10799
+1999 May,California,11656
+1999 Jun,California,14939
+1999 Jul,California,12968
+1999 Aug,California,11729
+1999 Sep,California,10719
+1999 Oct,California,10725
+1999 Nov,California,9365
+1999 Dec,California,11262
+2000 Jan,California,10430
+2000 Feb,California,9707
+2000 Mar,California,12697
+2000 Apr,California,11347
+2000 May,California,11925
+2000 Jun,California,17888
+2000 Jul,California,11362
+2000 Aug,California,13050
+2000 Sep,California,10815
+2000 Oct,California,11344
+2000 Nov,California,10879
+2000 Dec,California,12312
+2001 Jan,California,14219
+2001 Feb,California,8999
+2001 Mar,California,12641
+2001 Apr,California,12894
+2001 May,California,12953
+2001 Jun,California,14229
+2001 Jul,California,10621
+2001 Aug,California,13592
+2001 Sep,California,8875
+2001 Oct,California,11722
+2001 Nov,California,10039
+2001 Dec,California,11384
+2002 Jan,California,10549
+2002 Feb,California,11052
+2002 Mar,California,12347
+2002 Apr,California,13485
+2002 May,California,13035
+2002 Jun,California,13363
+2002 Jul,California,13924
+2002 Aug,California,13595
+2002 Sep,California,12950
+2002 Oct,California,17675
+2002 Nov,California,12539
+2002 Dec,California,12150
+2003 Jan,California,13406
+2003 Feb,California,15675
+2003 Mar,California,15201
+2003 Apr,California,16306
+2003 May,California,17524
+2003 Jun,California,16103
+2003 Jul,California,16067
+2003 Aug,California,14611
+2003 Sep,California,15028
+2003 Oct,California,19786
+2003 Nov,California,13394
+2003 Dec,California,14825
+2004 Jan,California,14027
+2004 Feb,California,14153
+2004 Mar,California,18719
+2004 Apr,California,18525
+2004 May,California,18069
+2004 Jun,California,19813
+2004 Jul,California,16948
+2004 Aug,California,18009
+2004 Sep,California,17517
+2004 Oct,California,16641
+2004 Nov,California,17433
+2004 Dec,California,17836
+2005 Jan,California,14078
+2005 Feb,California,14095
+2005 Mar,California,18136
+2005 Apr,California,18202
+2005 May,California,17990
+2005 Jun,California,19869
+2005 Jul,California,17048
+2005 Aug,California,17076
+2005 Sep,California,20329
+2005 Oct,California,14147
+2005 Nov,California,13809
+2005 Dec,California,12763
+2006 Jan,California,11771
+2006 Feb,California,16095
+2006 Mar,California,15762
+2006 Apr,California,14536
+2006 May,California,16243
+2006 Jun,California,16410
+2006 Jul,California,10624
+2006 Aug,California,11595
+2006 Sep,California,11914
+2006 Oct,California,9899
+2006 Nov,California,9080
+2006 Dec,California,10085
+2007 Jan,California,9621
+2007 Feb,California,8631
+2007 Mar,California,13245
+2007 Apr,California,10087
+2007 May,California,11123
+2007 Jun,California,9218
+2007 Jul,California,8601
+2007 Aug,California,10420
+2007 Sep,California,6691
+2007 Oct,California,7477
+2007 Nov,California,5239
+2007 Dec,California,6063
+2008 Jan,California,5043
+2008 Feb,California,6227
+2008 Mar,California,4656
+2008 Apr,California,6189
+2008 May,California,7331
+2008 Jun,California,6712
+2008 Jul,California,4961
+2008 Aug,California,3632
+2008 Sep,California,4332
+2008 Oct,California,3776
+2008 Nov,California,4054
+2008 Dec,California,3740
+2009 Jan,California,2012
+2009 Feb,California,2370
+2009 Mar,California,3031
+2009 Apr,California,2916
+2009 May,California,2818
+2009 Jun,California,3428
+2009 Jul,California,3008
+2009 Aug,California,2730
+2009 Sep,California,2689
+2009 Oct,California,2793
+2009 Nov,California,2366
+2009 Dec,California,3098
+2010 Jan,California,3022
+2010 Feb,California,3469
+2010 Mar,California,3661
+2010 Apr,California,3210
+2010 May,California,3147
+2010 Jun,California,4467
+2010 Jul,California,3756
+2010 Aug,California,3633
+2010 Sep,California,2826
+2010 Oct,California,3030
+2010 Nov,California,2877
+2010 Dec,California,6144
+2011 Jan,California,2486
+2011 Feb,California,2279
+2011 Mar,California,4428
+2011 Apr,California,3691
+2011 May,California,4732
+2011 Jun,California,5101
+2011 Jul,California,2548
+2011 Aug,California,4185
+2011 Sep,California,3401
+2011 Oct,California,3135
+2011 Nov,California,4251
+2011 Dec,California,4970
+2012 Jan,California,2116
+2012 Feb,California,3367
+2012 Mar,California,6181
+2012 Apr,California,3314
+2012 May,California,5705
+2012 Jun,California,6035
+2012 Jul,California,5547
+2012 Aug,California,5067
+2012 Sep,California,5340
+2012 Oct,California,4785
+2012 Nov,California,4017
+2012 Dec,California,6017
+2013 Jan,California,4972
+2013 Feb,California,6516
+2013 Mar,California,4840
+2013 Apr,California,7589
+2013 May,California,7481
+2013 Jun,California,6371
+2013 Jul,California,7682
+2013 Aug,California,6595
+2013 Sep,California,3909
+2013 Oct,California,6405
+2013 Nov,California,6474
+2013 Dec,California,8796
+2014 Jan,California,4221
+2014 Feb,California,6069
+2014 Mar,California,6894
+2014 Apr,California,8623
+2014 May,California,6369
+2014 Jun,California,7308
+2014 Jul,California,7347
+2014 Aug,California,5667
+2014 Sep,California,6247
+2014 Oct,California,9017
+2014 Nov,California,7421
+2014 Dec,California,7420
+2015 Jan,California,7312
+2015 Feb,California,7199
+2015 Mar,California,9207
+2015 Apr,California,8472
+2015 May,California,7745
+2015 Jun,California,11503
+2015 Jul,California,8553
+2015 Aug,California,6939
+2015 Sep,California,7976
+2015 Oct,California,6038
+2015 Nov,California,8553
+2015 Dec,California,8114
+2016 Jan,California,6962
+2016 Feb,California,8684
+2016 Mar,California,7634
+2016 Apr,California,7925
+2016 May,California,10242
+2016 Jun,California,8987
+2016 Jul,California,6063
+2016 Aug,California,9223
+2016 Sep,California,8355
+2016 Oct,California,8274
+2016 Nov,California,7830
+2016 Dec,California,10450
+2017 Jan,California,5376
+2017 Feb,California,6298
+2017 Mar,California,10161
+2017 Apr,California,9622
+2017 May,California,9599
+2017 Jun,California,14218
+2017 Jul,California,7950
+2017 Aug,California,9654
+2017 Sep,California,8910
+2017 Oct,California,10335
+2017 Nov,California,8272
+2017 Dec,California,11393
+2018 Jan,California,8730
+2018 Feb,California,8016
+2018 Mar,California,11546
+2018 Apr,California,10136
+2018 May,California,12089
+2018 Jun,California,12952
+2018 Jul,California,9497
+2018 Aug,California,8826
+2018 Sep,California,7424
+2018 Oct,California,8745
+2018 Nov,California,7741
+2018 Dec,California,10709
+2019 Jan,California,9373
+2019 Feb,California,6228
+2019 Mar,California,8345
+2019 Apr,California,9045
+2019 May,California,9883
+2019 Jun,California,9014
+2019 Jul,California,9924
+2019 Aug,California,8843
+2019 Sep,California,9920
+2019 Oct,California,10176
+2019 Nov,California,7630
+2019 Dec,California,11523
+2020 Jan,California,8673
+2020 Feb,California,8759
+2020 Mar,California,7949
+2020 Apr,California,5987
+2020 May,California,6705
+2020 Jun,California,8844
+2020 Jul,California,10350
+2020 Aug,California,8190
+2020 Sep,California,9476
+2020 Oct,California,8670
+2020 Nov,California,8367
+2020 Dec,California,12584
+2021 Jan,California,9729
+2021 Feb,California,7897
+2021 Mar,California,11644
+2021 Apr,California,10560
+2021 May,California,9922
+2021 Jun,California,10796
+2021 Jul,California,9714
+2021 Aug,California,9869
+2021 Sep,California,8736
+2021 Oct,California,10997
+2021 Nov,California,8721
+2021 Dec,California,10973
+2022 Jan,California,8276
+2022 Feb,California,9130
+2022 Mar,California,10883
+2022 Apr,California,10615
+2022 May,California,10263
+2022 Jun,California,12675
+2022 Jul,California,7663
+2022 Aug,California,11045
+2022 Sep,California,10242
+2022 Oct,California,7282
+2022 Nov,California,6800
+2022 Dec,California,8220
+2023 Jan,California,7138
+2023 Feb,California,8275
+2023 Mar,California,7410
+2023 Apr,California,9186
+2023 May,California,10066
+2023 Jun,California,13326
+2023 Jul,California,8190
+2023 Aug,California,12630
+2023 Sep,California,8212
+2023 Oct,California,8338
+2023 Nov,California,9757
+2023 Dec,California,7179
+2024 Jan,California,7458
+2024 Feb,California,7745
+2024 Mar,California,7984
+2024 Apr,California,7696
+2024 May,California,10442
+2024 Jun,California,9363
+2024 Jul,California,8518
+2024 Aug,California,8905
+2024 Sep,California,7798
+2024 Oct,California,8597
+2024 Nov,California,7647
+2024 Dec,California,8232
+2025 Jan,California,6657
+2025 Feb,California,7247
+2025 Mar,California,7337
+2025 Apr,California,9097
+2025 May,California,9346
+2025 Jun,California,9751
+2025 Jul,California,7463
+2025 Aug,California,8883
+2025 Sep,California,9275
+2025 Oct,California,8860
+2025 Nov,California,7863
+2025 Dec,California,10384
+2026 Jan,California,8130
+2026 Feb,California,11157
+2026 Mar,California,8711
+2026 Apr,California,9015
+2026 May,California,10196
+2026 Jun,California,10013
+2026 Jul,California,8285
+2026 Aug,California,9649
+1988 Jan,Florida,11786
+1988 Feb,Florida,12243
+1988 Mar,Florida,15721
+1988 Apr,Florida,13935
+1988 May,Florida,14918
+1988 Jun,Florida,19255
+1988 Jul,Florida,13523
+1988 Aug,Florida,15656
+1988 Sep,Florida,14614
+1988 Oct,Florida,13578
+1988 Nov,Florida,13239
+1988 Dec,Florida,12911
+1989 Jan,Florida,13582
+1989 Feb,Florida,13404
+1989 Mar,Florida,14163
+1989 Apr,Florida,14593
+1989 May,Florida,17165
+1989 Jun,Florida,17454
+1989 Jul,Florida,11756
+1989 Aug,Florida,13657
+1989 Sep,Florida,12393
+1989 Oct,Florida,12754
+1989 Nov,Florida,11483
+1989 Dec,Florida,11279
+1990 Jan,Florida,14982
+1990 Feb,Florida,9318
+1990 Mar,Florida,12228
+1990 Apr,Florida,12314
+1990 May,Florida,11836
+1990 Jun,Florida,12078
+1990 Jul,Florida,11113
+1990 Aug,Florida,10667
+1990 Sep,Florida,8700
+1990 Oct,Florida,8622
+1990 Nov,Florida,8592
+1990 Dec,Florida,6933
+1991 Jan,Florida,7141
+1991 Feb,Florida,7025
+1991 Mar,Florida,7485
+1991 Apr,Florida,8697
+1991 May,Florida,9986
+1991 Jun,Florida,9773
+1991 Jul,Florida,9372
+1991 Aug,Florida,8063
+1991 Sep,Florida,7246
+1991 Oct,Florida,7440
+1991 Nov,Florida,6378
+1991 Dec,Florida,8458
+1992 Jan,Florida,7555
+1992 Feb,Florida,6974
+1992 Mar,Florida,9707
+1992 Apr,Florida,8870
+1992 May,Florida,8093
+1992 Jun,Florida,9776
+1992 Jul,Florida,9853
+1992 Aug,Florida,8009
+1992 Sep,Florida,8689
+1992 Oct,Florida,8972
+1992 Nov,Florida,7337
+1992 Dec,Florida,8887
+1993 Jan,Florida,7438
+1993 Feb,Florida,8604
+1993 Mar,Florida,9810
+1993 Apr,Florida,10226
+1993 May,Florida,10893
+1993 Jun,Florida,11052
+1993 Jul,Florida,10118
+1993 Aug,Florida,10119
+1993 Sep,Florida,11517
+1993 Oct,Florida,8940
+1993 Nov,Florida,9333
+1993 Dec,Florida,12875
+1994 Jan,Florida,10758
+1994 Feb,Florida,9225
+1994 Mar,Florida,11376
+1994 Apr,Florida,10105
+1994 May,Florida,10795
+1994 Jun,Florida,11368
+1994 Jul,Florida,11632
+1994 Aug,Florida,13023
+1994 Sep,Florida,11132
+1994 Oct,Florida,10059
+1994 Nov,Florida,9404
+1994 Dec,Florida,9600
+1995 Jan,Florida,9940
+1995 Feb,Florida,8166
+1995 Mar,Florida,10677
+1995 Apr,Florida,9686
+1995 May,Florida,10038
+1995 Jun,Florida,11208
+1995 Jul,Florida,10101
+1995 Aug,Florida,10577
+1995 Sep,Florida,13539
+1995 Oct,Florida,9266
+1995 Nov,Florida,9891
+1995 Dec,Florida,9668
+1996 Jan,Florida,9743
+1996 Feb,Florida,9376
+1996 Mar,Florida,9856
+1996 Apr,Florida,11069
+1996 May,Florida,11174
+1996 Jun,Florida,10603
+1996 Jul,Florida,10904
+1996 Aug,Florida,11889
+1996 Sep,Florida,11280
+1996 Oct,Florida,9895
+1996 Nov,Florida,9088
+1996 Dec,Florida,8798
+1997 Jan,Florida,9863
+1997 Feb,Florida,9209
+1997 Mar,Florida,12207
+1997 Apr,Florida,11212
+1997 May,Florida,11185
+1997 Jun,Florida,11798
+1997 Jul,Florida,12561
+1997 Aug,Florida,10272
+1997 Sep,Florida,11785
+1997 Oct,Florida,12103
+1997 Nov,Florida,8517
+1997 Dec,Florida,9662
+1998 Jan,Florida,10712
+1998 Feb,Florida,9713
+1998 Mar,Florida,12284
+1998 Apr,Florida,11447
+1998 May,Florida,11512
+1998 Jun,Florida,12980
+1998 Jul,Florida,13653
+1998 Aug,Florida,14307
+1998 Sep,Florida,11272
+1998 Oct,Florida,13640
+1998 Nov,Florida,12027
+1998 Dec,Florida,11306
+1999 Jan,Florida,13679
+1999 Feb,Florida,12537
+1999 Mar,Florida,14188
+1999 Apr,Florida,13367
+1999 May,Florida,11654
+1999 Jun,Florida,14802
+1999 Jul,Florida,14136
+1999 Aug,Florida,15342
+1999 Sep,Florida,12113
+1999 Oct,Florida,13700
+1999 Nov,Florida,10697
+1999 Dec,Florida,14214
+2000 Jan,Florida,11268
+2000 Feb,Florida,11147
+2000 Mar,Florida,12627
+2000 Apr,Florida,10750
+2000 May,Florida,13635
+2000 Jun,Florida,15448
+2000 Jul,Florida,11506
+2000 Aug,Florida,13266
+2000 Sep,Florida,12421
+2000 Oct,Florida,12429
+2000 Nov,Florida,12346
+2000 Dec,Florida,11556
+2001 Jan,Florida,12487
+2001 Feb,Florida,11151
+2001 Mar,Florida,16146
+2001 Apr,Florida,12406
+2001 May,Florida,16902
+2001 Jun,Florida,13561
+2001 Jul,Florida,14643
+2001 Aug,Florida,16116
+2001 Sep,Florida,12385
+2001 Oct,Florida,11898
+2001 Nov,Florida,13383
+2001 Dec,Florida,13202
+2002 Jan,Florida,15347
+2002 Feb,Florida,15555
+2002 Mar,Florida,14756
+2002 Apr,Florida,13951
+2002 May,Florida,14407
+2002 Jun,Florida,16181
+2002 Jul,Florida,16840
+2002 Aug,Florida,16602
+2002 Sep,Florida,12896
+2002 Oct,Florida,17068
+2002 Nov,Florida,13028
+2002 Dec,Florida,13952
+2003 Jan,Florida,14836
+2003 Feb,Florida,15080
+2003 Mar,Florida,15644
+2003 Apr,Florida,16885
+2003 May,Florida,19376
+2003 Jun,Florida,17865
+2003 Jul,Florida,17206
+2003 Aug,Florida,18739
+2003 Sep,Florida,16349
+2003 Oct,Florida,19682
+2003 Nov,Florida,13293
+2003 Dec,Florida,18626
+2004 Jan,Florida,17131
+2004 Feb,Florida,19452
+2004 Mar,Florida,19876
+2004 Apr,Florida,21360
+2004 May,Florida,22240
+2004 Jun,Florida,22621
+2004 Jul,Florida,22554
+2004 Aug,Florida,20028
+2004 Sep,Florida,17595
+2004 Oct,Florida,22739
+2004 Nov,Florida,17477
+2004 Dec,Florida,18974
+2005 Jan,Florida,20519
+2005 Feb,Florida,20176
+2005 Mar,Florida,25177
+2005 Apr,Florida,25394
+2005 May,Florida,22529
+2005 Jun,Florida,26561
+2005 Jul,Florida,23529
+2005 Aug,Florida,26831
+2005 Sep,Florida,26167
+2005 Oct,Florida,20480
+2005 Nov,Florida,19308
+2005 Dec,Florida,20176
+2006 Jan,Florida,21067
+2006 Feb,Florida,22281
+2006 Mar,Florida,25024
+2006 Apr,Florida,19498
+2006 May,Florida,19734
+2006 Jun,Florida,18305
+2006 Jul,Florida,16206
+2006 Aug,Florida,16485
+2006 Sep,Florida,12359
+2006 Oct,Florida,12902
+2006 Nov,Florida,10776
+2006 Dec,Florida,9982
+2007 Jan,Florida,10064
+2007 Feb,Florida,10271
+2007 Mar,Florida,12202
+2007 Apr,Florida,10469
+2007 May,Florida,10857
+2007 Jun,Florida,9910
+2007 Jul,Florida,8591
+2007 Aug,Florida,8832
+2007 Sep,Florida,6358
+2007 Oct,Florida,6594
+2007 Nov,Florida,5753
+2007 Dec,Florida,5825
+2008 Jan,Florida,7314
+2008 Feb,Florida,5870
+2008 Mar,Florida,5328
+2008 Apr,Florida,6294
+2008 May,Florida,5454
+2008 Jun,Florida,6562
+2008 Jul,Florida,4887
+2008 Aug,Florida,5825
+2008 Sep,Florida,5245
+2008 Oct,Florida,3634
+2008 Nov,Florida,3052
+2008 Dec,Florida,3178
+2009 Jan,Florida,2849
+2009 Feb,Florida,3478
+2009 Mar,Florida,3260
+2009 Apr,Florida,2281
+2009 May,Florida,2405
+2009 Jun,Florida,3597
+2009 Jul,Florida,3026
+2009 Aug,Florida,2802
+2009 Sep,Florida,3040
+2009 Oct,Florida,2881
+2009 Nov,Florida,3002
+2009 Dec,Florida,3495
+2010 Jan,Florida,3818
+2010 Feb,Florida,3324
+2010 Mar,Florida,4358
+2010 Apr,Florida,3743
+2010 May,Florida,2964
+2010 Jun,Florida,3289
+2010 Jul,Florida,2894
+2010 Aug,Florida,3196
+2010 Sep,Florida,2772
+2010 Oct,Florida,2630
+2010 Nov,Florida,2710
+2010 Dec,Florida,3038
+2011 Jan,Florida,3039
+2011 Feb,Florida,2903
+2011 Mar,Florida,4229
+2011 Apr,Florida,3214
+2011 May,Florida,3334
+2011 Jun,Florida,3872
+2011 Jul,Florida,4149
+2011 Aug,Florida,4173
+2011 Sep,Florida,3541
+2011 Oct,Florida,3418
+2011 Nov,Florida,3844
+2011 Dec,Florida,3961
+2012 Jan,Florida,4676
+2012 Feb,Florida,3625
+2012 Mar,Florida,5424
+2012 Apr,Florida,4544
+2012 May,Florida,5276
+2012 Jun,Florida,5267
+2012 Jul,Florida,5154
+2012 Aug,Florida,6135
+2012 Sep,Florida,8063
+2012 Oct,Florida,5327
+2012 Nov,Florida,5499
+2012 Dec,Florida,4854
+2013 Jan,Florida,6357
+2013 Feb,Florida,6887
+2013 Mar,Florida,7789
+2013 Apr,Florida,9457
+2013 May,Florida,9533
+2013 Jun,Florida,6403
+2013 Jul,Florida,7248
+2013 Aug,Florida,6645
+2013 Sep,Florida,6369
+2013 Oct,Florida,7668
+2013 Nov,Florida,6879
+2013 Dec,Florida,5660
+2014 Jan,Florida,7585
+2014 Feb,Florida,7796
+2014 Mar,Florida,6019
+2014 Apr,Florida,7217
+2014 May,Florida,6807
+2014 Jun,Florida,7673
+2014 Jul,Florida,7801
+2014 Aug,Florida,6793
+2014 Sep,Florida,6110
+2014 Oct,Florida,8259
+2014 Nov,Florida,5348
+2014 Dec,Florida,7543
+2015 Jan,Florida,7781
+2015 Feb,Florida,9072
+2015 Mar,Florida,8441
+2015 Apr,Florida,8214
+2015 May,Florida,8738
+2015 Jun,Florida,9992
+2015 Jul,Florida,8339
+2015 Aug,Florida,7320
+2015 Sep,Florida,10390
+2015 Oct,Florida,9062
+2015 Nov,Florida,8127
+2015 Dec,Florida,10545
+2016 Jan,Florida,7938
+2016 Feb,Florida,9453
+2016 Mar,Florida,9292
+2016 Apr,Florida,9428
+2016 May,Florida,8600
+2016 Jun,Florida,9728
+2016 Jul,Florida,8950
+2016 Aug,Florida,10623
+2016 Sep,Florida,9987
+2016 Oct,Florida,10156
+2016 Nov,Florida,8240
+2016 Dec,Florida,9858
+2017 Jan,Florida,10023
+2017 Feb,Florida,8368
+2017 Mar,Florida,9590
+2017 Apr,Florida,10962
+2017 May,Florida,10608
+2017 Jun,Florida,12365
+2017 Jul,Florida,9896
+2017 Aug,Florida,10803
+2017 Sep,Florida,7966
+2017 Oct,Florida,10721
+2017 Nov,Florida,7665
+2017 Dec,Florida,8748
+2018 Jan,Florida,11346
+2018 Feb,Florida,10235
+2018 Mar,Florida,11321
+2018 Apr,Florida,13793
+2018 May,Florida,11192
+2018 Jun,Florida,12957
+2018 Jul,Florida,12952
+2018 Aug,Florida,12439
+2018 Sep,Florida,10481
+2018 Oct,Florida,12123
+2018 Nov,Florida,12159
+2018 Dec,Florida,11548
+2019 Jan,Florida,11190
+2019 Feb,Florida,11099
+2019 Mar,Florida,11661
+2019 Apr,Florida,14518
+2019 May,Florida,12393
+2019 Jun,Florida,10983
+2019 Jul,Florida,13109
+2019 Aug,Florida,15187
+2019 Sep,Florida,15067
+2019 Oct,Florida,15381
+2019 Nov,Florida,10374
+2019 Dec,Florida,12079
+2020 Jan,Florida,14395
+2020 Feb,Florida,12111
+2020 Mar,Florida,13674
+2020 Apr,Florida,12223
+2020 May,Florida,11776
+2020 Jun,Florida,12709
+2020 Jul,Florida,13053
+2020 Aug,Florida,15378
+2020 Sep,Florida,14408
+2020 Oct,Florida,15768
+2020 Nov,Florida,11634
+2020 Dec,Florida,14402
+2021 Jan,Florida,15788
+2021 Feb,Florida,12866
+2021 Mar,Florida,17512
+2021 Apr,Florida,19625
+2021 May,Florida,17754
+2021 Jun,Florida,19447
+2021 Jul,Florida,17750
+2021 Aug,Florida,22629
+2021 Sep,Florida,17123
+2021 Oct,Florida,16212
+2021 Nov,Florida,14873
+2021 Dec,Florida,17640
+2022 Jan,Florida,17533
+2022 Feb,Florida,16284
+2022 Mar,Florida,19387
+2022 Apr,Florida,20051
+2022 May,Florida,20152
+2022 Jun,Florida,20160
+2022 Jul,Florida,15502
+2022 Aug,Florida,16834
+2022 Sep,Florida,17199
+2022 Oct,Florida,15337
+2022 Nov,Florida,12504
+2022 Dec,Florida,14958
+2023 Jan,Florida,14964
+2023 Feb,Florida,16279
+2023 Mar,Florida,18743
+2023 Apr,Florida,14957
+2023 May,Florida,15062
+2023 Jun,Florida,18825
+2023 Jul,Florida,15574
+2023 Aug,Florida,17996
+2023 Sep,Florida,15871
+2023 Oct,Florida,14930
+2023 Nov,Florida,12776
+2023 Dec,Florida,14796
+2024 Jan,Florida,16132
+2024 Feb,Florida,13285
+2024 Mar,Florida,14849
+2024 Apr,Florida,17901
+2024 May,Florida,17110
+2024 Jun,Florida,15739
+2024 Jul,Florida,15414
+2024 Aug,Florida,15666
+2024 Sep,Florida,12380
+2024 Oct,Florida,13302
+2024 Nov,Florida,10760
+2024 Dec,Florida,11954
+2025 Jan,Florida,16872
+2025 Feb,Florida,14857
+2025 Mar,Florida,14771
+2025 Apr,Florida,13851
+2025 May,Florida,14564
+2025 Jun,Florida,19538
+2025 Jul,Florida,14661
+2025 Aug,Florida,13594
+2025 Sep,Florida,13353
+2025 Oct,Florida,15200
+2025 Nov,Florida,9652
+2025 Dec,Florida,13220
+2026 Jan,Florida,11132
+2026 Feb,Florida,12080
+2026 Mar,Florida,12449
+2026 Apr,Florida,14596
+2026 May,Florida,13055
+2026 Jun,Florida,13629
+2026 Jul,Florida,16024
+2026 Aug,Florida,13980
+1988 Jan,Georgia,3196
+1988 Feb,Georgia,5451
+1988 Mar,Georgia,7187
+1988 Apr,Georgia,5801
+1988 May,Georgia,5664
+1988 Jun,Georgia,6524
+1988 Jul,Georgia,4811
+1988 Aug,Georgia,5738
+1988 Sep,Georgia,4586
+1988 Oct,Georgia,5530
+1988 Nov,Georgia,5077
+1988 Dec,Georgia,4691
+1989 Jan,Georgia,4420
+1989 Feb,Georgia,4328
+1989 Mar,Georgia,4978
+1989 Apr,Georgia,3975
+1989 May,Georgia,4946
+1989 Jun,Georgia,4351
+1989 Jul,Georgia,3705
+1989 Aug,Georgia,5248
+1989 Sep,Georgia,4608
+1989 Oct,Georgia,4297
+1989 Nov,Georgia,3697
+1989 Dec,Georgia,3607
+1990 Jan,Georgia,5600
+1990 Feb,Georgia,3120
+1990 Mar,Georgia,4464
+1990 Apr,Georgia,3330
+1990 May,Georgia,3452
+1990 Jun,Georgia,3269
+1990 Jul,Georgia,3237
+1990 Aug,Georgia,4412
+1990 Sep,Georgia,2958
+1990 Oct,Georgia,2823
+1990 Nov,Georgia,2326
+1990 Dec,Georgia,2179
+1991 Jan,Georgia,2478
+1991 Feb,Georgia,3302
+1991 Mar,Georgia,3354
+1991 Apr,Georgia,3598
+1991 May,Georgia,3402
+1991 Jun,Georgia,2817
+1991 Jul,Georgia,3638
+1991 Aug,Georgia,3090
+1991 Sep,Georgia,3709
+1991 Oct,Georgia,3397
+1991 Nov,Georgia,2901
+1991 Dec,Georgia,2735
+1992 Jan,Georgia,3429
+1992 Feb,Georgia,3655
+1992 Mar,Georgia,4452
+1992 Apr,Georgia,4108
+1992 May,Georgia,3697
+1992 Jun,Georgia,4139
+1992 Jul,Georgia,4037
+1992 Aug,Georgia,3697
+1992 Sep,Georgia,3881
+1992 Oct,Georgia,3933
+1992 Nov,Georgia,2939
+1992 Dec,Georgia,3227
+1993 Jan,Georgia,3961
+1993 Feb,Georgia,4042
+1993 Mar,Georgia,4868
+1993 Apr,Georgia,4379
+1993 May,Georgia,4168
+1993 Jun,Georgia,4736
+1993 Jul,Georgia,4678
+1993 Aug,Georgia,5489
+1993 Sep,Georgia,5224
+1993 Oct,Georgia,5128
+1993 Nov,Georgia,4420
+1993 Dec,Georgia,4695
+1994 Jan,Georgia,4331
+1994 Feb,Georgia,4757
+1994 Mar,Georgia,6474
+1994 Apr,Georgia,6008
+1994 May,Georgia,6500
+1994 Jun,Georgia,6351
+1994 Jul,Georgia,4477
+1994 Aug,Georgia,6619
+1994 Sep,Georgia,6017
+1994 Oct,Georgia,5452
+1994 Nov,Georgia,5797
+1994 Dec,Georgia,5486
+1995 Jan,Georgia,5567
+1995 Feb,Georgia,4724
+1995 Mar,Georgia,6721
+1995 Apr,Georgia,5976
+1995 May,Georgia,6587
+1995 Jun,Georgia,8097
+1995 Jul,Georgia,6937
+1995 Aug,Georgia,7984
+1995 Sep,Georgia,6791
+1995 Oct,Georgia,5946
+1995 Nov,Georgia,5429
+1995 Dec,Georgia,6324
+1996 Jan,Georgia,6047
+1996 Feb,Georgia,6550
+1996 Mar,Georgia,6536
+1996 Apr,Georgia,8327
+1996 May,Georgia,7949
+1996 Jun,Georgia,6273
+1996 Jul,Georgia,6512
+1996 Aug,Georgia,8135
+1996 Sep,Georgia,6784
+1996 Oct,Georgia,5605
+1996 Nov,Georgia,4736
+1996 Dec,Georgia,6011
+1997 Jan,Georgia,5517
+1997 Feb,Georgia,4792
+1997 Mar,Georgia,6919
+1997 Apr,Georgia,8008
+1997 May,Georgia,6961
+1997 Jun,Georgia,6641
+1997 Jul,Georgia,7446
+1997 Aug,Georgia,6919
+1997 Sep,Georgia,5830
+1997 Oct,Georgia,7141
+1997 Nov,Georgia,4883
+1997 Dec,Georgia,5387
+1998 Jan,Georgia,5602
+1998 Feb,Georgia,6706
+1998 Mar,Georgia,8308
+1998 Apr,Georgia,7752
+1998 May,Georgia,7790
+1998 Jun,Georgia,6944
+1998 Jul,Georgia,7429
+1998 Aug,Georgia,8440
+1998 Sep,Georgia,7412
+1998 Oct,Georgia,7603
+1998 Nov,Georgia,6678
+1998 Dec,Georgia,7448
+1999 Jan,Georgia,6147
+1999 Feb,Georgia,7244
+1999 Mar,Georgia,8203
+1999 Apr,Georgia,8684
+1999 May,Georgia,6466
+1999 Jun,Georgia,9154
+1999 Jul,Georgia,7124
+1999 Aug,Georgia,8053
+1999 Sep,Georgia,7156
+1999 Oct,Georgia,7030
+1999 Nov,Georgia,7857
+1999 Dec,Georgia,6951
+2000 Jan,Georgia,7163
+2000 Feb,Georgia,7818
+2000 Mar,Georgia,8784
+2000 Apr,Georgia,8672
+2000 May,Georgia,8608
+2000 Jun,Georgia,8032
+2000 Jul,Georgia,7929
+2000 Aug,Georgia,7708
+2000 Sep,Georgia,7261
+2000 Oct,Georgia,6897
+2000 Nov,Georgia,6578
+2000 Dec,Georgia,6685
+2001 Jan,Georgia,7672
+2001 Feb,Georgia,7741
+2001 Mar,Georgia,7748
+2001 Apr,Georgia,8510
+2001 May,Georgia,8860
+2001 Jun,Georgia,9345
+2001 Jul,Georgia,8711
+2001 Aug,Georgia,8033
+2001 Sep,Georgia,6632
+2001 Oct,Georgia,7141
+2001 Nov,Georgia,6242
+2001 Dec,Georgia,6393
+2002 Jan,Georgia,7001
+2002 Feb,Georgia,7550
+2002 Mar,Georgia,8764
+2002 Apr,Georgia,9170
+2002 May,Georgia,9906
+2002 Jun,Georgia,8668
+2002 Jul,Georgia,9776
+2002 Aug,Georgia,7021
+2002 Sep,Georgia,7189
+2002 Oct,Georgia,8174
+2002 Nov,Georgia,6276
+2002 Dec,Georgia,6785
+2003 Jan,Georgia,7426
+2003 Feb,Georgia,6481
+2003 Mar,Georgia,7996
+2003 Apr,Georgia,8306
+2003 May,Georgia,7061
+2003 Jun,Georgia,7509
+2003 Jul,Georgia,8689
+2003 Aug,Georgia,8643
+2003 Sep,Georgia,9200
+2003 Oct,Georgia,8582
+2003 Nov,Georgia,6203
+2003 Dec,Georgia,8065
+2004 Jan,Georgia,8424
+2004 Feb,Georgia,7029
+2004 Mar,Georgia,10084
+2004 Apr,Georgia,8763
+2004 May,Georgia,9824
+2004 Jun,Georgia,8110
+2004 Jul,Georgia,10003
+2004 Aug,Georgia,9198
+2004 Sep,Georgia,8515
+2004 Oct,Georgia,8367
+2004 Nov,Georgia,9324
+2004 Dec,Georgia,8259
+2005 Jan,Georgia,7434
+2005 Feb,Georgia,7654
+2005 Mar,Georgia,9066
+2005 Apr,Georgia,8507
+2005 May,Georgia,10537
+2005 Jun,Georgia,8777
+2005 Jul,Georgia,7878
+2005 Aug,Georgia,10724
+2005 Sep,Georgia,9355
+2005 Oct,Georgia,8636
+2005 Nov,Georgia,7341
+2005 Dec,Georgia,7344
+2006 Jan,Georgia,8603
+2006 Feb,Georgia,7888
+2006 Mar,Georgia,10245
+2006 Apr,Georgia,8598
+2006 May,Georgia,11002
+2006 Jun,Georgia,8963
+2006 Jul,Georgia,7485
+2006 Aug,Georgia,9681
+2006 Sep,Georgia,6217
+2006 Oct,Georgia,7878
+2006 Nov,Georgia,6457
+2006 Dec,Georgia,5838
+2007 Jan,Georgia,6997
+2007 Feb,Georgia,6468
+2007 Mar,Georgia,7370
+2007 Apr,Georgia,8121
+2007 May,Georgia,7932
+2007 Jun,Georgia,6005
+2007 Jul,Georgia,5090
+2007 Aug,Georgia,5747
+2007 Sep,Georgia,4646
+2007 Oct,Georgia,4006
+2007 Nov,Georgia,3479
+2007 Dec,Georgia,2815
+2008 Jan,Georgia,3465
+2008 Feb,Georgia,3245
+2008 Mar,Georgia,3018
+2008 Apr,Georgia,3197
+2008 May,Georgia,3647
+2008 Jun,Georgia,3369
+2008 Jul,Georgia,2676
+2008 Aug,Georgia,2654
+2008 Sep,Georgia,2749
+2008 Oct,Georgia,2158
+2008 Nov,Georgia,864
+2008 Dec,Georgia,1048
+2009 Jan,Georgia,1107
+2009 Feb,Georgia,1179
+2009 Mar,Georgia,1320
+2009 Apr,Georgia,1370
+2009 May,Georgia,1562
+2009 Jun,Georgia,1824
+2009 Jul,Georgia,1414
+2009 Aug,Georgia,1809
+2009 Sep,Georgia,1607
+2009 Oct,Georgia,1328
+2009 Nov,Georgia,1095
+2009 Dec,Georgia,1744
+2010 Jan,Georgia,1207
+2010 Feb,Georgia,1338
+2010 Mar,Georgia,1790
+2010 Apr,Georgia,1778
+2010 May,Georgia,1202
+2010 Jun,Georgia,1554
+2010 Jul,Georgia,1690
+2010 Aug,Georgia,1382
+2010 Sep,Georgia,1156
+2010 Oct,Georgia,928
+2010 Nov,Georgia,1029
+2010 Dec,Georgia,1240
+2011 Jan,Georgia,1161
+2011 Feb,Georgia,1367
+2011 Mar,Georgia,1654
+2011 Apr,Georgia,1361
+2011 May,Georgia,1791
+2011 Jun,Georgia,1866
+2011 Jul,Georgia,1228
+2011 Aug,Georgia,2153
+2011 Sep,Georgia,1471
+2011 Oct,Georgia,1660
+2011 Nov,Georgia,1499
+2011 Dec,Georgia,1142
+2012 Jan,Georgia,1676
+2012 Feb,Georgia,2349
+2012 Mar,Georgia,1788
+2012 Apr,Georgia,2218
+2012 May,Georgia,1720
+2012 Jun,Georgia,2287
+2012 Jul,Georgia,2006
+2012 Aug,Georgia,1946
+2012 Sep,Georgia,2089
+2012 Oct,Georgia,2419
+2012 Nov,Georgia,1400
+2012 Dec,Georgia,2143
+2013 Jan,Georgia,1780
+2013 Feb,Georgia,3456
+2013 Mar,Georgia,2949
+2013 Apr,Georgia,2881
+2013 May,Georgia,3739
+2013 Jun,Georgia,3588
+2013 Jul,Georgia,2808
+2013 Aug,Georgia,2563
+2013 Sep,Georgia,2909
+2013 Oct,Georgia,3193
+2013 Nov,Georgia,2667
+2013 Dec,Georgia,2208
+2014 Jan,Georgia,1723
+2014 Feb,Georgia,2910
+2014 Mar,Georgia,3885
+2014 Apr,Georgia,2751
+2014 May,Georgia,3600
+2014 Jun,Georgia,3145
+2014 Jul,Georgia,3472
+2014 Aug,Georgia,3392
+2014 Sep,Georgia,2455
+2014 Oct,Georgia,3468
+2014 Nov,Georgia,2267
+2014 Dec,Georgia,3391
+2015 Jan,Georgia,2445
+2015 Feb,Georgia,3132
+2015 Mar,Georgia,3677
+2015 Apr,Georgia,3738
+2015 May,Georgia,4094
+2015 Jun,Georgia,4868
+2015 Jul,Georgia,4295
+2015 Aug,Georgia,3201
+2015 Sep,Georgia,2830
+2015 Oct,Georgia,4118
+2015 Nov,Georgia,3499
+2015 Dec,Georgia,3247
+2016 Jan,Georgia,3509
+2016 Feb,Georgia,4828
+2016 Mar,Georgia,4439
+2016 Apr,Georgia,4382
+2016 May,Georgia,4081
+2016 Jun,Georgia,5473
+2016 Jul,Georgia,3690
+2016 Aug,Georgia,3846
+2016 Sep,Georgia,3699
+2016 Oct,Georgia,4730
+2016 Nov,Georgia,3540
+2016 Dec,Georgia,4269
+2017 Jan,Georgia,4423
+2017 Feb,Georgia,3968
+2017 Mar,Georgia,5152
+2017 Apr,Georgia,3524
+2017 May,Georgia,4158
+2017 Jun,Georgia,4704
+2017 Jul,Georgia,4311
+2017 Aug,Georgia,4901
+2017 Sep,Georgia,3826
+2017 Oct,Georgia,4285
+2017 Nov,Georgia,3130
+2017 Dec,Georgia,2895
+2018 Jan,Georgia,5010
+2018 Feb,Georgia,3956
+2018 Mar,Georgia,5989
+2018 Apr,Georgia,4471
+2018 May,Georgia,5600
+2018 Jun,Georgia,4016
+2018 Jul,Georgia,4666
+2018 Aug,Georgia,4476
+2018 Sep,Georgia,4264
+2018 Oct,Georgia,5778
+2018 Nov,Georgia,4924
+2018 Dec,Georgia,3316
+2019 Jan,Georgia,4045
+2019 Feb,Georgia,4422
+2019 Mar,Georgia,4690
+2019 Apr,Georgia,4440
+2019 May,Georgia,4346
+2019 Jun,Georgia,4056
+2019 Jul,Georgia,4151
+2019 Aug,Georgia,4342
+2019 Sep,Georgia,4420
+2019 Oct,Georgia,5876
+2019 Nov,Georgia,3409
+2019 Dec,Georgia,3727
+2020 Jan,Georgia,4431
+2020 Feb,Georgia,4183
+2020 Mar,Georgia,3814
+2020 Apr,Georgia,3117
+2020 May,Georgia,3898
+2020 Jun,Georgia,4278
+2020 Jul,Georgia,4552
+2020 Aug,Georgia,4962
+2020 Sep,Georgia,5459
+2020 Oct,Georgia,5132
+2020 Nov,Georgia,4499
+2020 Dec,Georgia,4564
+2021 Jan,Georgia,5331
+2021 Feb,Georgia,4683
+2021 Mar,Georgia,6099
+2021 Apr,Georgia,5912
+2021 May,Georgia,5334
+2021 Jun,Georgia,5956
+2021 Jul,Georgia,4709
+2021 Aug,Georgia,5569
+2021 Sep,Georgia,5813
+2021 Oct,Georgia,4865
+2021 Nov,Georgia,5164
+2021 Dec,Georgia,5456
+2022 Jan,Georgia,5267
+2022 Feb,Georgia,6377
+2022 Mar,Georgia,7692
+2022 Apr,Georgia,6745
+2022 May,Georgia,5973
+2022 Jun,Georgia,5645
+2022 Jul,Georgia,6229
+2022 Aug,Georgia,7694
+2022 Sep,Georgia,5908
+2022 Oct,Georgia,6111
+2022 Nov,Georgia,5516
+2022 Dec,Georgia,4592
+2023 Jan,Georgia,5940
+2023 Feb,Georgia,5136
+2023 Mar,Georgia,5357
+2023 Apr,Georgia,5256
+2023 May,Georgia,7066
+2023 Jun,Georgia,5758
+2023 Jul,Georgia,5423
+2023 Aug,Georgia,5917
+2023 Sep,Georgia,4651
+2023 Oct,Georgia,5487
+2023 Nov,Georgia,4470
+2023 Dec,Georgia,4159
+2024 Jan,Georgia,5116
+2024 Feb,Georgia,5397
+2024 Mar,Georgia,6443
+2024 Apr,Georgia,6935
+2024 May,Georgia,5976
+2024 Jun,Georgia,5755
+2024 Jul,Georgia,5054
+2024 Aug,Georgia,5750
+2024 Sep,Georgia,5099
+2024 Oct,Georgia,4601
+2024 Nov,Georgia,4161
+2024 Dec,Georgia,5657
+2025 Jan,Georgia,5142
+2025 Feb,Georgia,5192
+2025 Mar,Georgia,5482
+2025 Apr,Georgia,6081
+2025 May,Georgia,4969
+2025 Jun,Georgia,4194
+2025 Jul,Georgia,5548
+2025 Aug,Georgia,4180
+2025 Sep,Georgia,5134
+2025 Oct,Georgia,6163
+2025 Nov,Georgia,3357
+2025 Dec,Georgia,4133
+2026 Jan,Georgia,4264
+2026 Feb,Georgia,4807
+2026 Mar,Georgia,5261
+2026 Apr,Georgia,6458
+2026 May,Georgia,5130
+2026 Jun,Georgia,5786
+2026 Jul,Georgia,5473
+2026 Aug,Georgia,5028
+1988 Jan,North Carolina,1767
+1988 Feb,North Carolina,4146
+1988 Mar,North Carolina,5415
+1988 Apr,North Carolina,4283
+1988 May,North Carolina,5066
+1988 Jun,North Carolina,5073
+1988 Jul,North Carolina,3837
+1988 Aug,North Carolina,4730
+1988 Sep,North Carolina,4222
+1988 Oct,North Carolina,4065
+1988 Nov,North Carolina,3840
+1988 Dec,North Carolina,3062
+1989 Jan,North Carolina,3814
+1989 Feb,North Carolina,3101
+1989 Mar,North Carolina,3480
+1989 Apr,North Carolina,4490
+1989 May,North Carolina,4698
+1989 Jun,North Carolina,4784
+1989 Jul,North Carolina,4089
+1989 Aug,North Carolina,4441
+1989 Sep,North Carolina,3462
+1989 Oct,North Carolina,3876
+1989 Nov,North Carolina,3352
+1989 Dec,North Carolina,3318
+1990 Jan,North Carolina,4360
+1990 Feb,North Carolina,3214
+1990 Mar,North Carolina,4219
+1990 Apr,North Carolina,3568
+1990 May,North Carolina,3647
+1990 Jun,North Carolina,3925
+1990 Jul,North Carolina,3168
+1990 Aug,North Carolina,3466
+1990 Sep,North Carolina,3245
+1990 Oct,North Carolina,2607
+1990 Nov,North Carolina,2826
+1990 Dec,North Carolina,2112
+1991 Jan,North Carolina,2549
+1991 Feb,North Carolina,2368
+1991 Mar,North Carolina,3532
+1991 Apr,North Carolina,3871
+1991 May,North Carolina,3756
+1991 Jun,North Carolina,3433
+1991 Jul,North Carolina,3307
+1991 Aug,North Carolina,3657
+1991 Sep,North Carolina,3723
+1991 Oct,North Carolina,3622
+1991 Nov,North Carolina,3163
+1991 Dec,North Carolina,3190
+1992 Jan,North Carolina,4290
+1992 Feb,North Carolina,3959
+1992 Mar,North Carolina,4713
+1992 Apr,North Carolina,4688
+1992 May,North Carolina,4272
+1992 Jun,North Carolina,3725
+1992 Jul,North Carolina,4343
+1992 Aug,North Carolina,3605
+1992 Sep,North Carolina,4616
+1992 Oct,North Carolina,3908
+1992 Nov,North Carolina,3189
+1992 Dec,North Carolina,3955
+1993 Jan,North Carolina,3466
+1993 Feb,North Carolina,4217
+1993 Mar,North Carolina,4793
+1993 Apr,North Carolina,6160
+1993 May,North Carolina,3424
+1993 Jun,North Carolina,4663
+1993 Jul,North Carolina,4378
+1993 Aug,North Carolina,4834
+1993 Sep,North Carolina,4516
+1993 Oct,North Carolina,4587
+1993 Nov,North Carolina,5086
+1993 Dec,North Carolina,4839
+1994 Jan,North Carolina,3624
+1994 Feb,North Carolina,4170
+1994 Mar,North Carolina,5975
+1994 Apr,North Carolina,5710
+1994 May,North Carolina,5985
+1994 Jun,North Carolina,6205
+1994 Jul,North Carolina,4489
+1994 Aug,North Carolina,5556
+1994 Sep,North Carolina,6028
+1994 Oct,North Carolina,5795
+1994 Nov,North Carolina,5336
+1994 Dec,North Carolina,4276
+1995 Jan,North Carolina,3954
+1995 Feb,North Carolina,3814
+1995 Mar,North Carolina,5609
+1995 Apr,North Carolina,4897
+1995 May,North Carolina,5701
+1995 Jun,North Carolina,5657
+1995 Jul,North Carolina,4760
+1995 Aug,North Carolina,6513
+1995 Sep,North Carolina,4745
+1995 Oct,North Carolina,5185
+1995 Nov,North Carolina,5935
+1995 Dec,North Carolina,4622
+1996 Jan,North Carolina,4082
+1996 Feb,North Carolina,4662
+1996 Mar,North Carolina,5480
+1996 Apr,North Carolina,6454
+1996 May,North Carolina,7830
+1996 Jun,North Carolina,6007
+1996 Jul,North Carolina,5715
+1996 Aug,North Carolina,5145
+1996 Sep,North Carolina,5106
+1996 Oct,North Carolina,5669
+1996 Nov,North Carolina,5427
+1996 Dec,North Carolina,4801
+1997 Jan,North Carolina,4506
+1997 Feb,North Carolina,4903
+1997 Mar,North Carolina,5969
+1997 Apr,North Carolina,7152
+1997 May,North Carolina,6737
+1997 Jun,North Carolina,6676
+1997 Jul,North Carolina,6226
+1997 Aug,North Carolina,5795
+1997 Sep,North Carolina,6172
+1997 Oct,North Carolina,7197
+1997 Nov,North Carolina,5851
+1997 Dec,North Carolina,5698
+1998 Jan,North Carolina,4814
+1998 Feb,North Carolina,6099
+1998 Mar,North Carolina,7952
+1998 Apr,North Carolina,7161
+1998 May,North Carolina,6371
+1998 Jun,North Carolina,7016
+1998 Jul,North Carolina,6887
+1998 Aug,North Carolina,6912
+1998 Sep,North Carolina,7185
+1998 Oct,North Carolina,6845
+1998 Nov,North Carolina,5792
+1998 Dec,North Carolina,6811
+1999 Jan,North Carolina,6261
+1999 Feb,North Carolina,6611
+1999 Mar,North Carolina,7885
+1999 Apr,North Carolina,6859
+1999 May,North Carolina,7322
+1999 Jun,North Carolina,10046
+1999 Jul,North Carolina,7428
+1999 Aug,North Carolina,7340
+1999 Sep,North Carolina,5566
+1999 Oct,North Carolina,5884
+1999 Nov,North Carolina,5928
+1999 Dec,North Carolina,6138
+2000 Jan,North Carolina,4599
+2000 Feb,North Carolina,6852
+2000 Mar,North Carolina,7762
+2000 Apr,North Carolina,6199
+2000 May,North Carolina,6877
+2000 Jun,North Carolina,7906
+2000 Jul,North Carolina,5359
+2000 Aug,North Carolina,6741
+2000 Sep,North Carolina,5561
+2000 Oct,North Carolina,6271
+2000 Nov,North Carolina,5273
+2000 Dec,North Carolina,4635
+2001 Jan,North Carolina,7136
+2001 Feb,North Carolina,5914
+2001 Mar,North Carolina,6676
+2001 Apr,North Carolina,7612
+2001 May,North Carolina,7893
+2001 Jun,North Carolina,6951
+2001 Jul,North Carolina,6085
+2001 Aug,North Carolina,6761
+2001 Sep,North Carolina,6392
+2001 Oct,North Carolina,6194
+2001 Nov,North Carolina,6640
+2001 Dec,North Carolina,5372
+2002 Jan,North Carolina,5417
+2002 Feb,North Carolina,6954
+2002 Mar,North Carolina,6487
+2002 Apr,North Carolina,7636
+2002 May,North Carolina,7220
+2002 Jun,North Carolina,7167
+2002 Jul,North Carolina,6922
+2002 Aug,North Carolina,6997
+2002 Sep,North Carolina,6173
+2002 Oct,North Carolina,6970
+2002 Nov,North Carolina,5759
+2002 Dec,North Carolina,8234
+2003 Jan,North Carolina,6068
+2003 Feb,North Carolina,4732
+2003 Mar,North Carolina,6322
+2003 Apr,North Carolina,6495
+2003 May,North Carolina,6939
+2003 Jun,North Carolina,7342
+2003 Jul,North Carolina,6766
+2003 Aug,North Carolina,7357
+2003 Sep,North Carolina,6638
+2003 Oct,North Carolina,7522
+2003 Nov,North Carolina,5623
+2003 Dec,North Carolina,6303
+2004 Jan,North Carolina,6131
+2004 Feb,North Carolina,6539
+2004 Mar,North Carolina,9659
+2004 Apr,North Carolina,8333
+2004 May,North Carolina,8281
+2004 Jun,North Carolina,8050
+2004 Jul,North Carolina,8985
+2004 Aug,North Carolina,8130
+2004 Sep,North Carolina,7022
+2004 Oct,North Carolina,6600
+2004 Nov,North Carolina,6895
+2004 Dec,North Carolina,6887
+2005 Jan,North Carolina,6592
+2005 Feb,North Carolina,7315
+2005 Mar,North Carolina,8254
+2005 Apr,North Carolina,9125
+2005 May,North Carolina,8469
+2005 Jun,North Carolina,9163
+2005 Jul,North Carolina,8136
+2005 Aug,North Carolina,9413
+2005 Sep,North Carolina,8245
+2005 Oct,North Carolina,7856
+2005 Nov,North Carolina,7394
+2005 Dec,North Carolina,7191
+2006 Jan,North Carolina,8233
+2006 Feb,North Carolina,8144
+2006 Mar,North Carolina,10140
+2006 Apr,North Carolina,9240
+2006 May,North Carolina,9522
+2006 Jun,North Carolina,8974
+2006 Jul,North Carolina,7312
+2006 Aug,North Carolina,8767
+2006 Sep,North Carolina,7789
+2006 Oct,North Carolina,7794
+2006 Nov,North Carolina,6145
+2006 Dec,North Carolina,7608
+2007 Jan,North Carolina,7731
+2007 Feb,North Carolina,6864
+2007 Mar,North Carolina,8554
+2007 Apr,North Carolina,7148
+2007 May,North Carolina,8111
+2007 Jun,North Carolina,7844
+2007 Jul,North Carolina,6921
+2007 Aug,North Carolina,6766
+2007 Sep,North Carolina,6185
+2007 Oct,North Carolina,5588
+2007 Nov,North Carolina,5920
+2007 Dec,North Carolina,4419
+2008 Jan,North Carolina,5375
+2008 Feb,North Carolina,5396
+2008 Mar,North Carolina,5348
+2008 Apr,North Carolina,5067
+2008 May,North Carolina,4962
+2008 Jun,North Carolina,5530
+2008 Jul,North Carolina,6701
+2008 Aug,North Carolina,4179
+2008 Sep,North Carolina,3692
+2008 Oct,North Carolina,3551
+2008 Nov,North Carolina,2247
+2008 Dec,North Carolina,2260
+2009 Jan,North Carolina,2522
+2009 Feb,North Carolina,2119
+2009 Mar,North Carolina,2640
+2009 Apr,North Carolina,3096
+2009 May,North Carolina,3331
+2009 Jun,North Carolina,3502
+2009 Jul,North Carolina,2660
+2009 Aug,North Carolina,3325
+2009 Sep,North Carolina,3375
+2009 Oct,North Carolina,2757
+2009 Nov,North Carolina,2398
+2009 Dec,North Carolina,2364
+2010 Jan,North Carolina,2513
+2010 Feb,North Carolina,2943
+2010 Mar,North Carolina,3680
+2010 Apr,North Carolina,3284
+2010 May,North Carolina,3028
+2010 Jun,North Carolina,3323
+2010 Jul,North Carolina,3191
+2010 Aug,North Carolina,3046
+2010 Sep,North Carolina,2248
+2010 Oct,North Carolina,2365
+2010 Nov,North Carolina,2262
+2010 Dec,North Carolina,1994
+2011 Jan,North Carolina,2034
+2011 Feb,North Carolina,3031
+2011 Mar,North Carolina,3406
+2011 Apr,North Carolina,2681
+2011 May,North Carolina,2955
+2011 Jun,North Carolina,3037
+2011 Jul,North Carolina,2583
+2011 Aug,North Carolina,3040
+2011 Sep,North Carolina,2221
+2011 Oct,North Carolina,2469
+2011 Nov,North Carolina,3089
+2011 Dec,North Carolina,2417
+2012 Jan,North Carolina,3978
+2012 Feb,North Carolina,3398
+2012 Mar,North Carolina,3750
+2012 Apr,North Carolina,3085
+2012 May,North Carolina,5141
+2012 Jun,North Carolina,3883
+2012 Jul,North Carolina,4578
+2012 Aug,North Carolina,3874
+2012 Sep,North Carolina,2990
+2012 Oct,North Carolina,4930
+2012 Nov,North Carolina,4415
+2012 Dec,North Carolina,3522
+2013 Jan,North Carolina,3832
+2013 Feb,North Carolina,3581
+2013 Mar,North Carolina,3861
+2013 Apr,North Carolina,4668
+2013 May,North Carolina,4726
+2013 Jun,North Carolina,4311
+2013 Jul,North Carolina,3828
+2013 Aug,North Carolina,4298
+2013 Sep,North Carolina,3896
+2013 Oct,North Carolina,4599
+2013 Nov,North Carolina,3645
+2013 Dec,North Carolina,4086
+2014 Jan,North Carolina,3389
+2014 Feb,North Carolina,3469
+2014 Mar,North Carolina,4164
+2014 Apr,North Carolina,4433
+2014 May,North Carolina,4196
+2014 Jun,North Carolina,3763
+2014 Jul,North Carolina,4684
+2014 Aug,North Carolina,4925
+2014 Sep,North Carolina,4669
+2014 Oct,North Carolina,4538
+2014 Nov,North Carolina,3807
+2014 Dec,North Carolina,4277
+2015 Jan,North Carolina,3544
+2015 Feb,North Carolina,4164
+2015 Mar,North Carolina,4010
+2015 Apr,North Carolina,4610
+2015 May,North Carolina,4937
+2015 Jun,North Carolina,4658
+2015 Jul,North Carolina,4940
+2015 Aug,North Carolina,4301
+2015 Sep,North Carolina,3905
+2015 Oct,North Carolina,4667
+2015 Nov,North Carolina,3518
+2015 Dec,North Carolina,4364
+2016 Jan,North Carolina,2979
+2016 Feb,North Carolina,3847
+2016 Mar,North Carolina,4663
+2016 Apr,North Carolina,5037
+2016 May,North Carolina,4867
+2016 Jun,North Carolina,5210
+2016 Jul,North Carolina,5922
+2016 Aug,North Carolina,5362
+2016 Sep,North Carolina,5124
+2016 Oct,North Carolina,4786
+2016 Nov,North Carolina,4441
+2016 Dec,North Carolina,3792
+2017 Jan,North Carolina,4304
+2017 Feb,North Carolina,4898
+2017 Mar,North Carolina,6641
+2017 Apr,North Carolina,3877
+2017 May,North Carolina,5315
+2017 Jun,North Carolina,5410
+2017 Jul,North Carolina,6242
+2017 Aug,North Carolina,6730
+2017 Sep,North Carolina,5068
+2017 Oct,North Carolina,5899
+2017 Nov,North Carolina,5774
+2017 Dec,North Carolina,4694
+2018 Jan,North Carolina,6168
+2018 Feb,North Carolina,6325
+2018 Mar,North Carolina,5582
+2018 Apr,North Carolina,6368
+2018 May,North Carolina,6649
+2018 Jun,North Carolina,5519
+2018 Jul,North Carolina,6055
+2018 Aug,North Carolina,7348
+2018 Sep,North Carolina,4247
+2018 Oct,North Carolina,5022
+2018 Nov,North Carolina,4571
+2018 Dec,North Carolina,5512
+2019 Jan,North Carolina,4219
+2019 Feb,North Carolina,5092
+2019 Mar,North Carolina,5174
+2019 Apr,North Carolina,5588
+2019 May,North Carolina,7763
+2019 Jun,North Carolina,6114
+2019 Jul,North Carolina,5746
+2019 Aug,North Carolina,6209
+2019 Sep,North Carolina,5589
+2019 Oct,North Carolina,6325
+2019 Nov,North Carolina,5290
+2019 Dec,North Carolina,5044
+2020 Jan,North Carolina,5553
+2020 Feb,North Carolina,5691
+2020 Mar,North Carolina,6699
+2020 Apr,North Carolina,4886
+2020 May,North Carolina,5341
+2020 Jun,North Carolina,7052
+2020 Jul,North Carolina,6122
+2020 Aug,North Carolina,6826
+2020 Sep,North Carolina,5905
+2020 Oct,North Carolina,6359
+2020 Nov,North Carolina,7200
+2020 Dec,North Carolina,6018
+2021 Jan,North Carolina,6069
+2021 Feb,North Carolina,7814
+2021 Mar,North Carolina,8638
+2021 Apr,North Carolina,8029
+2021 May,North Carolina,6860
+2021 Jun,North Carolina,8339
+2021 Jul,North Carolina,7676
+2021 Aug,North Carolina,8399
+2021 Sep,North Carolina,7802
+2021 Oct,North Carolina,8006
+2021 Nov,North Carolina,7709
+2021 Dec,North Carolina,6479
+2022 Jan,North Carolina,8061
+2022 Feb,North Carolina,8329
+2022 Mar,North Carolina,8109
+2022 Apr,North Carolina,9028
+2022 May,North Carolina,8648
+2022 Jun,North Carolina,7106
+2022 Jul,North Carolina,6605
+2022 Aug,North Carolina,8119
+2022 Sep,North Carolina,6943
+2022 Oct,North Carolina,6781
+2022 Nov,North Carolina,7276
+2022 Dec,North Carolina,5062
+2023 Jan,North Carolina,7066
+2023 Feb,North Carolina,8095
+2023 Mar,North Carolina,8515
+2023 Apr,North Carolina,7997
+2023 May,North Carolina,9184
+2023 Jun,North Carolina,7820
+2023 Jul,North Carolina,7218
+2023 Aug,North Carolina,7365
+2023 Sep,North Carolina,8318
+2023 Oct,North Carolina,9180
+2023 Nov,North Carolina,6761
+2023 Dec,North Carolina,8080
+2024 Jan,North Carolina,7594
+2024 Feb,North Carolina,8004
+2024 Mar,North Carolina,7680
+2024 Apr,North Carolina,8771
+2024 May,North Carolina,8525
+2024 Jun,North Carolina,8368
+2024 Jul,North Carolina,8956
+2024 Aug,North Carolina,9465
+2024 Sep,North Carolina,6885
+2024 Oct,North Carolina,7146
+2024 Nov,North Carolina,6149
+2024 Dec,North Carolina,6215
+2025 Jan,North Carolina,6868
+2025 Feb,North Carolina,7678
+2025 Mar,North Carolina,8873
+2025 Apr,North Carolina,7279
+2025 May,North Carolina,7349
+2025 Jun,North Carolina,7421
+2025 Jul,North Carolina,7156
+2025 Aug,North Carolina,7124
+2025 Sep,North Carolina,6827
+2025 Oct,North Carolina,6129
+2025 Nov,North Carolina,5445
+2025 Dec,North Carolina,5269
+2026 Jan,North Carolina,6038
+2026 Feb,North Carolina,7004
+2026 Mar,North Carolina,8952
+2026 Apr,North Carolina,9889
+2026 May,North Carolina,7781
+2026 Jun,North Carolina,8393
+2026 Jul,North Carolina,7727
+2026 Aug,North Carolina,8399
+1988 Jan,Texas,2470
+1988 Feb,Texas,3016
+1988 Mar,Texas,3899
+1988 Apr,Texas,3800
+1988 May,Texas,3698
+1988 Jun,Texas,4052
+1988 Jul,Texas,3253
+1988 Aug,Texas,3683
+1988 Sep,Texas,3354
+1988 Oct,Texas,3134
+1988 Nov,Texas,2927
+1988 Dec,Texas,2719
+1989 Jan,Texas,2725
+1989 Feb,Texas,2734
+1989 Mar,Texas,4948
+1989 Apr,Texas,3539
+1989 May,Texas,3771
+1989 Jun,Texas,3482
+1989 Jul,Texas,3040
+1989 Aug,Texas,4269
+1989 Sep,Texas,2917
+1989 Oct,Texas,3340
+1989 Nov,Texas,2974
+1989 Dec,Texas,3177
+1990 Jan,Texas,6203
+1990 Feb,Texas,3241
+1990 Mar,Texas,3564
+1990 Apr,Texas,4233
+1990 May,Texas,4308
+1990 Jun,Texas,4636
+1990 Jul,Texas,3860
+1990 Aug,Texas,4231
+1990 Sep,Texas,3219
+1990 Oct,Texas,3388
+1990 Nov,Texas,2914
+1990 Dec,Texas,2319
+1991 Jan,Texas,3139
+1991 Feb,Texas,3333
+1991 Mar,Texas,3809
+1991 Apr,Texas,4362
+1991 May,Texas,5027
+1991 Jun,Texas,4792
+1991 Jul,Texas,4535
+1991 Aug,Texas,4453
+1991 Sep,Texas,4888
+1991 Oct,Texas,5644
+1991 Nov,Texas,3959
+1991 Dec,Texas,3333
+1992 Jan,Texas,3716
+1992 Feb,Texas,4854
+1992 Mar,Texas,5431
+1992 Apr,Texas,6762
+1992 May,Texas,4851
+1992 Jun,Texas,6239
+1992 Jul,Texas,5418
+1992 Aug,Texas,5231
+1992 Sep,Texas,5174
+1992 Oct,Texas,5780
+1992 Nov,Texas,3958
+1992 Dec,Texas,4605
+1993 Jan,Texas,5338
+1993 Feb,Texas,4759
+1993 Mar,Texas,6673
+1993 Apr,Texas,6987
+1993 May,Texas,6512
+1993 Jun,Texas,6283
+1993 Jul,Texas,6146
+1993 Aug,Texas,6826
+1993 Sep,Texas,7052
+1993 Oct,Texas,6072
+1993 Nov,Texas,5193
+1993 Dec,Texas,8303
+1994 Jan,Texas,7636
+1994 Feb,Texas,6522
+1994 Mar,Texas,11256
+1994 Apr,Texas,11559
+1994 May,Texas,8264
+1994 Jun,Texas,8528
+1994 Jul,Texas,7137
+1994 Aug,Texas,8790
+1994 Sep,Texas,11483
+1994 Oct,Texas,7164
+1994 Nov,Texas,7427
+1994 Dec,Texas,7517
+1995 Jan,Texas,7381
+1995 Feb,Texas,8497
+1995 Mar,Texas,7869
+1995 Apr,Texas,7932
+1995 May,Texas,9508
+1995 Jun,Texas,8896
+1995 Jul,Texas,8752
+1995 Aug,Texas,8612
+1995 Sep,Texas,10631
+1995 Oct,Texas,9218
+1995 Nov,Texas,7699
+1995 Dec,Texas,6971
+1996 Jan,Texas,9023
+1996 Feb,Texas,8416
+1996 Mar,Texas,9095
+1996 Apr,Texas,10636
+1996 May,Texas,11265
+1996 Jun,Texas,9867
+1996 Jul,Texas,10710
+1996 Aug,Texas,9586
+1996 Sep,Texas,9351
+1996 Oct,Texas,9032
+1996 Nov,Texas,8844
+1996 Dec,Texas,10940
+1997 Jan,Texas,8240
+1997 Feb,Texas,8708
+1997 Mar,Texas,10056
+1997 Apr,Texas,11862
+1997 May,Texas,10027
+1997 Jun,Texas,10862
+1997 Jul,Texas,10716
+1997 Aug,Texas,10069
+1997 Sep,Texas,13961
+1997 Oct,Texas,10956
+1997 Nov,Texas,8382
+1997 Dec,Texas,9808
+1998 Jan,Texas,8549
+1998 Feb,Texas,10869
+1998 Mar,Texas,15840
+1998 Apr,Texas,13242
+1998 May,Texas,14228
+1998 Jun,Texas,14299
+1998 Jul,Texas,14029
+1998 Aug,Texas,13197
+1998 Sep,Texas,14141
+1998 Oct,Texas,14026
+1998 Nov,Texas,9300
+1998 Dec,Texas,11007
+1999 Jan,Texas,12287
+1999 Feb,Texas,12455
+1999 Mar,Texas,13218
+1999 Apr,Texas,12379
+1999 May,Texas,12064
+1999 Jun,Texas,12171
+1999 Jul,Texas,13726
+1999 Aug,Texas,12372
+1999 Sep,Texas,11432
+1999 Oct,Texas,11960
+1999 Nov,Texas,10091
+1999 Dec,Texas,10193
+2000 Jan,Texas,9506
+2000 Feb,Texas,10913
+2000 Mar,Texas,12139
+2000 Apr,Texas,10654
+2000 May,Texas,12642
+2000 Jun,Texas,12899
+2000 Jul,Texas,10662
+2000 Aug,Texas,11037
+2000 Sep,Texas,11891
+2000 Oct,Texas,12030
+2000 Nov,Texas,10123
+2000 Dec,Texas,8447
+2001 Jan,Texas,11804
+2001 Feb,Texas,10858
+2001 Mar,Texas,12754
+2001 Apr,Texas,12875
+2001 May,Texas,14203
+2001 Jun,Texas,12240
+2001 Jul,Texas,11912
+2001 Aug,Texas,11218
+2001 Sep,Texas,10821
+2001 Oct,Texas,12153
+2001 Nov,Texas,11401
+2001 Dec,Texas,12045
+2002 Jan,Texas,11570
+2002 Feb,Texas,11437
+2002 Mar,Texas,14160
+2002 Apr,Texas,14053
+2002 May,Texas,15450
+2002 Jun,Texas,14403
+2002 Jul,Texas,13319
+2002 Aug,Texas,14286
+2002 Sep,Texas,11785
+2002 Oct,Texas,13400
+2002 Nov,Texas,11490
+2002 Dec,Texas,13690
+2003 Jan,Texas,12044
+2003 Feb,Texas,14534
+2003 Mar,Texas,14146
+2003 Apr,Texas,15085
+2003 May,Texas,16036
+2003 Jun,Texas,16787
+2003 Jul,Texas,14504
+2003 Aug,Texas,14877
+2003 Sep,Texas,15115
+2003 Oct,Texas,15084
+2003 Nov,Texas,11155
+2003 Dec,Texas,12988
+2004 Jan,Texas,12889
+2004 Feb,Texas,12788
+2004 Mar,Texas,16644
+2004 Apr,Texas,16483
+2004 May,Texas,17849
+2004 Jun,Texas,16719
+2004 Jul,Texas,15238
+2004 Aug,Texas,15836
+2004 Sep,Texas,14814
+2004 Oct,Texas,14552
+2004 Nov,Texas,12049
+2004 Dec,Texas,12148
+2005 Jan,Texas,15847
+2005 Feb,Texas,15303
+2005 Mar,Texas,18053
+2005 Apr,Texas,18168
+2005 May,Texas,17325
+2005 Jun,Texas,18544
+2005 Jul,Texas,18154
+2005 Aug,Texas,20567
+2005 Sep,Texas,16718
+2005 Oct,Texas,17033
+2005 Nov,Texas,14295
+2005 Dec,Texas,15743
+2006 Jan,Texas,18734
+2006 Feb,Texas,16159
+2006 Mar,Texas,21795
+2006 Apr,Texas,19299
+2006 May,Texas,19679
+2006 Jun,Texas,21784
+2006 Jul,Texas,17279
+2006 Aug,Texas,17962
+2006 Sep,Texas,14992
+2006 Oct,Texas,15544
+2006 Nov,Texas,14479
+2006 Dec,Texas,14157
+2007 Jan,Texas,13270
+2007 Feb,Texas,15111
+2007 Mar,Texas,16433
+2007 Apr,Texas,14143
+2007 May,Texas,18291
+2007 Jun,Texas,16656
+2007 Jul,Texas,16459
+2007 Aug,Texas,15249
+2007 Sep,Texas,11531
+2007 Oct,Texas,12599
+2007 Nov,Texas,12006
+2007 Dec,Texas,10707
+2008 Jan,Texas,11666
+2008 Feb,Texas,11216
+2008 Mar,Texas,13041
+2008 Apr,Texas,12875
+2008 May,Texas,12707
+2008 Jun,Texas,10680
+2008 Jul,Texas,11695
+2008 Aug,Texas,12221
+2008 Sep,Texas,9198
+2008 Oct,Texas,8552
+2008 Nov,Texas,5402
+2008 Dec,Texas,6663
+2009 Jan,Texas,6121
+2009 Feb,Texas,6587
+2009 Mar,Texas,7422
+2009 Apr,Texas,7239
+2009 May,Texas,6564
+2009 Jun,Texas,8318
+2009 Jul,Texas,7721
+2009 Aug,Texas,7702
+2009 Sep,Texas,7307
+2009 Oct,Texas,5307
+2009 Nov,Texas,5622
+2009 Dec,Texas,6194
+2010 Jan,Texas,6137
+2010 Feb,Texas,6265
+2010 Mar,Texas,9741
+2010 Apr,Texas,8056
+2010 May,Texas,7631
+2010 Jun,Texas,8184
+2010 Jul,Texas,7343
+2010 Aug,Texas,7690
+2010 Sep,Texas,6364
+2010 Oct,Texas,5015
+2010 Nov,Texas,5801
+2010 Dec,Texas,5613
+2011 Jan,Texas,5310
+2011 Feb,Texas,6406
+2011 Mar,Texas,8381
+2011 Apr,Texas,8184
+2011 May,Texas,7414
+2011 Jun,Texas,9943
+2011 Jul,Texas,8316
+2011 Aug,Texas,9822
+2011 Sep,Texas,7789
+2011 Oct,Texas,8174
+2011 Nov,Texas,5953
+2011 Dec,Texas,8115
+2012 Jan,Texas,8766
+2012 Feb,Texas,8778
+2012 Mar,Texas,10969
+2012 Apr,Texas,10178
+2012 May,Texas,11942
+2012 Jun,Texas,11176
+2012 Jul,Texas,12003
+2012 Aug,Texas,13682
+2012 Sep,Texas,9627
+2012 Oct,Texas,11773
+2012 Nov,Texas,10121
+2012 Dec,Texas,10825
+2013 Jan,Texas,10962
+2013 Feb,Texas,11695
+2013 Mar,Texas,12121
+2013 Apr,Texas,13600
+2013 May,Texas,12725
+2013 Jun,Texas,11311
+2013 Jul,Texas,12780
+2013 Aug,Texas,10699
+2013 Sep,Texas,12323
+2013 Oct,Texas,15256
+2013 Nov,Texas,10349
+2013 Dec,Texas,12733
+2014 Jan,Texas,12373
+2014 Feb,Texas,12156
+2014 Mar,Texas,11650
+2014 Apr,Texas,17725
+2014 May,Texas,15440
+2014 Jun,Texas,12948
+2014 Jul,Texas,14717
+2014 Aug,Texas,15316
+2014 Sep,Texas,13610
+2014 Oct,Texas,13597
+2014 Nov,Texas,10456
+2014 Dec,Texas,15468
+2015 Jan,Texas,11515
+2015 Feb,Texas,14075
+2015 Mar,Texas,14027
+2015 Apr,Texas,15352
+2015 May,Texas,12351
+2015 Jun,Texas,17580
+2015 Jul,Texas,15556
+2015 Aug,Texas,14814
+2015 Sep,Texas,13189
+2015 Oct,Texas,14789
+2015 Nov,Texas,13240
+2015 Dec,Texas,14515
+2016 Jan,Texas,11879
+2016 Feb,Texas,12591
+2016 Mar,Texas,14376
+2016 Apr,Texas,12426
+2016 May,Texas,14641
+2016 Jun,Texas,15477
+2016 Jul,Texas,13977
+2016 Aug,Texas,14614
+2016 Sep,Texas,13805
+2016 Oct,Texas,12128
+2016 Nov,Texas,12680
+2016 Dec,Texas,11678
+2017 Jan,Texas,15236
+2017 Feb,Texas,13247
+2017 Mar,Texas,16550
+2017 Apr,Texas,13677
+2017 May,Texas,15578
+2017 Jun,Texas,17188
+2017 Jul,Texas,12493
+2017 Aug,Texas,15857
+2017 Sep,Texas,12233
+2017 Oct,Texas,15098
+2017 Nov,Texas,13140
+2017 Dec,Texas,11348
+2018 Jan,Texas,15207
+2018 Feb,Texas,12204
+2018 Mar,Texas,15486
+2018 Apr,Texas,19795
+2018 May,Texas,16526
+2018 Jun,Texas,19086
+2018 Jul,Texas,16171
+2018 Aug,Texas,15564
+2018 Sep,Texas,13362
+2018 Oct,Texas,13241
+2018 Nov,Texas,15265
+2018 Dec,Texas,14984
+2019 Jan,Texas,14258
+2019 Feb,Texas,14511
+2019 Mar,Texas,15852
+2019 Apr,Texas,15895
+2019 May,Texas,19081
+2019 Jun,Texas,15176
+2019 Jul,Texas,17515
+2019 Aug,Texas,19405
+2019 Sep,Texas,16452
+2019 Oct,Texas,19861
+2019 Nov,Texas,16880
+2019 Dec,Texas,14714
+2020 Jan,Texas,17885
+2020 Feb,Texas,16275
+2020 Mar,Texas,19293
+2020 Apr,Texas,16518
+2020 May,Texas,15919
+2020 Jun,Texas,17601
+2020 Jul,Texas,20183
+2020 Aug,Texas,18613
+2020 Sep,Texas,21319
+2020 Oct,Texas,19374
+2020 Nov,Texas,17953
+2020 Dec,Texas,20635
+2021 Jan,Texas,22260
+2021 Feb,Texas,18184
+2021 Mar,Texas,23649
+2021 Apr,Texas,24127
+2021 May,Texas,21683
+2021 Jun,Texas,23679
+2021 Jul,Texas,20762
+2021 Aug,Texas,23304
+2021 Sep,Texas,18003
+2021 Oct,Texas,18064
+2021 Nov,Texas,18004
+2021 Dec,Texas,20891
+2022 Jan,Texas,23155
+2022 Feb,Texas,20417
+2022 Mar,Texas,26723
+2022 Apr,Texas,25518
+2022 May,Texas,22918
+2022 Jun,Texas,26082
+2022 Jul,Texas,23914
+2022 Aug,Texas,20950
+2022 Sep,Texas,19444
+2022 Oct,Texas,21363
+2022 Nov,Texas,15117
+2022 Dec,Texas,15629
+2023 Jan,Texas,16847
+2023 Feb,Texas,17363
+2023 Mar,Texas,18896
+2023 Apr,Texas,17346
+2023 May,Texas,21978
+2023 Jun,Texas,20444
+2023 Jul,Texas,18897
+2023 Aug,Texas,21723
+2023 Sep,Texas,17073
+2023 Oct,Texas,20830
+2023 Nov,Texas,14955
+2023 Dec,Texas,14180
+2024 Jan,Texas,19218
+2024 Feb,Texas,17198
+2024 Mar,Texas,18550
+2024 Apr,Texas,21893
+2024 May,Texas,18401
+2024 Jun,Texas,18062
+2024 Jul,Texas,19859
+2024 Aug,Texas,20105
+2024 Sep,Texas,16291
+2024 Oct,Texas,20769
+2024 Nov,Texas,16304
+2024 Dec,Texas,18476
+2025 Jan,Texas,17187
+2025 Feb,Texas,16459
+2025 Mar,Texas,19080
+2025 Apr,Texas,22300
+2025 May,Texas,18642
+2025 Jun,Texas,18712
+2025 Jul,Texas,19248
+2025 Aug,Texas,14273
+2025 Sep,Texas,17624
+2025 Oct,Texas,16557
+2025 Nov,Texas,12706
+2025 Dec,Texas,15571
+2026 Jan,Texas,13365
+2026 Feb,Texas,18525
+2026 Mar,Texas,16947
+2026 Apr,Texas,16572
+2026 May,Texas,16553
+2026 Jun,Texas,16550
+2026 Jul,Texas,18391
+2026 Aug,Texas,14789
