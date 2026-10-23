@@ -44,12 +44,14 @@ shipments |> autoplot(Shipments) +
 
 Based on the output below:
 
-- Level is present, the shipments data exists between approximately 4,000 and 4,800 shipments per quarter.
+- Level is present, the shipments data exists between approximately 4,000 and 4,800 per quarter (in millions of USD).
 - Trend is present, there is general upward trend over time.
 - Seasonality is present, there is a consistent Q2 peak and a Q4 trough. Q3 is generally higher than Q1 as well.
 - There is noise present in the time series as well, most noticeably in Q3 and Q4 1986, but noise is present throughout the time series.
 
 ```{r ex1-b}
+#| fig-width: 6.5
+#| fig-height: 4.1
 # Create components plot
 shipments |> model(stl = STL(Shipments)) |>
   components() |>
@@ -97,12 +99,14 @@ options(scipen = 999)
 new_england <- c("Maine", "Vermont", "New Hampshire",
                  "Massachusetts", "Connecticut", "Rhode Island")
 
-# Plot NE annual natural gas consumption, scaling the y-axis
+# Plot NE annual natural gas consumption
 us_gas |> filter(state %in% new_england) |>
   autoplot(y) + 
   labs(y = "Natural Gas Consumption (Million Cubic Feet)",
        title = "New England Natural Gas Consumption")
 ```
+
+\newpage
 
 ## 3) Reflections
 

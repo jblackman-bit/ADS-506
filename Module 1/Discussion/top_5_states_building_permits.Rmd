@@ -278,3 +278,19 @@ permits_top5_ts |>
 1. **Supply Chain Optimization (Mitigating the Bullwhip Effect):** Forecasting permit volume 3 months in advance to optimize inventory staging for building supply distributors.
 2. **Monetary Policy Transmission:** Modeling dynamic regressions to evaluate how mortgage interest rate changes affect builder commitments across diverse state markets.
 3. **Hierarchical Utility Capacity Planning:** Using `fable::reconcile` with Minimum Trace (`min_trace`) to forecast power and municipal infrastructure needs from national down to metropolitan tiers.
+
+---
+
+# 8. Peer & Industry Feedback Synthesis
+
+> **Peer / Industry Review Feedback:**  
+> *"The spikes in Texas and California may come from multifamily permits, since one large apartment project can add thousands of units in a month. FRED splits single-family and 5+ unit permits, so modeling them separately could give you a smoother series.  
+> The seasonal swings also grow when levels are high, so a log transform before SARIMA might help. And treating 2008 and the post-2020 rate shock as structural breaks could improve accuracy. In my CPG forecasting work, unhandled breaks were the main reason models overshot.  
+> Last, for ARIMAX you'll need future mortgage rates too. Using 6 to 12 month lags could let you rely on rates you already know."*
+
+### Key Implementation Takeaways for the Final Project:
+1. **Multifamily Separation (`PERMIT1` vs. `PERMIT5`):** Separate lumpy apartment developments from single-family homes to eliminate irregular monthly spikes.
+2. **Log Transformation:** Stabilizes growing seasonal variance when volume levels are high (multiplicative seasonality).
+3. **Structural Breaks:** Incorporate step dummy variables for the 2008 GFC and 2022+ rate hiking cycles to avoid model overshooting.
+4. **Long-Lag ARIMAX Strategy (6–12 Month Lags):** Structure dynamic regression models with 6- to 12-month lags so that forecasts rely strictly on already-observed historical mortgage rates.
+

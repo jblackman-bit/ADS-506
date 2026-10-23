@@ -52,3 +52,36 @@ I am interested in using time series forecasting to bridge macroeconomic indicat
 3. **Hierarchical Urban Infrastructure & Utility Capacity Planning:**
    * *Problem:* Municipal utility providers (power, water, broadband) must budget capital infrastructure expansions years before subdivisions are completed.
    * *Application:* Implementing hierarchical time-series reconciliation (`fable::reconcile` with `min_trace`) to forecast permit growth from state totals down to regional metropolitan statistical areas (MSAs), ensuring coherent forecasts across geographic tiers for multi-year capital budget allocation.
+
+---
+
+## 4. 💬 Peer & Industry Feedback Received (Discussion 1.1)
+
+> **Peer Comment:**
+> *"Hi Jordan,*  
+> *Great pick, and the shared national cycle across all five states really stands out. A few ideas:*  
+> *1. The spikes in Texas and California may come from multifamily permits, since one large apartment project can add thousands of units in a month. FRED splits single-family and 5+ unit permits, so modeling them separately could give you a smoother series.*  
+> *2. The seasonal swings also grow when levels are high, so a log transform before SARIMA might help. And treating 2008 and the post-2020 rate shock as structural breaks could improve accuracy. In my CPG forecasting work, unhandled breaks were the main reason models overshot.*  
+> *3. Last, for ARIMAX you'll need future mortgage rates too. Using 6 to 12 month lags could let you rely on rates you already know.*  
+> *Looking forward to seeing your results!"*
+
+### 🛠️ Actionable Methodological Takeaways for Final Project
+
+1. **Disaggregate Single-Family vs. Multifamily (`PERMIT1` vs. `PERMIT5`):**
+   * *The Problem:* Multifamily permits are intrinsically "lumpy"—a single municipal approval for a large apartment/condo high-rise in Austin or Los Angeles can add 1,500+ units in a single month, generating artificial noise spikes in the aggregate series.
+   * *The Solution:* Separate single-family detached homes (`[STATE]BP1PRIV` / `PERMIT1`) from 5+ unit structures (`[STATE]BP5PRIV` / `PERMIT5`). Modeling single-family independently yields a much smoother, higher-signal time series, while multifamily can be modeled with specialized intermittent or high-variance techniques.
+2. **Log Transformation for Variance Stabilization:**
+   * *The Problem:* The amplitude of annual seasonal peaks expands proportionally as the series volume rises (multiplicative seasonality / heteroscedasticity).
+   * *The Solution:* Apply a natural logarithm ($\ln(Y_t)$) or Box-Cox transformation prior to fitting SARIMA/ETS models. This stabilizes seasonal variance across boom and bust regimes.
+3. **Explicit Structural Break Modeling (2008 GFC & Post-2020 Rate Shocks):**
+   * *The Problem:* Standard linear and ARIMA models fit on past data will dramatically overshoot when regime shifts occur (a common issue noted in corporate CPG forecasting).
+   * *The Solution:* Implement step-intervention dummy variables or piecewise trend segments for:
+     * **October 2008 (Subprime collapse):** Downward level shift.
+     * **March 2020 – June 2022:** Zero-interest rate pandemic building boom.
+     * **Mid-2022 – Present:** Aggressive Fed rate-hiking regime.
+4. **ARIMAX Lag Horizon Strategy (6- to 12-Month Lags):**
+   * *The Problem:* In dynamic regression (`ARIMAX`), generating an $h$-step-ahead forecast $\hat{Y}_{T+h}$ mathematically requires having values for the exogenous regressor $X_{T+h}$ (i.e., you would need to forecast future mortgage rates to forecast future permits).
+   * *The Solution:* Structure the exogenous variables with **long lags ($\ge 6$ to $12$ months)**:
+     $$Y_t = \beta_0 + \beta_1 \text{Mortgage}_{t-6} + \beta_2 \text{Mortgage}_{t-12} + \eta_t$$
+     Because permit applications follow mortgage commitments and land acquisition by 6 to 12 months, this allows the team to produce true out-of-sample 6-month-ahead permit forecasts using **already observed, historical mortgage rates**!
+
