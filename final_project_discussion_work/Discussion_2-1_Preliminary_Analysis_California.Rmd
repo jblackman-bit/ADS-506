@@ -24,14 +24,11 @@ knitr::opts_chunk$set(
 
 # Executive Summary
 
-This document conducts the preliminary time series analysis for **Discussion 2.1: Perform a Preliminary Analysis of a Proposed Dataset**. 
+This document conducts the preliminary time series analysis for **Discussion 2.1: Perform a Preliminary Analysis of a Proposed Dataset**.
 
-Mirroring the methodology demonstrated by **Professor Dave Hurst** in the Module 2 Presentation and Lab 2.1 notes, this analysis focuses on **California monthly new private housing units authorized by building permits (`CABPPRIV`)** from 1988 to the present. We evaluate:
-1. **Time Series Linear Models (`TSLM`)** with monthly seasonal dummy factors, a secular deterministic trend, and a post-2008 Great Financial Crisis (GFC) structural break indicator.
-2. **Auto-selected Exponential Smoothing State Space Models (`ETS`)**.
-3. **Out-of-sample forecast accuracy** on a holdout test partition (2024–2026).
+Mirroring the methodology demonstrated by **Professor Dave Hurst** in the Module 2 Presentation and Lab 2.1 notes, this analysis focuses on **California monthly new private housing units authorized by building permits (`CABPPRIV`)** from 1988 to the present. We evaluate: 1. **Time Series Linear Models (`TSLM`)** with monthly seasonal dummy factors, a secular deterministic trend, and a post-2008 Great Financial Crisis (GFC) structural break indicator. 2. **Auto-selected Exponential Smoothing State Space Models (`ETS`)**. 3. **Out-of-sample forecast accuracy** on a holdout test partition (2024–2026).
 
----
+------------------------------------------------------------------------
 
 # 1. Environment & Data Ingestion
 
@@ -66,11 +63,11 @@ ca_ts <- ca_raw |>
 glimpse(ca_ts)
 ```
 
----
+------------------------------------------------------------------------
 
 # 2. Exploratory Analysis & STL Decomposition
 
-Following Module 1 and Lab 2.1 practices, we inspect the series components: **Level, Trend, 12-Month Annual Seasonality ($s=12$), and Remainder Noise**.
+Following Module 1 and Lab 2.1 practices, we inspect the series components: **Level, Trend, 12-Month Annual Seasonality (**$s=12$), and Remainder Noise.
 
 ```{r time-plot}
 # Time plot of full historical series
@@ -101,16 +98,11 @@ autoplot(ca_stl) +
   theme_minimal()
 ```
 
----
+------------------------------------------------------------------------
 
 # 3. Feature Engineering & Temporal Train/Test Partitioning
 
-Mirroring Professor Hurst's approach in Lab 2.1 (where he engineered `month` factors and a holiday indicator `is_July4` to prevent degrees-of-freedom explosion):
-* **`month`**: 11 calendar month dummy factors (with January as reference).
-* **`is_post_2008`**: Step-intervention indicator for the post-October 2008 subprime crisis structural break, addressing peer feedback from Discussion 1.1 regarding model overshooting.
-* **Holdout Partition**:
-  * **Training Set (`ca_trn`)**: January 1988 through December 2023 ($N = 432$ months).
-  * **Test Set (`ca_tst`)**: January 2024 through August 2026 ($N = 32$ months $\approx 2.5$ years).
+Mirroring Professor Hurst's approach in Lab 2.1 (where he engineered `month` factors and a holiday indicator `is_July4` to prevent degrees-of-freedom explosion): \* **`month`**: 11 calendar month dummy factors (with January as reference). \* **`is_post_2008`**: Step-intervention indicator for the post-October 2008 subprime crisis structural break, addressing peer feedback from Discussion 1.1 regarding model overshooting. \* **Holdout Partition**: \* **Training Set (`ca_trn`)**: January 1988 through December 2023 ($N = 432$ months). \* **Test Set (`ca_tst`)**: January 2024 through August 2026 ($N = 32$ months $\approx 2.5$ years).
 
 ```{r feature-engineering}
 val_cutoff <- yearmonth("2024 Jan")
@@ -128,15 +120,11 @@ cat("Training periods:", nrow(ca_trn), "months\n")
 cat("Holdout test periods:", nrow(ca_tst), "months\n")
 ```
 
----
+------------------------------------------------------------------------
 
 # 4. Model Estimation: Candidate TSLM & Automated ETS
 
-We estimate four competing specifications in a unified `fable::model()` pipeline:
-1. **`tslm_basic`**: Baseline linear model with linear trend and generic annual seasonality (`trend() + season()`).
-2. **`tslm_month`**: Parsimonious monthly dummy variables (`trend() + month`).
-3. **`tslm_regime`**: Monthly dummies + trend + post-2008 structural break indicator (`trend() + month + is_post_2008`).
-4. **`ets_auto`**: Auto-selected Exponential Smoothing state space model.
+We estimate four competing specifications in a unified `fable::model()` pipeline: 1. **`tslm_basic`**: Baseline linear model with linear trend and generic annual seasonality (`trend() + season()`). 2. **`tslm_month`**: Parsimonious monthly dummy variables (`trend() + month`). 3. **`tslm_regime`**: Monthly dummies + trend + post-2008 structural break indicator (`trend() + month + is_post_2008`). 4. **`ets_auto`**: Auto-selected Exponential Smoothing state space model.
 
 ```{r fit-models}
 ca_fit <- ca_trn |>
@@ -148,7 +136,7 @@ ca_fit <- ca_trn |>
   )
 ```
 
----
+------------------------------------------------------------------------
 
 # 5. Model Parameters & Regression Diagnostic Output
 
@@ -159,16 +147,17 @@ report(ca_fit |> select(tslm_regime))
 ```
 
 ### Parameter Interpretation
-* **Intercept ($\beta_0 = 9,188.33$, $p < 2\times 10^{-16}$***): Represents expected baseline permits authorized in January prior to the 2008 shock.
-* **Monthly Seasonal Variations (relative to January)**:
-  * **June ($\beta_{\text{Jun}} = +3,727.90$, $p = 4.95\times 10^{-5}$***): Peak construction authorization month in California.
-  * **March–May ($\beta \approx +2,050$ to $+2,309$, $p < 0.05$*)**: Spring building ramp-up.
-  * **November ($\beta_{\text{Nov}} = +330.92$, $p = 0.716$)**: Statistical low point; winter slowdown.
-* **Structural Break (`is_post_2008TRUE` = $-6,203.62$, $p = 2.51\times 10^{-16}$***): On average, monthly building permit authorizations in California dropped by **over 6,200 units** following the 2008 subprime mortgage collapse.
-* **Deterministic Trend ($\beta_t = +8.22$, $p = 0.0045$**): Captures a modest positive secular recovery slope once the negative level shift of 2008 is controlled for.
-* **Overall Fit**: Multiple $R^2 = 0.2997$, Adjusted $R^2 = 0.2780$, $F = 13.76$ ($p < 2.22\times 10^{-16}$).
 
----
+- **Intercept (**$\beta_0 = 9,188.33$, $p < 2\times 10^{-16}$\*): Represents expected baseline permits authorized in January prior to the 2008 shock.
+- **Monthly Seasonal Variations (relative to January)**:
+  - **June (**$\beta_{\text{Jun}} = +3,727.90$, $p = 4.95\times 10^{-5}$\*): Peak construction authorization month in California.
+  - \*\*March–May ($\beta \approx +2,050$ to $+2,309$, $p < 0.05$\*)\*\*: Spring building ramp-up.
+  - **November (**$\beta_{\text{Nov}} = +330.92$, $p = 0.716$): Statistical low point; winter slowdown.
+- **Structural Break (`is_post_2008TRUE` =** $-6,203.62$, $p = 2.51\times 10^{-16}$\*): On average, monthly building permit authorizations in California dropped by **over 6,200 units** following the 2008 subprime mortgage collapse.
+- **Deterministic Trend (**$\beta_t = +8.22$, $p = 0.0045$): Captures a modest positive secular recovery slope once the negative level shift of 2008 is controlled for.
+- **Overall Fit**: Multiple $R^2 = 0.2997$, Adjusted $R^2 = 0.2780$, $F = 13.76$ ($p < 2.22\times 10^{-16}$).
+
+------------------------------------------------------------------------
 
 # 6. Auto-Selected ETS Model Diagnostics
 
@@ -176,11 +165,7 @@ report(ca_fit |> select(tslm_regime))
 report(ca_fit |> select(ets_auto))
 ```
 
-The automated algorithm selected an **$\text{ETS}(M, A_d, M)$** model:
-* **Error**: Multiplicative ($M$) — accounts for seasonal variances that grow with volume levels.
-* **Trend**: Additive Damped ($A_d$) with damping parameter $\phi = 0.9414$, preventing unreasonable linear growth.
-* **Seasonality**: Multiplicative ($M$) with annual period $m = 12$.
-* **Smoothing Parameters**: Level $\alpha = 0.3002$, Trend $\beta = 0.0187$, Seasonal $\gamma = 0.0002$.
+The automated algorithm selected an $\text{ETS}(M, A_d, M)$ model: \* **Error**: Multiplicative ($M$) — accounts for seasonal variances that grow with volume levels. \* **Trend**: Additive Damped ($A_d$) with damping parameter $\phi = 0.9414$, preventing unreasonable linear growth. \* **Seasonality**: Multiplicative ($M$) with annual period $m = 12$. \* **Smoothing Parameters**: Level $\alpha = 0.3002$, Trend $\beta = 0.0187$, Seasonal $\gamma = 0.0002$.
 
 ```{r ets-pseudo-r2}
 # Compute Pseudo R-squared for ETS (cor(actual, fitted)^2)
@@ -189,7 +174,7 @@ rsq_ets <- cor(fit_ets_aug$permits, fit_ets_aug$.fitted, use = "complete.obs")^2
 cat("ETS(M,Ad,M) Pseudo R-squared:", round(rsq_ets, 4), "\n")
 ```
 
----
+------------------------------------------------------------------------
 
 # 7. Out-of-Sample Accuracy Evaluation
 
@@ -210,10 +195,11 @@ acc_table |>
 ```
 
 ### Key Takeaway on Model Selection:
-* **`ets_auto`** is the **top-performing model overall**, achieving a Test RMSE of **1,083.47** and a MAPE of **8.68%**. Its dynamic level and seasonal updates adapt flexibly to macroeconomic rate shocks.
-* **`tslm_regime`** dramatically outperforms `tslm_basic` (RMSE drops from **2,094** to **1,169**), proving the necessity of accounting for structural breaks. However, like Professor Hurst observed with the Chicago gun violence data, **ETS outperforms all linear regression models**.
 
----
+- **`ets_auto`** is the **top-performing model overall**, achieving a Test RMSE of **1,083.47** and a MAPE of **8.68%**. Its dynamic level and seasonal updates adapt flexibly to macroeconomic rate shocks.
+- **`tslm_regime`** dramatically outperforms `tslm_basic` (RMSE drops from **2,094** to **1,169**), proving the necessity of accounting for structural breaks. However, like Professor Hurst observed with the Chicago gun violence data, **ETS outperforms all linear regression models**.
+
+------------------------------------------------------------------------
 
 # 8. Forecast Visualizations (Professor Hurst's Benchmark Style)
 
@@ -263,19 +249,66 @@ p_ets_fc
 ggsave("california_housing_permits_ets_forecast.png", p_ets_fc, width = 9, height = 5.5, dpi = 300)
 ```
 
----
+## 8.3 Extended Multi-Year Historical Context (Customizable Training Window)
+
+To view the forecast within a broader macroeconomic context, this plot displays an extended training history. You can adjust the number of preceding training years and select the model (`ets_auto` or `tslm_regime`) using the variables below:
+
+```{r plot-extended-history, fig.width=10, fig.height=5.5}
+# ==============================================================================
+# USER-CONTROLLED PARAMETERS:
+# history_years : Number of years of training history (e.g., 5, 7, 10, 15, 20)
+# selected_model: Model to display ("ets_auto", "tslm_regime", "tslm_basic")
+# ==============================================================================
+history_years  <- 20
+selected_model <- "ets_auto"
+
+# Calculate corresponding number of monthly observations
+history_months <- history_years * 12
+
+# Model label for titles
+model_label <- if (selected_model == "ets_auto") "ETS(M,Ad,M)" else "TSLM"
+
+# Plot Forecast with extended historical training actuals
+p_extended_fc <- ca_fc |>
+  filter(.model == selected_model) |>
+  autoplot(tail(ca_trn, history_months)) +
+  geom_line(data = ca_tst, aes(x = Month, y = permits), color = "black", linetype = "dashed", alpha = 0.7) +
+  scale_y_continuous(labels = scales::comma) +
+  labs(
+    title = paste0("California Housing Permits - ", model_label, " Forecast (", history_years, "-Year Training History)"),
+    subtitle = paste0("Displaying ", history_years, " years (", history_months, " months) of pre-forecast training actuals alongside holdout test period (Dashed = Actuals)"),
+    caption = "Source: U.S. Census Bureau & HUD via FRED | Analysis by Jordan Blackman",
+    y = "Permits Authorized",
+    x = "Date"
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    legend.position = "bottom",
+    plot.title = element_text(face = "bold", size = 13)
+  )
+
+p_extended_fc
+
+# Save high-resolution graphic
+output_filename <- paste0("california_housing_permits_", selected_model, "_", history_years, "yr_history.png")
+ggsave(output_filename, p_extended_fc, width = 10, height = 5.5, dpi = 300)
+message("Saved extended plot to: ", output_filename)
+```
+
+------------------------------------------------------------------------
 
 # 9. Canvas Discussion 2.1 Post Draft (Exact Exemplar Format)
 
-***
+------------------------------------------------------------------------
 
-**Data provided by the U.S. Census Bureau and the U.S. Department of Housing and Urban Development (via FRED).**  
+**Data provided by the U.S. Census Bureau and the U.S. Department of Housing and Urban Development (via FRED).**\
 The dataset reports monthly new private housing units authorized by building permits from 1988 through 2026. Building permits serve as an officially recognized leading economic indicator for residential construction starts. For this discussion, I've narrowed the analysis to California (`CABPPRIV`), partitioning the series to train on data through December 2023 and evaluate out-of-sample forecasts on 2024–2026.
 
 I attempted a TSLM model so that I could add predictor variables for month of year, secular trend, and a structural break indicator for the post-2008 subprime crisis.
 
 #### Model Parameters
-```text
+
+``` text
 Series: permits 
 Model: TSLM 
 
@@ -313,9 +346,9 @@ We can see that in June the model predicts over 3,727 additional building permit
 
 Steps in forecast reflect the month predictor variable in lieu of simple seasonality. Incorporating the 2008 structural break improved test RMSE from 2,094 to 1,169. However, TSLM may not be the best choice for this dataset, and it's worth noting an auto-selected `ETS()` model (`ETS(M,Ad,M)`) performed better than all the TSLM models I tried, achieving a test RMSE of 1,083 and a MAPE of 8.68%.
 
-***
+------------------------------------------------------------------------
 
 # 10. References
 
-* Hyndman, R. J., & Athanasopoulos, G. (2021). *Forecasting: Principles and practice* (3rd ed.). OTexts: Melbourne, Australia. https://otexts.com/fpp3/
-* U.S. Census Bureau, & U.S. Department of Housing and Urban Development. (2024). *New private housing units authorized by building permits for California (CABPPRIV)* [Data set]. Federal Reserve Bank of St. Louis (FRED). https://fred.stlouisfed.org/series/CABPPRIV
+- Hyndman, R. J., & Athanasopoulos, G. (2021). *Forecasting: Principles and practice* (3rd ed.). OTexts: Melbourne, Australia. <https://otexts.com/fpp3/>
+- U.S. Census Bureau, & U.S. Department of Housing and Urban Development. (2024). *New private housing units authorized by building permits for California (CABPPRIV)* [Data set]. Federal Reserve Bank of St. Louis (FRED). <https://fred.stlouisfed.org/series/CABPPRIV>
