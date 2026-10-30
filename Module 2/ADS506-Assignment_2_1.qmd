@@ -27,26 +27,54 @@ For this exercise, we will use the the `tourism` dataset from the the `tsibble` 
 
 ```{r aus_tourism-plot}
 #| warning: false
-
+# Load Tourism data
 data(tourism)
 
-# ...
+# Calculate 2x12-MA for the entire series
+tourism_ma <- tourism |>
+  summarize(Trips = sum(Trips)) |>
+  mutate(
+    `12-MA` = slider::slide_dbl(Trips, mean,
+      .before = 5, .after = 6, .complete = TRUE),
+    `2x12-MA` = slider::slide_dbl(`12-MA`, mean,
+      .before = 1, .after = 0, .complete = TRUE)
+  )
 
+# Plot 2x12-MA
+tourism_ma |>
+  autoplot(Trips, colour = "gray") +
+  geom_line(aes(y = `2x12-MA`), colour = "maroon") +
+  labs(y = "Trips (thousands)", title = "Overnight Trips - Australia")
 ```
-
-![Remove this image before submitting](images/aus_trips_2x12ma.png)
 
 ### b. Create a table showing values for each quarter in 2015
 
 Your table should be well formatted and suitable for a publication or presentation. It should contain
 
--   The Quarter identifier
--   The actual \`Trips\` value (suitably scaled and labeled)
--   The smoothed Trips values
--   The delta between actual and smoothed
+- The Quarter identifier
+- The actual \`Trips\` value (suitably scaled and labeled)
+- The smoothed Trips values
+- The delta between actual and smoothed
 
 ```{r aus_tourism-table}
-#...
+# Create professional table
+tourism_ma |>
+  filter(year(Quarter) == 2015) |>
+  mutate(Delta = Trips - `2x12-MA`) |>
+  select(Quarter, Trips, `2x12-MA`, Delta) |>
+  gt() |>
+  tab_header(title = md("**Australian Overnight Trips (2015)**"),
+             subtitle = "Actual vs. 2x12-MA Smoothed Values") |>
+  tab_spanner(label = "Overnight Trips (in Thousands)",
+              columns = c(Trips, `2x12-MA`, Delta)) |>
+  cols_label(Quarter = "Quarter",Trips = "Actual",
+             `2x12-MA` = "2x12-MA Smoothed",
+             Delta = "Delta (Actual - Smoothed)") |>
+  fmt_number(columns = c(Trips, `2x12-MA`), decimals = 2) |>
+  fmt_number(columns = Delta, decimals = 2, force_sign = TRUE) |>
+  cols_align(align = "center") |>
+  tab_source_note(source_note = md("*Note:* Values reported in thousands of trips. Source: `tsibble::tourism`.")) |>
+  opt_stylize(style = 1, color = "blue")
 
 ```
 
@@ -74,9 +102,9 @@ Fortified wine has the largest market share of the six types of wine. Focus on f
 
 ### a) Create an autoselected exponential smoothing model
 
--   Start by partitioning the data using the period until December 1993 as the training period.
--   Create an exponential smoothing model allowing `ETS()` to autoselect the model type.
--   Output the model information
+- Start by partitioning the data using the period until December 1993 as the training period.
+- Create an exponential smoothing model allowing `ETS()` to autoselect the model type.
+- Output the model information
 
 ```{r ets_auto}
 
@@ -90,40 +118,97 @@ fortified_trn <- fortified |>
     filter_index(. ~ '1993 Dec')  
 
 # fit an ETS model
-#...
+fit <- fortified_trn |>
+  model(ETS(Fortified))
 
 # output the model information
-# ...
+tidy(fit) |>
+  filter(term %in% c("alpha", "beta", "gamma")) |>
+  mutate(Parameter = case_when(
+      term == "alpha" ~ "Alpha (Level smoothing)",
+      term == "beta"  ~ "Beta (Trend smoothing)",
+      term == "gamma" ~ "Gamma (Seasonal smoothing)")) |>
+  select(Parameter, Estimate = estimate) |>
+  gt() |>
+  tab_header(title = md("**ETS(M, A, M) Model Parameters**"),
+    subtitle = "Fortified Wine Sales (Training Period: 1980–1993)") |>
+  fmt_number(columns = Estimate, decimals = 4) |>
+  cols_align(align = "left", columns = Parameter) |>
+  cols_align(align = "right", columns = Estimate) |>
+  opt_stylize(style = 1, color = "blue")
 ```
 
 ### b) Interpret the model and parameters that ETS() selected as the optimum
 
-*Answer here...*
+- The auto ETS determined that the best combination of methods were multiplicative errors, additive trend, and multiplicative seasonality. Multiplicative seasonality indicates that seasonal swings scale with the overall fortified wine sales volume, while the additive trend indicates a consistent change in sales over time.
+
+- Alpha represents the smoothing parameter for level, which is how quickly weights diminish with older data. This value of alpha (0.0243) is very small which indicates higher smoothing. This means recent observations are not tracked aggressively, so the model filters out short-term noise and relies more on the long-term historical baseline.
+
+- Beta represents the trend's smoothing parameter, which is how frequently trend is allowed to change. The value (0.0011) is very low, which means the trend does not change often.
+
+- Gamma represents the smoothing parameter for seasonality, which is how frequently seasonal patterns are allowed to change. The value (0.0001) is very low meaning that seasonality does not change often.
 
 ### c) repeat the modeling step with an autoselect model, an Additive Holt-Winters model with additive errors and any other model of your choice. Report the RMSE, MAE and MAE for each model. Sort the report from best to worst based on `AICc`
 
 ```{r ets_multi}
 # fit multiple models
-# ...
+fit <- fortified_trn |>
+  model(
+    auto = ETS(Fortified),
+    hw = ETS(Fortified ~ error("A") + trend("A") + season("A")),
+    mhw = ETS(Fortified ~ error("A") + trend("A") + season("M")),
+    `damp mhw` = ETS(Fortified ~ error("A") + trend("Ad") + season("M"))
+  )
 
 # output metrics
-#...
+glance(fit) |>
+  select(Model = .model, AICc) |>
+  left_join(
+    accuracy(fit) |> select(Model = .model, RMSE, MAE, MAPE),
+    by = "Model") |>
+  arrange(AICc) |>
+  gt() |>
+  tab_header(title = md("**Model Accuracy**"),
+    subtitle = "Fortified Wine Sales (Training Period: 1980–1993)") |>
+  fmt_number(decimals = 2) |>
+  opt_stylize(style = 1, color = "blue")
 ```
+
+- I reported on MAE and MAPE, the prompt for question 2c lists MAE twice, so I interpreted this to mean MAE and MAPE.
+
+- The dampened multiplicative Holt-Winters and Additive Holt-Winters did not outperform in any metric. The Multiplicative Holt-Winters has the lowest MAPE (6.98) and the lowest RMSE (278.59), but the Auto model (ETS(M, A, M)) showed the lowest AICc (2,757.60), making it the best model considered in this set when looking at training performance.
 
 ### d) Create a plot with just the last year of the training data (1993) that shows the fitted values for each model overlaid on top of the training (actual) data.
 
 ```{r ets_fit-plt}
-# ...
+# Create the 1993 Actual vs. Fitted plot
+fit |>
+  augment() |>
+  filter(year(Month) == 1993) |>
+  autoplot(.fitted) +
+  geom_line(aes(y = Fortified, linetype = "Actuals"), colour = "black", linewidth = 1) +
+  scale_x_yearmonth(date_breaks = "1 month", date_labels = "%b") +
+  labs(title = "Actual vs. Fitted Sales for Fortified Wine (1993)",
+    subtitle = "Comparing ETS models during the final year of training data",
+    x = "Month (1993)",
+    y = "Sales (thousands of liters)") +
+  guides(colour = guide_legend(title = NULL),
+    linetype = guide_legend(title = NULL)) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
 ```
 
 ### e) Forecast the data for each month of 1994 for each model and compare the resulting metrics.
 
--   Report MAE, RMSE, and MAPE for all models, ordered by best RMSE.
--   Present your results in a well formatted table (suitable for presentation).
+- Report MAE, RMSE, and MAPE for all models, ordered by best RMSE.
+- Present your results in a well formatted table (suitable for presentation).
 
 ```{r ets_results}
 # forecast the validation period 
-#...
+fit |>
+  forecast(h = "12 months") |>
+  autoplot(fortified |> filter(year(Month) < 1995)) +
+  labs(title = "Forecast of ")
 
 # review accuracy to select the best model
 #...
@@ -135,9 +220,9 @@ Which model produces the best mean forecast? Did all the metrics agree with each
 
 ### f) Use the best performing model to create a forecast for each month in 1995.
 
--   Fit a model against the full dataset.
--   Forecast the next year of data.
--   Create a plot showing forecast values and intervals (80%, 95%) for 1995 alongside actual values from 1990 onwards.
+- Fit a model against the full dataset.
+- Forecast the next year of data.
+- Create a plot showing forecast values and intervals (80%, 95%) for 1995 alongside actual values from 1990 onwards.
 
 ```{r ets-fc-plt}
 
@@ -165,13 +250,13 @@ Which model produces the best mean forecast? Did all the metrics agree with each
 
 ## 3) Forecasting Australian Wine Sales: Time Series Regression
 
--   Use your existing partitioned data (training through December 1993).
--   Fit a regression model to sales with a linear trend and seasonality.
+- Use your existing partitioned data (training through December 1993).
+- Fit a regression model to sales with a linear trend and seasonality.
 
 ### a) Create the "actual vs. forecast" plot for the next 12 months.
 
--   Include actual data from 1990 for comparison
--   Show the default prediction intervals
+- Include actual data from 1990 for comparison
+- Show the default prediction intervals
 
 ```{r fortified-tslm-plt}
 # reusing the training data from the previous question
@@ -193,8 +278,8 @@ Which model produces the best mean forecast? Did all the metrics agree with each
 
 ### b) Compare the TSLM and best ETS models for the validation period
 
--   (Hint) It may be easier to create a new `mable` object by refitting the data
--   Compare the RSME, MAE and MAPE metrics for each model in a well formatted table (suitable for presentation). Sort from best to worst RMSE.
+- (Hint) It may be easier to create a new `mable` object by refitting the data
+- Compare the RSME, MAE and MAPE metrics for each model in a well formatted table (suitable for presentation). Sort from best to worst RMSE.
 
 ```{r fortified-compare}
 # create a new mable object with just the two models we want to compare
