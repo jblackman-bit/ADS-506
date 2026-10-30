@@ -1,23 +1,38 @@
 ---
 title: "ADS-506 Assignment 2.1"
 author: "Jordan Blackman"
-format: pdf
+format: 
+  pdf:
+    geometry:
+      - margin=0.65in
+    fig-height: 2.8
+    fig-width: 6.2
+    fig-pos: "H"
+    tbl-pos: "H"
+    include-in-header:
+      text: |
+        \usepackage{float}
+        \floatplacement{table}{H}
+        \floatplacement{figure}{H}
+        \usepackage{fvextra}
+        \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+        \usepackage{etoolbox}
+        \BeforeBeginEnvironment{Shaded}{\par\nopagebreak\begin{minipage}{\linewidth}}
+        \AfterEndEnvironment{Shaded}{\end{minipage}\par}
+        \AddToHook{env/tabular*/after}{\par}
 editor: visual
 ---
 
 ```{r}
 #| message: false
+# Load necessary libraries
 library(tidyverse)
 library(fpp3)
-library(slider) #for rolling window functions
+library(slider)
 library(gt)
 ```
 
 # Module 2 Assignment Exercises
-
-This assignment is due on Day 7 of the learning week. The assignment for this module consists of code, outputs and short prose responses. Use R with [tidyverts](tidyverts.org) (`fpp3`) Complete the assignment in a [Quarto Document](quarto.org). Leave the questions and instructions intact so that it is clear which sections your response is addressing. Once completed, you will render your deliverable to a PDF file such that the text in the document is selectable.
-
-Your submission should show all code executed and must not exceed 15 pages.
 
 ## 1) Moving Average Smoothing of Australian Overnight Trips
 
@@ -67,14 +82,13 @@ tourism_ma |>
              subtitle = "Actual vs. 2x12-MA Smoothed Values") |>
   tab_spanner(label = "Overnight Trips (in Thousands)",
               columns = c(Trips, `2x12-MA`, Delta)) |>
-  cols_label(Quarter = "Quarter",Trips = "Actual",
-             `2x12-MA` = "2x12-MA Smoothed",
-             Delta = "Delta (Actual - Smoothed)") |>
+  cols_label(Quarter = "Quarter", Trips = "Actual",
+    `2x12-MA` = "2x12-MA Smoothed", Delta = "Delta (Actual - Smoothed)") |>
   fmt_number(columns = c(Trips, `2x12-MA`), decimals = 2) |>
   fmt_number(columns = Delta, decimals = 2, force_sign = TRUE) |>
   cols_align(align = "center") |>
-  tab_source_note(source_note = md("*Note:* Values reported in thousands of trips. Source: `tsibble::tourism`.")) |>
-  opt_stylize(style = 1, color = "blue")
+  opt_stylize(style = 1) |>
+  tab_options(table.width = pct(80), latex.tbl.pos = "H")
 
 ```
 
@@ -83,7 +97,7 @@ tourism_ma |>
 The figure below shows time plots of monthly sales of six types of Australian wines (red, rose, sweet white, dry white, sparkling, and fortified) for 1980-1994. Data available in AustralianWines.xls. The units are thousands of liters.
 
 ```{r ch5_fig}
-#reproduce the textbook
+# Reproduce the textbook
 aus_wine <- read_csv(here::here("data/AustralianWines.csv"), na = "*",
                      col_types = cols(Rose = col_number()),
                      show_col_types = FALSE) |> 
@@ -107,21 +121,25 @@ Fortified wine has the largest market share of the six types of wine. Focus on f
 - Output the model information
 
 ```{r ets_auto}
-
-# create a time series object for fortified wine sales (tsibble)
+# Create a time series object for fortified wine sales (tsibble)
 fortified <- aus_wine |> 
     select(Month, Fortified) |>
     as_tsibble(index = Month) 
 
-# create training/validation sets for the model
+# Create training/validation sets for the model
 fortified_trn <- fortified |>
     filter_index(. ~ '1993 Dec')  
 
-# fit an ETS model
+# Fit an ETS model
 fit <- fortified_trn |>
   model(ETS(Fortified))
 
-# output the model information
+# Output raw model information
+report(fit)
+```
+
+```{r ets_auto pt2}
+# Output the model information
 tidy(fit) |>
   filter(term %in% c("alpha", "beta", "gamma")) |>
   mutate(Parameter = case_when(
@@ -133,9 +151,9 @@ tidy(fit) |>
   tab_header(title = md("**ETS(M, A, M) Model Parameters**"),
     subtitle = "Fortified Wine Sales (Training Period: 1980–1993)") |>
   fmt_number(columns = Estimate, decimals = 4) |>
-  cols_align(align = "left", columns = Parameter) |>
-  cols_align(align = "right", columns = Estimate) |>
-  opt_stylize(style = 1, color = "blue")
+  cols_align(align = "center") |>
+  opt_stylize(style = 1) |>
+  tab_options(table.width = pct(70), latex.tbl.pos = "H")
 ```
 
 ### b) Interpret the model and parameters that ETS() selected as the optimum
@@ -151,7 +169,7 @@ tidy(fit) |>
 ### c) repeat the modeling step with an autoselect model, an Additive Holt-Winters model with additive errors and any other model of your choice. Report the RMSE, MAE and MAE for each model. Sort the report from best to worst based on `AICc`
 
 ```{r ets_multi}
-# fit multiple models
+# Fit multiple models
 fit <- fortified_trn |>
   model(
     auto = ETS(Fortified),
@@ -160,7 +178,7 @@ fit <- fortified_trn |>
     `damp mhw` = ETS(Fortified ~ error("A") + trend("Ad") + season("M"))
   )
 
-# output metrics
+# Output metrics
 glance(fit) |>
   select(Model = .model, AICc) |>
   left_join(
@@ -171,7 +189,9 @@ glance(fit) |>
   tab_header(title = md("**Model Accuracy**"),
     subtitle = "Fortified Wine Sales (Training Period: 1980–1993)") |>
   fmt_number(decimals = 2) |>
-  opt_stylize(style = 1, color = "blue")
+  cols_align(align = "center") |>
+  opt_stylize(style = 1) |>
+  tab_options(table.width = pct(100), latex.tbl.pos = "H")
 ```
 
 - I reported on MAE and MAPE, the prompt for question 2c lists MAE twice, so I interpreted this to mean MAE and MAPE.
@@ -186,12 +206,18 @@ fit |>
   augment() |>
   filter(year(Month) == 1993) |>
   autoplot(.fitted) +
-  geom_line(aes(y = Fortified, linetype = "Actuals"), colour = "black", linewidth = 1) +
+  geom_line(
+    aes(y = Fortified, linetype = "Actuals"),
+    colour = "black",
+    linewidth = 1
+  ) +
   scale_x_yearmonth(date_breaks = "1 month", date_labels = "%b") +
-  labs(title = "Actual vs. Fitted Sales for Fortified Wine (1993)",
+  labs(
+    title = "Actual vs. Fitted Sales for Fortified Wine (1993)",
     subtitle = "Comparing ETS models during the final year of training data",
     x = "Month (1993)",
-    y = "Sales (thousands of liters)") +
+    y = "Sales (thousands of liters)"
+  ) +
   guides(colour = guide_legend(title = NULL),
     linetype = guide_legend(title = NULL)) +
   theme_minimal() +
@@ -204,19 +230,32 @@ fit |>
 - Present your results in a well formatted table (suitable for presentation).
 
 ```{r ets_results}
-# forecast the validation period 
-fit |>
-  forecast(h = "12 months") |>
-  autoplot(fortified |> filter(year(Month) < 1995)) +
-  labs(title = "Forecast of ")
+# Forecast the validation period 
+forecast_1994 <- fit |>
+  forecast(h = "12 months")
 
-# review accuracy to select the best model
-#...
+# Review accuracy to select the best model
+forecast_1994 |>
+  accuracy(fortified) |>
+  arrange(RMSE) |>
+  select(Model = .model, RMSE, MAE, MAPE) |>
+  gt() |>
+  tab_header(
+    title = md("**1994 Out-of-Sample Forecast Accuracy**"),
+    subtitle = "Evaluation of all ETS models against actual 1994 sales"
+  ) |>
+  fmt_number(columns = c(RMSE, MAE), decimals = 2) |>
+  fmt_percent(columns = MAPE, scale_values = FALSE, decimals = 2) |>
+  cols_align(align = "center") |>
+  opt_stylize(style = 1) |>
+  tab_options(table.width = pct(80), latex.tbl.pos = "H")
 ```
 
 Which model produces the best mean forecast? Did all the metrics agree with each other?
 
-*Answer here...*
+- The auto ETS model produces the best forecast because it has the lowest RMSE (318.90), MAE (242.65), and MAPE (10.24%).
+
+- Interestingly, the Additive Holt-Winters has the second best RMSE (337.18), but the worst MAE (280.58) and MAPE (12.24%), meaning that the metrics do not always agree with one another and must be prioritized properly to decide on the best model (if auto ETS were not included).
 
 ### f) Use the best performing model to create a forecast for each month in 1995.
 
@@ -225,27 +264,54 @@ Which model produces the best mean forecast? Did all the metrics agree with each
 - Create a plot showing forecast values and intervals (80%, 95%) for 1995 alongside actual values from 1990 onwards.
 
 ```{r ets-fc-plt}
-
 # Use the full data set to fit the best model
-# ...
+fit <- fortified |>
+  model(auto = ETS(Fortified))
 
-# forecast the next 12 months
-# ...
+# Forecast the next 12 months
+forecast_1995 <- fit |>
+  forecast(h = "12 months")
 
-# plot the forecast
-# ...
+# Plot the forecast
+forecast_1995 |>
+  autoplot(fortified |> filter(year(Month) >= 1990)) + 
+  labs(
+    title = "Best Model (Auto ETS) 1995 Forecast of Sales by Month",
+    y = "Sales (thousands of liters)"
+  )
 ```
 
 ### g) Output the mean forecast values for 1995
 
 ```{r ets-fc-table}
-#...
+# Produce 1995 forecast table
+forecast_1995 |>
+  as_tibble() |>
+  select(Month, `Mean Forecasted Fortified Wine Sales` = .mean) |>
+  gt() |>
+  tab_header(
+    title = md("**1995 Mean Forecasted<br>Fortified Wine Sales by Month**")
+  ) |>
+  fmt_number(columns = `Mean Forecasted Fortified Wine Sales`, decimals = 2) |>
+  cols_align(align = "center") |>
+  opt_stylize(style = 1) |>
+  tab_options(table.width = pct(70), latex.tbl.pos = "H") |>
+  tab_source_note(
+    source_note = md("*Note:* Mean Forecast reported in thousands of liters.")
+  )
 ```
 
 ### h) Create a time plot of the residuals from your last model
 
 ```{r ch5-8c}
-#...
+# Obtain residuals
+residuals <- fit |>
+  augment()
+
+# Plot Residuals
+autoplot(residuals, .resid) +
+  labs(title = "Fortified Wine Sales Residuals from the Auto ETS Model",
+       y = "Sales (thousands of liters)")
 ```
 
 ## 3) Forecasting Australian Wine Sales: Time Series Regression
@@ -259,22 +325,32 @@ Which model produces the best mean forecast? Did all the metrics agree with each
 - Show the default prediction intervals
 
 ```{r fortified-tslm-plt}
-# reusing the training data from the previous question
+# Reusing the training data from the previous question
 
-# fit a TSLM model to the training set 
-# ...
+# Fit a TSLM model to the training set 
+fit_tslm <- fortified_trn |>
+  model(TSLM(Fortified ~ trend() + season()))
 
-# forecast the validation period
-# ...
+# Forecast the validation period
+forecast_1994 <- fit_tslm |>
+  forecast(h = "12 months")
 
-# plot the forecast
-# ...
-
+# Plot the forecast
+fortified |>
+  filter(year(Month) >= 1990) |>
+  autoplot(Fortified) +
+  autolayer(forecast_1994, alpha = 0.5) + 
+  labs(
+    title = "TSLM (Trend + Season) Forecast for Fortified Wine (1994)",
+    y = "Sales (thousands of liters)"
+  )
 ```
 
 **What can you say about the model fit?**
 
-*Answer here...*
+- The 1994 forecast captures the seasonal shape well, but certain months over or under forecast actual values because the TSLM seasonality is additive while ETS seasonality is multiplicative, giving it an advantage compared to TSLM.
+
+- Generally speaking, actual sales values are included in the prediction intervals, but there are some months where the actual sales are outside of the prediction interval, indicating poor model fit, especially compared to ETS.
 
 ### b) Compare the TSLM and best ETS models for the validation period
 
@@ -282,45 +358,92 @@ Which model produces the best mean forecast? Did all the metrics agree with each
 - Compare the RSME, MAE and MAPE metrics for each model in a well formatted table (suitable for presentation). Sort from best to worst RMSE.
 
 ```{r fortified-compare}
-# create a new mable object with just the two models we want to compare
-# ...
+# Create a new mable object with just the two models we want to compare
+fit <- fortified_trn |>
+  model(
+    auto = ETS(Fortified),
+    tslm = TSLM(Fortified ~ trend() + season())
+    )
 
-# forecast the validation period
-# ... 
+# Forecast the validation period
+forecast <- fit |>
+  forecast(h = "12 months")
 
-# compare the model accuracies
-# ...
+# Compare the model accuracies
+forecast |>
+  accuracy(fortified) |>
+  arrange(RMSE) |>
+  select(Model = .model, RMSE, MAE, MAPE) |>
+  gt() |>
+  tab_header(
+    title = md("**1994 Out-of-Sample Forecast Accuracy**"),
+    subtitle = "Auto ETS vs. TSLM against actual 1994 Fortified Wine sales"
+  ) |>
+  fmt_number(columns = c(RMSE, MAE), decimals = 2) |>
+  fmt_percent(columns = MAPE, scale_values = FALSE, decimals = 2) |>
+  cols_align(align = "center") |>
+  opt_stylize(style = 1) |>
+  tab_options(table.width = pct(80), latex.tbl.pos = "H")
 ```
 
 ### c) Produce a forecast for all wine types for sales in all months of 1995 using a linear regression model. Your forecast should be in the form of a presentable table with wine varietals as columns and months as rows.
 
 ```{r ch6-6c}
-# create a tsibble for all the wine types
+# Create a tsibble for all the wine types
 wines_ts <- aus_wine |> 
     pivot_longer(cols = -Month, names_to = 'Varietal', values_to = 'Sales') |> 
     as_tsibble(index = Month, key = Varietal) 
 
-# #optionally reproduce the plot
-# wines_ts |> 
-#     autoplot(Sales, color = "black") +
-#     facet_wrap(Varietal ~ ., scales = "free_y")
+# Fit the series
+fit <- wines_ts |>
+  model(TSLM(Sales ~ trend() + season()))
 
-# fit the series
-# ...
+# Forecast the series
+forecast <- fit |>
+  forecast(h = "12 months")
 
-# forecast the series
-# ...
-
-#use pivot wider to shape the output
-# ...
+# Use pivot wider to shape the output
+forecast |>
+  as_tibble() |>
+  select(Month, Varietal, .mean) |>
+  pivot_wider(names_from = Varietal,
+              values_from = .mean) |>
+  rename(`Dry White` = `Dry white`,
+        `Sweet White` = `Sweet white`,
+        Sparkling = sparkling) |>
+  gt() |>
+  tab_header(title = md("**1995 TSLM Sales Forecast by Varietal**"),
+             subtitle = "Mean Forecast reported in thousands of liters.") |>
+  fmt_number(decimals = 2) |>
+  cols_align(align = "center") |>
+  opt_stylize(style = 1) |>
+  tab_options(table.width = pct(100), latex.tbl.pos = "H")
 ```
 
 ## 4) Reflections
 
-a)  What was the most challenging part of this assignment?
+a\. What was the most challenging part of this assignment?
 
-b)  What is the most important takeaway from this assignment?
+- Question 2a presented the greatest challenge for me, I had to consult the text to ensure I was interpreting the alpha, beta, and gamma coefficients properly.
 
-c)  What would you recommend changing for future courses?
+b\. What is the most important takeaway from this assignment?
 
-d)  What LLMs did you use (if any) to help you complete this assignment?
+- Properly designing tables is one of my most important takeaways from this assignment. I had not used great tables (`gt`) before, I was vaguely aware of kable, but overall I was impressed how much control the library enabled me to have over table styling. I am normally not great with designing tables, but it was relatively easy to pick up once I had some practice.
+
+- My second most important takeaway was how much better ETS was compared to TSLM in question 3b, and in question 3a I summarized why I believe ETS was better suited for that specific task compared to TSLM.
+
+c\. What would you recommend changing for future courses?
+
+- No recommendations, I think this assignment was a good step up from assignment 1, and I thought it was an appropriate challenge.
+
+d\. What LLMs did you use (if any) to help you complete this assignment?
+
+- I used Gemini to help me learn great tables syntax and provide feedback on problems after I took a first and second pass over them. I consulted the text first to ensure I did not rely too heavily on Gemini.
+
+Reference
+
+Hyndman, R.J., & Athanasopoulos, G. (2021) *Forecasting: principles and practice*, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3. Accessed on 30 October 2026.
+
+**AI Disclosure:**\
+
+I used **Antigravity (powered by Gemini)** as a pair programmer for technical guidance during this assignment. It assisted with debugging R syntax (such as `tsibble` aggregation and `autoplot` legend formatting, as well as formatting tables with `gt`). All code was executed, tested, and verified locally by me, and all written responses reflect my own understanding and phrasing.
