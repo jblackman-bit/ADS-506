@@ -1,0 +1,118 @@
+---
+title: "Lab 2.1 - GVA - Preliminary Analysis"
+author: "Dave Hurst"
+format: html
+execute:
+    echo: false
+    warning: false
+---
+
+```{r setup}
+#| echo: false
+
+library(tidyverse)
+library(here)
+library(readxl)
+library(fpp3)
+```
+
+## Read in the data
+
+```{r}
+gva3state <- read_excel(here("labs/data/Gun Violence Archive - University of San Diego - Killed or Injured 20140101 - 20231010.xlsx"), 
+    skip = 4) |> 
+    mutate( Date = as.Date(Date),
+            severity = case_when(
+                `# Victims Killed` > 0 ~ 'Victim Fatality',
+                `# Victims Injured` > 0 ~ 'Victim Injury',
+                `# Suspect Killed` > 0 ~ 'Suspect Fatality',
+                `# Suspects Injured` > 0 ~ 'Suspect Injury',
+                TRUE ~ 'No Injury'),
+            fatality = str_detect(severity, 'Fatality'))
+
+gva3state |> 
+    filter(fatality == TRUE) |> 
+    count(Date, name = 'Incidents') |> 
+    ggplot(aes(Date, Incidents)) + 
+    geom_line() +
+    geom_smooth(method = "gam", formula = y ~ s(x, bs = "cs")) +
+    ggtitle("Number of Gun Fatalities/Day (CA + IN + IL)" )
+```
+
+## Prep data (Chicago Only)
+
+```{r}
+gva_chicago <- gva3state |> 
+    filter(Date < ymd('2023-10-01'),
+           Date >= ymd('2020-10-01'),
+           City == "Chicago",
+           State == "Illinois") |> 
+    count(Date, City, name = 'Incidents') |> 
+    as_tsibble(index = Date) |> 
+    fill_gaps(Incidents = 0L)
+
+gva_chicago |> 
+    model(stl = STL(Incidents)) |> 
+    components() |> 
+    autoplot()
+```
+
+## TSLM model evaluation
+
+```{r}
+chicago_prep <- gva_chicago # add regressors to this
+
+val_cutoff <- ymd('2023-Jan-01')
+chicago_trn <- chicago_prep |> filter(Date < val_cutoff)
+chicago_tst <- chicago_prep |> filter(Date >= val_cutoff)
+
+chicago_fit <- chicago_trn |> 
+    model(
+        tslm_basic = TSLM(Incidents ~ season() + trend())
+          ) 
+
+chicago_fit |> report()
+```
+
+## TSLM Forecast
+
+```{r}
+chicago_fc_basic <- chicago_fit['tslm_basic'] |> 
+    forecast(h = '10 months') # 273 days # chicago_tst$Date |> max() - ymd('2022-12-31')
+
+chicago_fc_basic |> autoplot(chicago_trn)
+```
+
+```{r}
+chicago_fc <- forecast(chicago_fit,
+                       new_data = chicago_tst )
+
+accuracy(chicago_fc, chicago_tst) |> arrange(RMSE)
+         
+```
+
+## R-squared for ETS
+
+ETS doesn't report `R-squared` because it doesn't have regressors, but we can still calculate the cooefficient of determinination from the residuals.
+
+```{r}
+fit_ets <- chicago_fit['ets_auto'] |> augment()
+Rsq <- cor(fit_ets$Incidents, fit_ets$.fitted)^2
+
+```
+
+## Discussion 2.1 - Example Submission
+
+***Perform an preliminary analysis on your proposed dataset.***
+
+*Use the dataset you are proposing for your final project for a preliminary analysis using one of the methods covered in this weeks readings (Time Series Linear Model or Exponential Smoothing with auto-selection). If your dataset contains multiple time series, you may choose to focus on just one for this discussion.*
+
+*Start with a brief description of your dataset and the model you plan to use.*
+
+*Report on the model hyperparameters as well as the model parameters and with a sentence or two interpreting them.*
+
+*Provide a well formatted plot of the data that includes a few periods of the training data, the a forecast for one period (or a suitable forecast horizon if no seasonality is present).*
+
+*Write just a few sentences about what your analysis reveals about the time series.*
+
+

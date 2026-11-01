@@ -169,6 +169,9 @@ tidy(fit) |>
 ### c) repeat the modeling step with an autoselect model, an Additive Holt-Winters model with additive errors and any other model of your choice. Report the RMSE, MAE and MAE for each model. Sort the report from best to worst based on `AICc`
 
 ```{r ets_multi}
+# Set seed for reproduceability
+set.seed(123)
+
 # Fit multiple models
 fit <- fortified_trn |>
   model(
@@ -188,7 +191,8 @@ glance(fit) |>
   gt() |>
   tab_header(title = md("**Model Accuracy**"),
     subtitle = "Fortified Wine Sales (Training Period: 1980–1993)") |>
-  fmt_number(decimals = 2) |>
+  fmt_number(columns = c(AICc, RMSE, MAE), decimals = 2) |>
+  fmt_percent(columns = MAPE, scale_values = FALSE, decimals = 2) |>
   cols_align(align = "center") |>
   opt_stylize(style = 1) |>
   tab_options(table.width = pct(100), latex.tbl.pos = "H")
@@ -196,7 +200,7 @@ glance(fit) |>
 
 - I reported on MAE and MAPE, the prompt for question 2c lists MAE twice, so I interpreted this to mean MAE and MAPE.
 
-- The dampened multiplicative Holt-Winters and Additive Holt-Winters did not outperform in any metric. The Multiplicative Holt-Winters has the lowest MAPE (6.98) and the lowest RMSE (278.59), but the Auto model (ETS(M, A, M)) showed the lowest AICc (2,757.60), making it the best model considered in this set when looking at training performance.
+- The dampened multiplicative Holt-Winters and Additive Holt-Winters did not outperform in any metric. The Multiplicative Holt-Winters has the lowest MAPE (6.98%) and the lowest RMSE (278.59), but the Auto model (ETS(M, A, M)) showed the lowest AICc (2,757.60), making it the best model considered in this set when looking at training performance.
 
 ### d) Create a plot with just the last year of the training data (1993) that shows the fitted values for each model overlaid on top of the training (actual) data.
 
@@ -230,6 +234,9 @@ fit |>
 - Present your results in a well formatted table (suitable for presentation).
 
 ```{r ets_results}
+# Set seed again for reproduceability
+set.seed(123)
+
 # Forecast the validation period 
 forecast_1994 <- fit |>
   forecast(h = "12 months")

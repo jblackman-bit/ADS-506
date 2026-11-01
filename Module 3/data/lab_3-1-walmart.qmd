@@ -1,0 +1,203 @@
+---
+title: "ADS-506 Lab Week3 - Kaggle/Walmart Data"
+bibliography: references.bib
+bibliographystyle: apa
+format: 
+    html:
+        toc: true
+    pdf:
+        geometry: "top=1in, bottom=1in, left=0.75in, right=0.75in"
+---
+
+```{r setup}
+#| echo: false
+#| message: false
+#| warning: false
+library(tidyverse)
+library(fpp3)
+```
+
+## 7.6 Forecasting Weekly Sales at Walmart
+
+This exercise is taken from Chapter 7 of *Practical Time Series Forecasting with R* [@shmueli2018practical].
+
+The data in WalmartStore1Dept72.csv is a subset from a larger datasets on weekly department-wise sales at 45 Walmart stores, which were released by Walmart as part of a hiring contest hosted on kaggle.com [@walmart_kaggle]. The file includes data on a single department at one specific store.
+
+The fields include:
+
+-   Date - the week
+-   Weekly_Sales - sales for the given department in the given store
+-   IsHoliday - whether the week is a special holiday week
+-   Temperature - average temperature in the region
+-   Fuel_Price - cost of fuel in the region
+-   MarkDown1-5 - anonymized data related to promotional markdowns that
+-   Walmart is running. MarkDown data is only available after Nov 2011, and is not available for all stores all the time.
+-   CPI - the consumer price index\
+    Unemployment - the unemployment rate
+
+We are interested in creating a forecasting model for weekly sales for the next 26 weeks.
+
+```{r 7-6-data}
+ws1d72 <- read_csv(here::here("data/WalmartStore1Dept72.csv"), show_col_types = FALSE) |> 
+    mutate(Date = mdy(Date)) |> 
+    as_tsibble(index = Date)
+```
+
+### a) Recreate the time plot of the weekly sales data.
+
+```{r}
+
+```
+
+Which systematic patterns appear in this series?
+
+*... Answer ...*
+
+### b) Create time plots of the other numerical series (Temperature, Fuel_Price, CPI, and Unemployment). Also create scatter plots of the sales series against each of these four series (each point in the scatter plot will be a week).
+
+```{r}
+
+```
+
+```{r}
+#scatter plot
+```
+
+### c) From the charts, which of the four series would potentially be useful as external predictors in a regression model for forecasting sales?
+
+*... Answer ...*
+
+### d) For the next 4 questions, create a training dataset that excludes the last 26 weeks of data
+
+```{r wmt-trn-efg}
+
+```
+
+### e) determine the number of differences required to make the Weekly_Sales series stationary using unit root tests.
+
+```{r}
+
+```
+
+Does the test indicate a second order differencing at lag 1 is advisable?
+
+### f) Plot the ACF and PACF of the Weekly_Sales series with differencing at lag=1. Based on these plots, and considering only a regular ARIMA (not a SARIMA) which ARIMA model(s) would you suggest for this series? (Explain your reasoning)
+
+```{r}
+# ACF/PCF  plots
+
+```
+
+*... Answer ...*
+
+### g) Fit the suggested ARIMA models as well as an auto ARIMA model (with no inputs) and compute RMSE for each over the training period. Do not include external variables for your ARIMA models. (Your output should be displayed in a well-readable table)
+
+```{r}
+# fit the models
+
+# output the RMSE
+
+```
+
+### h) Which ARIMA model did auto ARIMA select? How does it compare with your suggested models? How do the models perform on the validation data?
+
+```{r}
+#print the models
+
+```
+
+```{r}
+# score the models on the validation set
+
+```
+
+*... Answer ...*
+
+**Repeat the last 4 questions with SARIMA components**
+
+### i) determine the differences required to make the Weekly_Sales series stationary. (Apply a unit root test, but also plot and use your judgement to decide if the series is stationary)
+
+```{r}
+# plot the difference model
+
+```
+
+```{r}
+# perform root test(s)
+
+```
+
+*... Answer ...*
+
+### j) Plot the ACF and PACF of the full series with differencing. Based on these plots, which ARIMA model(s) would you suggest for this series? (Explain your reasoning)
+
+```{r}
+# ACF/PCF  plots
+
+```
+
+*... Answer ...*
+
+### k) Fit the suggested ARIMA models as well as an auto ARIMA model (with no inputs) and compute RMSE for each over the training period. Do not include external variables for your ARIMA models. 
+
+```{r}
+
+```
+
+### l) Which ARIMA model did auto ARIMA select? How does it compare with your suggested models? How do the models perform on the training and validation data?
+
+```{r}
+#print the models
+
+```
+
+```{r}
+# score the models on the validation set
+
+```
+
+*... Answer ...*
+
+### m) Refit yours models with the external predictors you identified in part b) and calculate the RMSE for the training period. Add an auto ARIMA model that also uses the external predictors, but this time help the Auto ARIMA model by providing the seasonal period. Also add a `SNAIVE()` model as a baseline. (4 models in total)
+
+```{r 76m}
+
+```
+
+### n) Which ARIMA model did auto ARIMA select? How does it compare with your suggested models? How do the models perform on the validation data?
+
+```{r 76m-print}
+#print the models
+
+```
+
+```{r}
+# score the models on the validation set
+
+```
+
+*... Answer ...*
+
+*The Auto ARIMA model selected a (1,0,0)(0,1,0)\[52\] - an AR1 of the seasonally differenced data. It outperforms both the suggested models and the baseline model based on the RMSE for training data.*
+
+### o) Read in the external variables data for the test period from `WalmartStore1Dept72_validation.csv`, make a prediction for the first 4 weeks of the test period. Provide a plot of the forecast for the best model and the baseline (only), and a table with the forecast for both models.
+
+```{r 76o}
+ws1d72_tst <- read_csv(here::here("data/WalmartStore1Dept72_validation.csv"), 
+                       show_col_types = FALSE) |> 
+    mutate(Date = mdy(Date)) |> 
+    as_tsibble(index = Date) |> 
+    arrange(Date) |> 
+    head(4)
+
+# fit the models
+
+# forecast 
+
+# plot the forecasts
+
+# print the forecast
+
+```
+
+## Reference
