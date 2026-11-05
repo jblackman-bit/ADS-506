@@ -1,8 +1,21 @@
 ---
 title: "ADS-506 Assignment 3.1"
 author: "Jordan Blackman"
-format: pdf
-editor: visual
+format:
+  pdf:
+    geometry:
+      - margin=0.65in
+    tbl-pos: "H"
+    include-in-header:
+      text: |
+        \usepackage{float}
+        \floatplacement{table}{H}
+        \usepackage{fvextra}
+        \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+        \usepackage{etoolbox}
+        \BeforeBeginEnvironment{Shaded}{\par\nopagebreak\begin{minipage}{\linewidth}}
+        \AfterEndEnvironment{Shaded}{\end{minipage}\par}
+        \AddToHook{env/tabular*/after}{\par}
 ---
 
 ```{r}
@@ -14,22 +27,24 @@ library(gt)
 
 # Module 3 Assignment Exercises
 
-This assignment is due on Day 7 of the learning week. The assignment for this module consists of code, outputs and short prose responses. Use R with [tidyverts](tidyverts.org) (`fpp3`) Complete the assignment in a [Quarto Document](quarto.org). Leave the questions and instructions intact so that it is clear which sections your response is addressing. Once completed, you will render your deliverable to a PDF file such that the text in the document is selectable.
+This assignment is due on Day 7 of the learning week. The assignment for this module consists of code, outputs and short **written** responses. Use R with [tidyverts](tidyverts.org) (`fpp3`) Complete the assignment in a [Quarto Document](quarto.org). Leave the questions and instructions intact so that it is clear which sections your response is addressing. Once completed, you will render your deliverable to a PDF file such that the text in the document is selectable.
 
 Your submission should show all code executed and must not exceed 14 pages.
 
-## 1) Forecasting Australian Wine Sales : Exponential Smoothing
+## 1) Forecasting Australian Wine Sales : ARIMA
 
 The figure below shows time plots of monthly sales of six types of Australian wines (red, rose, sweet white, dry white, sparkling, and fortified) for 1980-1994. Data available in AustralianWines.xls. The units are thousands of liters.
 
 ```{r ch5_fig}
 #| echo: false
+# Load the data
 aus_wine <- read_csv(here::here("data/AustralianWines.csv"), na = "*",
                      col_types = cols(Rose = col_number()),
                      show_col_types = FALSE) |> 
     fill(Rose, .direction = "down") |> 
     mutate(Month = mdy(str_replace(Month, '-', '-01-')) |> yearmonth()) 
 
+# View the data
 aus_wine |> 
     pivot_longer(cols = -Month, names_to = 'Varietal', values_to = 'Sales') |> 
     ggplot(aes(Month, Sales)) +
@@ -42,160 +57,358 @@ Fortified wine has the largest market share of the six types of wine. Focus on f
 
 ### a) Create ACF/PACF plots from a training set.
 
--   Start by partitioning the data using the period until December 1993 as the training period.
--   Determine the differencing (if any) required to make the data stationary (show any test output).
--   Plot the ACF/PACF on the stationary time series
--   Specify the models suggested by the ACF and PACF plots respectively
+- Start by partitioning the data using the period until December 1993 as the training period.
+- Determine the differencing (if any) required to make the data stationary (show any test output).
+- Plot the ACF/PACF on the stationary time series
+- Specify the models suggested by the ACF and PACF plots respectively
 
 ```{r wine_fort_acf}
 #| warning: false
 
-# create a time series object for fortified wine sales (tsibble)
+# Create a time series object for fortified wine sales (tsibble)
+aus_wine_ts <- aus_wine |>
+  select(Month, Fortified) |>
+  as_tsibble(index = Month)
 
-# create training/validation sets for the model
+# Create training/validation sets for the model
+cutoff <- yearmonth("1993 Dec")
+trn <- aus_wine_ts |> filter(Month <= cutoff)
+test <- aus_wine_ts |> filter(Month > cutoff)
 
-# check stationarity (fabletools::feature(...))
+# Check stationarity (fabletools::feature(...))
+ns_diffs <- trn |> features(Fortified, unitroot_nsdiffs)
 
-# plot differenced series and ACF/PACF plots 
+# Apply differencing and KPSS test
+trn_d12 <- trn |>
+  mutate(d12 = difference(Fortified, 12))
 
+nd_diffs <- trn_d12 |> features(d12, unitroot_ndiffs)
+
+kpss_result <- trn_d12 |> features(d12, unitroot_kpss)
+
+# Construct differencing and KPSS table
+tibble(`Diagnostic Test` = c(
+    "Seasonal Differencing (nsdiffs)",
+    "First Differencing (ndiffs)",
+    "KPSS Stationarity Test"),
+  `Series Evaluated` = c(
+    "Fortified (Raw)",
+    "d12 (Differenced at Lag 12)",
+    "d12 (Differenced at Lag 12)"),
+  `Test Result` = c(
+    paste0("D = ", ns_diffs$nsdiffs),
+    paste0("d = ", nd_diffs$ndiffs),
+    paste0("Stat: ", round(kpss_result$kpss_stat, 4),
+           " (p-value = ", kpss_result$kpss_pvalue, ")")),
+  `Conclusion` = c(
+    "1 seasonal difference required (D = 1)",
+    "No regular differencing needed (d = 0)",
+    "Series is stationary (Fail to reject H0)")) |>
+  gt() |>
+  tab_header(title = md("**Stationarity & Differencing Diagnostic Tests**"),
+    subtitle = "Fortified Wine Sales Training Period (1980–1993)") |>
+  cols_align(align = "center") |>
+  cols_align(align = "left", columns = `Diagnostic Test`)
 ```
 
 **What tests or reasoning did you use to determine the differencing required?**
 
-*Answer here...*
+- First, I started with seasonal differencing because that is where the textbook recommends starting, and unitroot_nsdiffs() recommended one seasonal difference. From there, I applied the seasonal difference at 12 months.
+- Second, I tested for a non-seasonal difference with unitroot_ndiffs() and no non-seasonal differencing was required. unitroot_kpss() could not reject the null hypothesis of stationary data (p-value \>= 0.1).
 
-**What models do the ACF and PCF suggest would be best, respectively?**
+```{r wine_fort_acf pt. 2}
+#| warning: false
 
-*ACF: Answer here...*
+# Plot differenced series and ACF/PACF plots 
+trn_d12 |> gg_tsdisplay(d12, plot_type = "partial", lag_max = 24) + 
+  labs(
+    title = "ACF & PACF of Seasonally Differenced Fortified Sales [d=0, D=1, m=12]"
+  )
+```
 
-*PCF: Answer here...*
+**What models do the ACF and PACF suggest would be best, respectively?**
+
+*ACF: The strong negative spike at lag 12 suggests a seasonal MA(1), no lags 1-11 are significant, meaning a non-seasonal MA value is not required. This suggests an ARIMA(0,0,0)(0,1,1)\[12\].*
+
+*PACF: The strong negative spike at lag 12 suggests a seasonal AR(1), no lags 1-11 are significant, meaning a non-seasonal AR value is not required. This suggests an ARIMA(0,0,0)(1,1,0)\[12\].*
 
 ### b) Build the suggest models and an auto selected model
 
-```{r}
-# model fit
+```{r model fit}
+#| warning: false
 
-# report auto-arima model
+# Model fit
+aus_wine_fit <- trn |>
+  model(ma_model = ARIMA(Fortified ~ pdq(0, 0, 0) + PDQ(0,1,1)),
+        ar_model = ARIMA(Fortified ~ pdq(0, 0, 0) + PDQ(1,1,0)),
+        auto = ARIMA(Fortified, stepwise = FALSE, approx = FALSE))
+
+# Report auto-arima model
+aus_wine_fit |>
+  pivot_longer(everything(), names_to = "Model", values_to = "Specification") |>
+  as_tibble() |>
+  mutate(Specification = format(Specification)) |>
+  filter(Model == "auto") |>
+  gt() |>
+  tab_header(
+    title = md("**Fitted Auto ARIMA Model**"),
+    subtitle = "Fortified Wine Sales (Training Period: 1980–1993)") |>
+  cols_align(align = "center") |>
+  opt_stylize(style = 1)
 ```
 
 **What model did the ARIMA auto-select choose?**
 
-*Answer here...*
+The auto ARIMA model selected was ARIMA(0,0,1)(1,1,1)\[12\] with a drift term.
 
 ### c) Compare the models with both RMSE and AICc.
 
--   Print the model metrics. Sort the report from best to worst based on `AICc`
+- Print the model metrics. Sort the report from best to worst based on `AICc`
 
 ```{r fit_aic}
+# Construct fit metrics table
+fit_metrics <- glance(aus_wine_fit) |>
+  select(Model = .model, AICc, AIC, BIC) |>
+  left_join(
+    accuracy(aus_wine_fit) |> select(Model = .model, RMSE, MAE, MAPE),
+    by = "Model") |>
+  as_tibble()
 
+# View fit metrics table sorted by AICc
+fit_metrics |>
+  arrange(AICc) |>
+  gt() |>
+  tab_header(
+    title = md("**Model Comparison: Information Criteria**"),
+    subtitle = "Sorted from best to worst by AICc (Training: 1980–1993)") |>
+  fmt_number(columns = c(AICc, AIC, BIC, RMSE, MAE), decimals = 2) |>
+  fmt_percent(columns = MAPE, scale_values = FALSE, decimals = 2) |>
+  cols_align(align = "center")
 ```
 
--   Print the model metrics. Sort the report from best to worst based on `RMSE`
+- Print the model metrics. Sort the report from best to worst based on `RMSE`
 
 ```{r fit_rmse}
-
+# View fit metrics table sorted by RMSE
+fit_metrics |>
+  arrange(RMSE) |>
+  gt() |>
+  tab_header(
+    title = md("**Model Comparison: RMSE**"),
+    subtitle = "Sorted from best to worst by RMSE (Training: 1980–1993)") |>
+  fmt_number(columns = c(AICc, AIC, BIC, RMSE, MAE), decimals = 2) |>
+  fmt_percent(columns = MAPE, scale_values = FALSE, decimals = 2) |>
+  cols_align(align = "center") |>
+  opt_stylize(style = 1)
 ```
 
 ### d) Forecast the data for each month of 1994 for each model and compare the resulting metrics.
 
--   Report RMSE, MAE, and MAPE for all models, ordered by best RMSE.
--   Present your results in a well formatted table (suitable for presentation).
+- Report RMSE, MAE, and MAPE for all models, ordered by best RMSE.
+- Present your results in a well formatted table (suitable for presentation).
 
 ```{r ets_results}
-# forecast the validation period 
+# Forecast the validation period 
+forecast <- aus_wine_fit |> forecast(new_data = test)
 
-# review accuracy to select the best model
-
+# Review accuracy to select the best model
+accuracy(forecast, test) |>
+  select(Model = .model, RMSE, MAE, MAPE) |>
+  arrange(RMSE) |>
+  gt() |>
+  tab_header(
+    title = md("**Model Comparison: Forecast Accuracy**"),
+    subtitle = "Sorted from best to worst by RMSE (Testing: 1994)") |>
+  fmt_number(columns = c(RMSE, MAE), decimals = 2) |>
+  fmt_percent(columns = MAPE, scale_values = FALSE, decimals = 2) |>
+  cols_align(align = "center") |>
+  opt_stylize(style = 1)
 ```
 
 **Which model produces the best mean forecast? How did that compare with the training goodness-of-fit metrics?**
 
-*Answer here...*
+The PACF Model (ARIMA(0, 0, 0)(1,1,0)) shows the lowest out-of-sample RMSE (285.89), MAE (218.31), and MAPE (9.31%) of any models, followed by the ACF Model and the Auto model in last place. This is the exact opposite of the training goodness of fit metrics where auto was in first place, ACF model in second, and PACF in last place. The auto model clearly overfit the training data, which is why the manual models outperformed the auto model, highlighting the importance of configuring well thought out ARIMA models.
 
 ### e) Use the best performing model to create a forecast for each month in 1995.
 
--   Fit a model against the full dataset.
--   Forecast the next year of data.
--   Create a plot showing forecast values and intervals (80%, 95%) for 1995 alongside actual values from 1992 onwards.
+- Fit a model against the full dataset.
+- Forecast the next year of data.
+- Create a plot showing forecast values and intervals (80%, 95%) for 1995 alongside actual values from 1992 onwards.
 
 ```{r arima-fc-plt}
 
 # Use the full data set to fit the best model
+aus_wine_full_fit <- aus_wine_ts |>
+  model(ar_model = ARIMA(Fortified ~ pdq(0, 0, 0) + PDQ(1,1,0)))
 
-# forecast the next 12 months
+# Forecast the next 12 months
+forecast <- aus_wine_full_fit |>
+  forecast(h=12)
 
-# plot the forecast
+# Plot the forecast
+forecast |>
+  autoplot(aus_wine_ts |> filter(Month >= yearmonth("1992 Jan"))) +
+  labs(title = "1995 Fortified Wine Sales Forecast",
+       subtitle = "ARIMA(0,0,0)(1,1,0)[12] with 80% & 95% Prediction Intervals",
+       y = "Sales (thousands of liters)")
 
 ```
 
 ### f) Output the mean forecast values for 1995 in a well formatted table.
 
 ```{r ets-fc-table}
-
+# Output forecasted values by month
+forecast |>
+  as_tibble() |>
+  select(Month, Mean = .mean) |>
+  gt() |>
+  tab_header(
+    title = md("**1995 Mean Forecasted<br>Fortified Wine Sales by Month**"),
+    subtitle = "Forecasts generated from the top-performing ARIMA model"
+  ) |>
+  fmt_number(columns = Mean, decimals = 2) |>
+  cols_align(align = "center") |>
+  opt_stylize(style = 1) |>
+  tab_options(table.width = pct(70), latex.tbl.pos = "H") |>
+  tab_source_note(
+    source_note = md("*Note:* Values reported in thousands of liters.")
+  )
 ```
-
-\newpage
 
 ## 2) Forecasting Australian Wine Sales: ARIMA comparison against other models
 
--   Use your existing partitioned data for the fortified wine series (training through December 1993).
--   Fit an ARIMA model - use the best model from the previous problem
--   Also fit time series linear model with trend and seasonal components and an auto-selected exponential smoothing model. (Hint: see the assignment from the previous module).
+- Use your existing partitioned data for the fortified wine series (training through December 1993).
+- Fit an ARIMA model - use the best model from the previous problem
+- Also fit time series linear model with trend and seasonal components and an auto-selected exponential smoothing model. (Hint: see the assignment from the previous module).
 
 ### a) Create the "actual vs. forecast" plot for validation period.
 
--   (Hint) It may be easier to create a new `mable` object by refitting the data
--   plot all 3 models together with the actual data
--   remove the confidence intervals for clarity
+- (Hint) It may be easier to create a new `mable` object by refitting the data
+- plot all 3 models together with the actual data
+- remove the confidence intervals for clarity
 
 ```{r fortified-compare}
-# build the models
+# Build the models
+aus_wine_fit <- trn |>
+  model(ar_model = ARIMA(Fortified ~ pdq(0, 0, 0) + PDQ(1,1,0)),
+        tslm = TSLM(Fortified ~ trend() + season()),
+        ets = ETS(Fortified))
 
-# forecast the validation period
+# Forecast the validation period
+forecast <- aus_wine_fit |>
+  forecast(h = 12)
 
-# plot the forecasts
-
+# Plot the forecasts
+forecast |>
+  autoplot(aus_wine_ts |>
+  filter(Month >= yearmonth("1992 Jan")), level = NULL) +
+  labs(title = "1994 Validation Forecast Comparison",
+       subtitle = "Comparing PACF ARIMA, ETS, and TSLM Models Against Actual Sales",
+       y = "Sales (thousands of liters)")
 ```
 
--   Compare the RSME, MAE and MAPE metrics in the validation period for each model in a well formatted table (suitable for presentation). Sort from best to worst RMSE.
+- Compare the RSME, MAE and MAPE metrics in the validation period for each model in a well formatted table (suitable for presentation). Sort from best to worst RMSE.
 
 ```{r tbl-3a}
-
+# View forecast accuracy table
+accuracy(forecast, test) |>
+  select(Model = .model, RMSE, MAE, MAPE) |>
+  arrange(RMSE) |>
+  gt() |>
+  tab_header(
+    title = md("**Model Comparison: Forecast Accuracy**"),
+    subtitle = "Sorted from best to worst by RMSE (Testing: 1994)") |>
+  fmt_number(columns = c(RMSE, MAE), decimals = 2) |>
+  fmt_percent(columns = MAPE, scale_values = FALSE, decimals = 2) |>
+  cols_align(align = "center") |>
+  opt_stylize(style = 1)
 ```
 
 ***Which model produced the best forecast based on RMSE?***
 
-*Answer ...*
+The PACF ARIMA model outperformed the ETS and TSLM models with a 285.89 RMSE, 218.31 MAE, and a 9.31% MAPE.
 
 ### b) Produce a forecast for all wine types for sales in all months of 1995 using an auto ARIMA model.
 
--   Output a presentable table with wine varietals as columns and months as rows
+- Output a presentable table with wine varietals as columns and months as rows
 
 ```{r ch6-6c}
-# create a tsibble for all the wine types
+# Create a tsibble for all the wine types
+all_aus_wine_ts <- aus_wine |>
+  pivot_longer(cols = -Month, names_to = 'Varietal', values_to = 'Sales') |>
+  as_tsibble(index = Month, key = 'Varietal')
 
-# fit auto-arima
+# Fit auto-arima
+all_aus_wine_fit <- all_aus_wine_ts |>
+  model(auto_arima = ARIMA(Sales))
 
-# forecast
+# Forecast
+forecast <- all_aus_wine_fit |>
+  forecast(h = 12)
 
-#use pivot wider to shape the output
-
+# Use pivot wider to shape the output
+forecast |>
+  as_tibble() |>
+  select(Varietal, Month, Mean = .mean) |>
+  pivot_wider(names_from = Varietal, values_from = Mean) |>
+  rename(
+    `Dry White` = `Dry white`,
+    `Sweet White` = `Sweet white`,
+    Sparkling = sparkling
+  ) |>
+  gt() |>
+  tab_header(
+    title = md("**1995 Auto-ARIMA Sales Forecast by Varietal**"),
+    subtitle = "Monthly Mean Forecasts (Thousands of Liters)"
+  ) |>
+  fmt_number(decimals = 2) |>
+  cols_align(align = "center") |>
+  opt_stylize(style = 1) |>
+  tab_options(table.width = pct(100), latex.tbl.pos = "H")
 ```
 
-\newpage
-
--   Plot the forecast for each varietal along with 3 years of historical data.
+- Plot the forecast for each varietal along with 3 years of historical data.
 
 ```{r}
-
+# Show forecast plots
+forecast |>
+  autoplot(all_aus_wine_ts |> filter(year(Month) >= 1992)) +
+  facet_wrap(~ Varietal, scales = "free_y", ncol = 3) +
+  labs(
+    title = "1995 Sales Forecast by Wine Varietal",
+    subtitle = "Auto-ARIMA 12-Month Projections with 3 Years Historical Data (1992–1994)",
+    x = "Month",
+    y = "Sales (thousands of liters)"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "bottom",
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
 ```
 
 ## 3) Reflections
 
-a)  What was the most challenging part of this assignment?
+a\. What was the most challenging part of this assignment?
 
-b)  What was your most valuable takeaway from this assignment?
+- The most challenging part of this assignment was making sure the ACF and PACF analysis for what pdq and PDQ values to select was correct. I found the text very helpful to confirm my thoughts here, but I did carefully have to consider that question.
 
-c)  What improvements do you suggest for future courses?
+b\. What was your most valuable takeaway from this assignment?
 
-d)  What LLMs did you use (if any) to help you complete this assignment?
+- Manual ARIMA models often outperform auto ARIMA models out-of-sample. I am no stranger to the concept of overfitting, but it seems like auto ARIMA overfits often, which means that manually analyzing ACF and PACF plots is critical skill.
+
+c\. What improvements do you suggest for future courses?
+
+- No improvements for future courses. I think it was great that TSLM and ETS were reinforced here, I think its important to keep practicing the syntax and understanding the outputs.
+
+d\. What LLMs did you use (if any) to help you complete this assignment?
+
+- I used Gemini to assist me with speeding up great tables formatting and providing feedback on problems after I took a first and second pass over them. I consulted the text first to ensure I did not rely too heavily on Gemini.
+
+Reference
+
+Hyndman, R.J., & Athanasopoulos, G. (2021) *Forecasting: principles and practice*, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3. Accessed on 30 October 2026.
+
+**AI Disclosure:**
+
+I used **Antigravity (powered by Gemini)** as a pair programmer for technical guidance during this assignment. It assisted with debugging R syntax. All code was executed, tested, and verified locally by me, and all written responses reflect my own understanding and phrasing.
