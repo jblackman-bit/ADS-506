@@ -10,6 +10,7 @@ format:
 #| message: false
 library(tidyverse)
 library(fpp3)
+library(gt)
 ```
 
 # Module 4 Assignment Exercises
@@ -42,129 +43,310 @@ Focus on fortified wine sales alone and produce as accurate a monthly forecast a
 
 ### a) Build an auto-ARIMA model and check regression assumptions.
 
--   Partition the data using the period until December 1993 as the training period.
--   Build an a auto-ARIMA model using the untransformed series.
--   Plot the model residuals, autocorrelations and histogram.
--   Perform a Ljung-Box test
+- Partition the data using the period until December 1993 as the training period.
+- Build an a auto-ARIMA model using the untransformed series.
+- Plot the model residuals, autocorrelations and histogram.
+- Perform a Ljung-Box test
 
 ```{r wine_fort_acf}
 #| warning: false
 
 # create a time series object for fortified wine sales (tsibble)
+aus_wine_ts <- aus_wine |>
+  select(Month, Fortified) |>
+  as_tsibble(index = Month)
 
 # create training sets for the model
+fort_trn <- aus_wine_ts |> 
+  filter(Month <= yearmonth('1993 Dec'))
 
 # build the model
+auto_fit <- fort_trn |>
+  model(auto = ARIMA(Fortified))
 
 # plot residuals, acf, hist
+auto_fit |> gg_tsresiduals(type = 'innovation') +
+  labs(title = "Innovation Residual Diagnostics: Auto-ARIMA Model",
+    subtitle = "ARIMA(0,0,0)(2,1,1)[12] w/ drift — Fortified Wine Sales (1980–1993)",
+    caption = "Note: Sales units are in thousands of liters.")
 
 # perform a ljung-box test with sufficient lags
+auto_fit |> augment() |>
+  features(.innov, ljung_box, lag = 24, dof = 3) |>
+  mutate(Model = "ARIMA(0,0,0)(2,1,1)[12] w/ drift",
+    Lags = 24, DoF = 3, Conclusion = "Fail to reject H0 (White Noise)") |>
+  select(Model, `Test Lags` = Lags, DoF, `Q* Stat` = lb_stat,
+         `p-value` = lb_pvalue, Conclusion) |>
+  gt() |>
+  tab_header(title = md("**Ljung-Box Autocorrelation Test on Innovation Residuals**"),
+    subtitle = "Fortified Wine Sales Training Period (1980–1993)") |>
+  fmt_number(columns = `Q* Stat`, decimals = 2) |>
+  fmt_number(columns = `p-value`, decimals = 3) |>
+  cols_align(align = "center", columns = everything()) |>
+  tab_options(table.width = pct(85), latex.tbl.pos = "H")
 
 ```
 
 **Interpret the plots and test results. Do the linear regression assumptions from [7.1 The linear model \| Forecasting: Principles and Practice](https://otexts.com/fpp3/regression-intro.html) hold? Should the data be transformed prior to fitting?**
 
-*Answer here...*
+Yes, linear regression assumptions are mostly upheld here, although the useful assumption of constant variance is not upheld, indicating a Box-Cox or log transformation is required to produce accurate prediction intervals. More detail below:
+
+- There are no external predictor variables, instead, the auto ARIMA determines the best values for p/P, d/D, and q/Q to give an approximation of reality. Because these values are derived from the patterns of the forecast variable itself, it can be concluded that this is a reasonable approximation of reality.
+
+- Based on the innovation residuals plot and the residual histogram, the errors have a mean of zero, so the forecast will not be biased.
+
+- Based on the acf plot, no lag exceeds the boundary, therefore it can be concluded that the errors are not autocorrelated, so the forecast will be efficient and no additional information needs to be included.
+
+- Because this is a univariate ARIMA model, there are no external predictor variables, so no external predictor variables can be correlated with the residuals. The Ljung-Box test (lag = 24, dof = 3), yielded a p-value of 0.740, because the p-value exceeds 0.05, we fail to reject the null hypothesis of white noise, confirming that the residuals are not autocorrelated.
+
+  - Note: Ljung-Box degrees of freedom = 3 was determined based on the auto ARIMA specification below in question 1b, which shows a ARIMA(0,0,0)(2,1,1)\[12\] w/ drift, dof = 0 + 0 + 2 + 1 = 3
+
+- Based on the residuals histogram, the residuals appear normally distributed, but when looking at the innovation residual plot, the variance is not constant over time. Variance is larger earlier in the time series.
+
+  - This change in variance indicates a Box-Cox or log transformation is required to satisfy the useful assumption that variance is constant in order to produce accurate prediction intervals.
 
 ### b) Build 6 models. ARIMA (auto), ETS (auto), and TSLM (with trend and season) each for both `Sales` and `log(Sales)`
 
 ```{r}
 # build models
+fit <- fort_trn |>
+  model(auto_arima = ARIMA(Fortified),
+  auto_arima_log = ARIMA(log(Fortified)),
+  ets = ETS(Fortified),
+  ets_log = ETS(log(Fortified)),
+  tslm = TSLM(Fortified ~ trend() + season()),
+  tslm_log = TSLM(log(Fortified) ~ trend() + season()))
 
 # <mable> |> t() #to report the models
+fit |> pivot_longer(everything(), names_to = "Model", values_to = "Specification") |>
+  as_tibble() |>
+  mutate(Specification = format(Specification)) |>
+  filter(Model %in% c("auto_arima", "auto_arima_log")) |>
+  gt() |>
+  tab_header(title = md("**Fitted Auto ARIMA Models**"),
+    subtitle = "Fortified Wine Sales (Training Period: 1980–1993)") |>
+  cols_align(align = "center", columns = everything()) |>
+  tab_options(table.width = pct(60), latex.tbl.pos = "H")
 ```
 
 **What model did the auto ARIMAs choose?**
 
-*Answer here...*
+The auto ARIMA model using original fortified wine sales is an ARIMA(0,0,0)(2,1,1)\[12\] with drift, while the auto ARIMA using logged fortified wine sales is an ARIMA(0,0,0)(1,1,2)\[12\] with drift.
 
 ### c) Compare the model fits using RMSE
 
--   Print the model metrics. Sort the report from best to worst based on `RMSE`
+- Print the model metrics. Sort the report from best to worst based on `RMSE`
 
 ```{r fit_rmse}
-
+fit |> accuracy() |>
+  select(Model = .model, RMSE, MAE, MPE, MAPE) |>
+  arrange(RMSE) |>
+  gt() |>
+  tab_header(title = md("**Model Comparison: RMSE**"),
+             subtitle = "Sorted by RMSE (Training: 1980–1993)") |>
+  fmt_number(columns = c(RMSE, MAE), decimals = 2) |>
+  fmt_percent(columns = c(MPE, MAPE), scale_values = FALSE, decimals = 2) |>
+  cols_align(align = "center", columns = everything()) |>
+  tab_options(table.width = pct(75), latex.tbl.pos = "H") |>
+  tab_source_note(
+    source_note = md("*Note: Sales units are reported in thousands of liters.*")
+  )
 ```
 
 ### d) Forecast the data for each month of 1994 for each model and compare the resulting metrics.
 
--   Report RMSE, MAE, MPE, and MAPE for all models, ordered by best RMSE.
--   Present your results in a well formatted table (suitable for presentation).
+- Report RMSE, MAE, MPE, and MAPE for all models, ordered by best RMSE.
+- Present your results in a well formatted table (suitable for presentation).
 
 ```{r val_rmse}
 # forecast the validation period 
+fort_tst <- aus_wine_ts |> 
+  filter(Month > yearmonth('1993 Dec'))
+
+forecast_1994 <- fit |> forecast(new_data = fort_tst)
 
 # review accuracy to select the best model
-
+accuracy(forecast_1994, fort_tst) |>
+  select(Model = .model, RMSE, MAE, MPE, MAPE) |>
+  arrange(RMSE) |>
+  gt() |>
+  tab_header(title = md("**Model Comparison: Forecast Accuracy**"),
+             subtitle = "Sorted from best to worst by RMSE (Testing: 1994)") |>
+  fmt_number(columns = c(RMSE, MAE), decimals = 2) |>
+  fmt_percent(columns = c(MPE, MAPE), scale_values = FALSE, decimals = 2) |>
+  cols_align(align = "center", columns = everything()) |>
+  tab_options(table.width = pct(70), latex.tbl.pos = "H") |>
+  tab_source_note(
+    source_note = md("*Note: Sales units are reported in thousands of liters.*")
+  )
 ```
 
 **Interpret the table above. Does transforming the data affect the model performance?**
 
-*Answer here...*
+- Every logged model performs better than every non-logged model, so it is clear that transforming the data improved model performance when forecasting 1994.
+
+- The auto ARIMA logged model is the most accurate out-of-sample (274.87 RMSE), followed by the logged ETS model, then the logged TSLM. Interestingly, the non-logged ETS outperformed the non-logged auto ARIMA, with the non-logged TSLM coming in last place.
 
 ## 2) Forecasting Australian Wine Sales: Accuracy Comparison with Cross-validation
 
 ### a) Compare models the first 5 years of the fortified wine training data
 
--   Use only the first 5 years of the data
--   Create the 3 models above on the log transformed data
--   Include a seasonal naive model (on the untransformed data)
--   Create an ensemble model of your 3 regression models using a simple average
--   Forecast the next year (1985)
--   Report the model metrics sorted by RMSE
+- Use only the first 5 years of the data
+- Create the 3 models above on the log transformed data
+- Include a seasonal naive model (on the untransformed data)
+- Create an ensemble model of your 3 regression models using a simple average
+- Forecast the next year (1985)
+- Report the model metrics sorted by RMSE
 
 ```{r fortified-first5}
 # build the models
+fort_trn_5 <- aus_wine_ts |>
+  filter(Month <= yearmonth("1984 Dec"))
+
+fit_5 <- fort_trn_5 |> 
+  model(auto_arima_log = ARIMA(log(Fortified)),
+    ets_log = ETS(log(Fortified)),
+    tslm_log = TSLM(log(Fortified) ~ trend() + season()),
+    snaive = SNAIVE(Fortified)) |>
+  mutate(ensemble = (auto_arima_log + ets_log + tslm_log) / 3)
+
+forecast_1985 <- fit_5 |> 
+  forecast(h = 12)
 
 # output the table
-
+forecast_1985 |> 
+  accuracy(aus_wine_ts) |> 
+  select(Model = .model, RMSE, MAE, MPE, MAPE) |> 
+  arrange(RMSE) |> 
+  gt() |> 
+  tab_header(title = md("**1985 Out-of-Sample Forecast Accuracy**"),
+    subtitle = "Models Trained on First 5 Years (1980–1984)") |> 
+  fmt_number(columns = c(RMSE, MAE), decimals = 2) |> 
+  fmt_percent(columns = c(MPE, MAPE), scale_values = FALSE, decimals = 2) |> 
+  cols_align(align = "center", columns = everything()) |> 
+  tab_options(table.width = pct(75), latex.tbl.pos = "H") |> 
+  tab_source_note(
+    source_note = md("*Note: Sales units are reported in thousands of liters.*")
+  )
 ```
 
 **How do the results for the first 5 years of data compare to the results of the entire dataset? What is the best model? How did the ensemble model rank?**
 
-*...Answer...*
+- RMSE, MAE, and MAPE are lower for forecasts produced by the logged models using only 5 years of data to forecast the next year (1985) compared to the entire dataset minus 1994. MPE is actually farther from zero when a shorter time frame was considered, the negative MPE values indicate that forecasts for 1985 over predicted on average.
+
+- The best model is still the logged auto ARIMA (252.35 RMSE), the ensemble model performed second best (265.05 RMSE), and the seasonal naive performed worst (316.67 RMSE).
+
+Note: Comparing 1985 directly to 1994 is not an apples-to-apples comparison due to different training sample sizes (5 vs. 14 years), differing selected model specifications (e.g., ARIMA(0,0,0)(0,1,1)\[12\] vs ARIMA(0,0,0)(1,1,2)\[12\]), and declining fortified wine sales over time, which is why question 2b is an important step to look at a rolling forecast window rather than cherry pick the best model in terms of accuracy from one specific training set.
 
 ### b) Repeat the previous model with a rolling forecasting origin of 1 year increments
 
--   create a tsibble with cross-validation series that starts with 5 years of data and adds one year at time through Dec 1993. (Hint: use `stretch_tsibble`)
--   Fit the same 5 models from the previous step
--   Report the model metrics sorted by RMSE for each model across all validation intervals.
+- create a tsibble with cross-validation series that starts with 5 years of data and adds one year at time through Dec 1993. (Hint: use `stretch_tsibble`)
+- Fit the same 5 models from the previous step
+- Report the model metrics sorted by RMSE for each model across all validation intervals.
 
 ```{r fortified-cv}
-# create a tsibble for all the wine types
+# create a tsibble with cross-validation series for fortified wine
+fort_cv <- fort_trn |>
+  stretch_tsibble(.init = 12 * 5, .step = 12)
+
+fit_cv <- fort_cv |>
+  model(auto_arima_log = ARIMA(log(Fortified)),
+    ets_log = ETS(log(Fortified)),
+    tslm_log = TSLM(log(Fortified) ~ trend() + season()),
+    snaive = SNAIVE(Fortified)) |>
+  mutate(ensemble = (auto_arima_log + ets_log + tslm_log) / 3)
+
+forecast_cv <- fit_cv |> 
+  forecast(h = 12)
 
 # output the table
-
+forecast_cv |> 
+  accuracy(aus_wine_ts) |> 
+  select(Model = .model, RMSE, MAE, MPE, MAPE) |> 
+  arrange(RMSE) |> 
+  gt() |> 
+  tab_header(title = md("**Time Series Cross-Validation Forecast Accuracy**"),
+    subtitle = "Rolling 1-Year Ahead Forecasts (10 Folds: 1985–1994)") |> 
+  fmt_number(columns = c(RMSE, MAE), decimals = 2) |> 
+  fmt_percent(columns = c(MPE, MAPE), scale_values = FALSE, decimals = 2) |> 
+  cols_align(align = "center", columns = everything()) |> 
+  tab_options(table.width = pct(75), latex.tbl.pos = "H") |> 
+  tab_source_note(
+    source_note = md("*Note: Sales units are reported in thousands of liters.*")
+  )
 ```
 
 **How many models are there in total? (Count a model once for each CV interval it is fit to)**
 
-*... Answer (number) ...*
+- There are 5 models fit across 10 cross validation folds, so in total there are 50 models.
 
 **How do the rankings for each model compare to the results for 1.d. and 2.a. ?**
 
-*...Answer...*
+- The logged auto ARIMA model is still the most accurate (251.09 RMSE), which is consistent with question 1d and 2a.
+
+- The ensemble model is still the second most accurate model (258.61 RMSE), which is consistent with question 2a, that ensemble model was not present in question 1d. The ensemble model did outperform the logged auto ARIMA model in MPE (1.59% vs. 1.60%), but all other metrics favor the logged auto ARIMA model.
+
+- The logged ETS and logged TSLM models swapped places between question 2a and 2b, the logged ETS model (268.31 RMSE) is now more accurate than the logged TSLM model (269.27 RMSE) when using 10 cross validation folds. The logged ETS model outperforming the logged TSLM model is in line with question 1d, indicating that the logged ETS model was less reliable when a shorter training period was considered. The logged ETS model did outperform the logged auto ARIMA in terms of MPE (1.44% vs. 1.60%), but all other metrics favor the logged auto ARIMA model.
+
+- The seasonal naive model performance was consistent with question 2a as it was the least accurate model (300.45 RMSE). The seasonal naive model was not present in question 1d.
 
 ### c) Choosing the best model
 
 **If you had to choose one model to forecast all of 1995 which would you choose?. Why ?**
 
-*...Answer...*
+- If I had to choose one model to forecast all of 1995 I would chose the logged auto ARIMA because it has consistently shown the best accuracy out-of-sample (251.09 RMSE in cross validation), even outperforming the ensemble model.
 
 **Which would you choose if you only cared about January 1995?. Use code / output to support your answer ?**
 
 ```{r}
-
+forecast_cv |> 
+  filter(month(Month) == 1) |> 
+  accuracy(aus_wine_ts) |> 
+  select(Model = .model, RMSE, MAE, MPE, MAPE) |> 
+  arrange(RMSE) |> 
+  gt() |> 
+  tab_header(title = md("**January (1-Step Ahead) Forecast Accuracy**"),
+    subtitle = "Cross-Validation Performance for January Across 10 Folds (1985–1994)"
+  ) |> 
+  fmt_number(columns = c(RMSE, MAE), decimals = 2) |> 
+  fmt_percent(columns = c(MPE, MAPE), scale_values = FALSE, decimals = 2) |> 
+  cols_align(align = "center", columns = everything()) |> 
+  tab_options(table.width = pct(75), latex.tbl.pos = "H") |> 
+  tab_source_note(
+    source_note = md("*Note: Sales units are reported in thousands of liters.*")
+    )
 ```
 
-*...Answer...*
+- If I only cared about accurately predicting January 1995, I would actually choose the logged ETS model (143.18 RMSE) because it does the best job forecasting the month of January.
+
+- The ensemble model is a close second place (146.46 RMSE), followed by the logged TSLM model (149.19 RMSE), then the logged auto ARIMA model (151.09 RMSE) which is the most surprising result. The seasonal naive comes in last place again (219.82 RMSE).
 
 ## 3) Reflections
 
-a)  What was the most challenging part of this assignment?
+a\. What was the most challenging part of this assignment?
 
-b)  What was your most valuable takeaway from this assignment?
+- The most challenging part of this assignment was check all of the assumptions in question 1a, I had to go back and review that section of the text to answer that question successfully.
 
-c)  What improvements do you suggest for future courses?
+b\. What was your most valuable takeaway from this assignment?
 
-d)  What LLMs did you use (if any) to help you complete this assignment?
+- The most valuable takeaway was from question 2c, the idea that a specific model could do a better job when looking at one month in the cross validation is an interesting idea to think about. For forecasting a shorter time period it could be useful to adopt that strategy, it also made me curious if there is a way to weight models in an ensemble by monthly cross validation accuracy.
+
+c\. What improvements do you suggest for future courses?
+
+- No improvement, I think this was a good assignment and continued to reinforce topics from past assignments such as ETS and TSLM, its good to practice that syntax throughout all assignments to ensure I retain those concepts.
+
+d\. What LLMs did you use (if any) to help you complete this assignment?
+
+- I used Gemini to assist me with speeding up great tables formatting and providing feedback on problems after I took a first and second pass over them. I consulted the text first to ensure I did not rely too heavily on Gemini.
+
+e\. Was the AI model used pro or free?
+
+- Pro
+
+**Reference**
+
+Hyndman, R.J., & Athanasopoulos, G. (2021) *Forecasting: principles and practice*, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3. Accessed on 30 October 2026.
+
+**AI Disclosure:**
+
+I used **Antigravity (powered by Gemini)** as a pair programmer for technical guidance during this assignment. It assisted with debugging R syntax. All code was executed, tested, and verified locally by me, and all written responses reflect my own understanding and phrasing.

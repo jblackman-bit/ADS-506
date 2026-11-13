@@ -1,0 +1,877 @@
+---
+title: "ADS 506 - Time Series - Week 4 - "
+format: 
+    revealjs:
+        incremental: false
+        logo: images/usd-smlogo.jpeg
+        css: styles.css
+editor: source
+execute: 
+  echo: false
+  cache: true
+---
+
+## Topic Check list - Week 4 Lab {.smaller}
+
+::::: columns
+::: column
+-   [ ] stationarity
+    -   [ ] kpss, adf
+    -   [ ] variance / homoskedacity
+    -   [ ] confidence intervals
+-   [ ] white noise tests
+    -   [ ] ljung-box
+    -   [ ] residual plots
+-   [ ] regression assumptions
+-   [ ] transformations
+    -   [ ] box-cox
+    -   [ ] log
+    -   [ ] sqrt
+:::
+
+::: column
+-   [ ] model selection
+    -   [ ] RMSE & friends
+    -   [ ] ensemble
+    -   [ ] baseline\
+-   [ ] Cross-validation
+    -   [ ] stretch_tsibble
+    -   [ ] CV models
+    -   [ ] assessing accuracy
+-   [ ] R data structures
+    -   [ ] model hyper-parameters
+    -   [ ] class
+-   [ ] Quarto
+    -   [ ] caching
+:::
+:::::
+
+# Week 4 Lab - Part 1 {.smaller}
+
+::::: columns
+::: column
+-   [x] stationarity
+    -   [x] kpss, adf
+    -   [x] variance / homoskedacity
+    -   [x] confidence intervals
+-   [x] white noise tests
+    -   [x] ljung-box
+    -   [x] residual plots
+-   [x] regression assumptions
+-   [x] transformations
+    -   [x] box-cox
+    -   [x] log
+    -   [x] sqrt
+:::
+
+::: column
+-   [ ] model selection
+    -   [ ] RMSE & friends
+    -   [x] ensemble
+    -   [x] baseline\
+-   [ ] Cross-validation
+    -   [ ] stretch_tsibble
+    -   [ ] CV models
+    -   [ ] assessing accuracy
+-   [ ] R data structures
+    -   [x] model hyper-parameters
+    -   [ ] class
+-   [ ] Quarto
+    -   [ ] caching
+:::
+:::::
+
+## Setup
+
+```{r setup}
+#| echo: true
+#| cache: false
+
+library(tidyverse)
+library(fpp3)
+library(gt)
+library(tictoc)
+```
+
+```{r}
+tic('presentation start')
+```
+## ARIMA Process
+
+```{mermaid}
+graph LR
+    classDef boxStyle padding:30px;
+
+    Step1["Plot the data.<br>Understand the Patterns"] --> Step2["Stablize Variables<br>(Box-Cox)"]
+    Step2 --> Choose["Select Method"]
+    Choose --> |Auto| StepA1["Use ARIMA()"]
+    Choose --> |Manual| StepB1["Difference to<br>make series stationary"]
+    StepB1 --> StepB2["Plot ACF/PACF"]
+    StepB2 --> StepB3["Use ARIMA(var ~ <br>pdq() + PDQ())"]
+    StepB3 --> Residuals["Check Residuals <br>and ACF/PACF"]
+    StepA1 --> Residuals
+    Residuals --> |No| StepB2
+    Residuals --> |Yes| Forecast["Calculate Forcast"]
+    Forecast --> End
+    
+    style Choose fill:#fff,stroke:#333,stroke-width:2px,rx:50,ry:50;
+    style Residuals fill:#ff5,stroke:#333,stroke-width:2px,rx:50,ry:50;
+    style End fill:#fff,stroke:#333,stroke-width:2px,rx:50,ry:50;    
+    style Step2 fill:#ff5,stroke:#333,stroke-width:2px,rx:50,ry:50;
+```
+
+## ARIMA Stationarity Example
+
+```{r airex-1}
+#| echo: true
+#| warning: false
+air_passengers <- as_tsibble(AirPassengers)
+autoplot(air_passengers, value) +
+    ggtitle('Air Passengers (1949-1960)')
+```
+
+## Visual Stationarity Check
+
+```{r }
+#| fig.height: 2
+air_passengers |>  autoplot(value)
+```
+
+Is the series stationary?
+
+::::::: columns
+:::: column
+::: fragment
+(No)
+
+-   [x] trend
+-   [x] seasonality
+-   [x] heteroskedasticity (non-constant variance)
+:::
+::::
+
+:::: column
+::: fragment
+```{r }
+#| echo: true
+air_passengers |>  
+    gg_tsdisplay(value)
+```
+:::
+::::
+:::::::
+
+## Stationarity Example {.smaller}
+
+```{r airex-2}
+#| echo: true
+#| output-location: column
+
+air_passengers |> 
+    mutate(log_v = log(value)) |> 
+    autoplot(log_v) 
+```
+
+Constant variance, but trend and seasonality are present.
+
+## Stationarity Example {.smaller}
+
+```{r airex-3}
+#| echo: true
+#| warning: false
+#| output-location: column
+#| fig.height: 3
+#| fig.cap: "Trend is removed, but seasonality exists."
+air_passengers |> 
+    mutate(log_v = log(value),
+           d1 = difference(log_v, lag = 1)) |>
+    autoplot(d1) 
+```
+
+```{r airex-3b}
+#| echo: true
+#| warning: false
+#| fig.height: 3
+#| fig.cap: Seasonality is removed, but trend exists.
+#| output-location: column
+air_passengers |> 
+    mutate(log_v = log(value),
+           D12 = difference(log_v, lag = 12)) |>
+    autoplot(D12) 
+```
+
+## Stationarity Example {.smaller}
+
+```{r airex-4}
+#| echo: true
+#| warning: false
+#| output-location: column
+air_prepped <- air_passengers |> 
+    mutate(log_v = log(value),
+           D12 = difference(log_v, lag = 12),
+           d1 = difference(log_v, lag = 1),
+           D12d1 = difference(D12, lag = 1)) 
+air_prepped |>
+    autoplot(D12d1) 
+```
+
+Looks like stationarity. Let's do a statistical test.
+
+$H_0$ is that series is stationary:
+
+::: fragment
+```{r airex-5}
+#| echo: true
+#| warning: false
+#| output-location: column
+
+air_prepped |> 
+    features(D12d1, unitroot_kpss) 
+```
+:::
+
+::: fragment
+```{r airex-6}
+#| echo: true
+#| warning: false
+#| output-location: column
+
+air_prepped |> 
+    features(log_v, c(unitroot_kpss, unitroot_ndiffs, unitroot_nsdiffs)) 
+```
+:::
+
+## Modeling
+
+```{r}
+#| echo: true
+#| warning: false
+#| output-location: fragment
+
+trn_cutoff <- yearmonth(air_prepped$index |> max() |> as_date() - years(1))
+air_trn <- air_prepped |>
+  filter(index <= trn_cutoff)
+air_trn_arima <- air_trn |>
+  model(
+    arima_v = ARIMA(value),
+    arima_logv = ARIMA(log(value)),
+  )
+
+```
+
+## Examining Residuals Visually {.smaller}
+
+::::::: columns
+:::: column
+::: fragment
+(Yes?)
+
+-   [x] mean = 0, normal
+-   [x] no autocorrelations
+-   [x] homoskedastic (constant variance)
+:::
+::::
+
+:::: column
+::: fragment
+```{r}
+#| echo: true
+#| fig.height: 3.5
+air_trn_arima |>
+  select(arima_v) |>
+  gg_tsresiduals(type = "innovation")
+```
+:::
+::::
+:::::::
+
+Are the residuals white noise?
+
+```{r}
+#| echo: true
+#| fig.height: 2
+air_trn_arima['arima_v'] |>
+  augment() |>
+  autoplot(.innov)
+```
+
+## Examining Residuals - via Ljung-Box {.smaller}
+
+Are the residuals white noise?
+
+-   What is H~0~
+-   How many lags (`m`) are "sufficient"?
+-   Could we use `.resid` instead of `.innov`?
+
+```{r}
+#| echo: true
+#| output-location: column-fragment
+
+# perform a ljung-box test with sufficient lags
+air_trn_arima['arima_v'] |>
+  augment() |>
+  features(.innov, c(ljung_box, box_pierce), lag = 24) |>
+  select(.model, contains('pvalue'))
+```
+
+## Examining Residuals - Try It
+
+-   repeat the cells above for `arima_logv`
+    -   Any surprises?
+    -   why do we use `.innov` instead of `.resid`?
+
+## Other Transformations
+
+-   Box-Cox
+    -   `?box_cox` for a formal definitions
+    -   𝜆 = 0 ➔ *f~0~(y) = log(y)*
+    -   𝜆 = 1 ➔ *f~1~(y) = y - 1*
+    -   𝜆 = .5 ➔ *f~0.5~(y) = 2 \* (√y - 1)*
+-   `sqrt()`
+    -   insures forecasts values (and CI) are positive
+-   `logp1()`
+    -   prevents errors if *y = 0* (but not if *y = -1*)
+
+## Modeling with Transformations {.smaller}
+
+:::::: columns
+::: column
+```{r}
+#| echo: true
+#| warning: false
+#| output-location: fragment
+
+trn_cutoff <- yearmonth(air_prepped$index |> max() |> as_date() - years(1))
+air_trn <- air_prepped |>
+  filter(index <= trn_cutoff)
+air_trn_fit <- air_trn |>
+  model(
+    arima_logv = ARIMA(log(value)),
+    arima_log1p = ARIMA(log1p(value)),
+    arima_sqrt = ARIMA(sqrt(value)),
+    arima_v = ARIMA(value),
+    ets_logv = ETS(log(value)),
+    ets_v = ETS(value)
+  )
+air_trn_fc <- air_trn_fit |> forecast(h = "1 year") # or h = 12
+air_trn_fc |>
+  accuracy(air_prepped) |>
+  arrange(RMSE) |> 
+  gt() |>
+  fmt_number(decimals = 1)
+```
+:::
+
+:::: column
+::: fragment
+Comprehension Questions:
+
+-   Why does `arima_logv = ARIMA(log_v)` cause an error? (when substitute for the first `model()` line above)
+-   What is the difference between `h = "1 year"` and `h = 12`
+-   Why is `air_prepped` passed into `accuracy()` (vs `air_trn` or `air_passengers`)
+-   Cast `trn_cutoff` into `yearmonth()` using the pipe convention
+-   How do you get RMSE metrics for the training set?
+-   How does the log transformation help generally?
+:::
+::::
+::::::
+
+## Confidence Intervals/Transformations {.smaller}
+
+Compare the confidence intervals (CI) for the models
+
+::: columns
+::: {.column width = "70%"}
+
+```{r cmp_ci}
+#| echo: true
+#| warning: false
+
+air_trn_fc |> autoplot(level = 95) +
+facet_wrap(. ~ .model) +
+  autolayer(air_prepped |> filter(index > trn_cutoff))
+```
+:::
+
+::: {.column width = "30%"}
+
+```{r}
+#| echo: true
+#| warning: false
+air_trn_fc |>
+  accuracy(air_prepped) |>
+  arrange(RMSE) |> 
+  select(.model, .type, RMSE, MAPE) |> 
+  gt() |> fmt_number(decimals = 1)
+```
+
+:::
+
+::::
+
+Which model is most useful for a forecast?
+
+## Model hyperparameters
+
+What hyperparameters did `ARIMA()` and `ETS()` select?
+
+```         
+View(air_trn_fit)
+```
+
+```{r}
+#| echo: true
+air_trn_fit |> t()
+```
+
+## Baseline Models {.smaller}
+
+Create a baseline seasonal naive model regression models.
+
+```{r}
+#| echo: true
+#| warning: false
+#| output-location: column
+
+air_trn_fit2 <- air_trn |>
+  model(
+    arima_v = ARIMA(value),
+    ets_v = ETS(value),
+    snaive = SNAIVE(value)
+  )
+
+air_trn_fc2 <- air_trn_fit2 |> forecast(h = "1 year") # or h = 12
+air_trn_fc2 |>
+  accuracy(air_prepped) |>
+  arrange(RMSE) |>
+  select(.model:MAPE) |> 
+  gt() |>
+  fmt_number(decimals = 1)
+```
+
+:::::: fragment
+::::: columns
+::: column
+Can we make it better?
+:::
+
+::: column
+```         
+    baseline = decomposition_model(
+      STL(log(value) ~ season(window = "periodic")),
+      SNAIVE(season_year),
+      TSLM(season_adjust ~ trend())
+      #   ETS(season_adjust ~ season("N"))
+    )
+```
+:::
+:::::
+::::::
+
+## Baseline Models - improved {.smaller}
+
+Create a baseline seasonal naive model regression models.
+
+```{r}
+#| echo: true
+#| warning: false
+#| output-location: column
+
+air_trn_fit2 <- air_trn |>
+  model(
+    arima_v = ARIMA(value),
+    arima_sqrt = ARIMA(sqrt(value)),
+    ets_v = ETS(value),
+    snaive = SNAIVE(value),
+    baseline = decomposition_model(
+      STL(log(value) ~ season(window = "periodic")),
+      SNAIVE(season_year),
+      TSLM(season_adjust ~ trend())
+    )
+  )
+
+air_trn_fc2 <- air_trn_fit2 |> forecast(h = "1 year") # or h = 12
+air_trn_fc2 |>
+  accuracy(air_prepped) |>
+  arrange(RMSE) |>
+  select(.model:MAPE) |> 
+  gt() |>
+  fmt_number(decimals = 1)
+```
+
+##  {.smaller}
+
+```{r}
+#| echo: true
+#| warning: false
+trn_cutoff_prior_yr <- yearmonth(as_date(trn_cutoff) - years(1))
+
+air_trn_fc2 |>
+  autoplot(level = 95) +
+  facet_wrap(. ~ .model) +
+  autolayer(air_prepped |> filter(index > trn_cutoff_prior_yr))
+```
+
+## Ensemble Models {.smaller}
+
+Create an ensemble model of the regression models.
+
+```{r}
+#| echo: true
+#| warning: false
+#| output-location: column-fragment
+
+air_trn_fit3 <- air_trn_fit2 |> 
+  mutate(combo = (arima_v + arima_sqrt + ets_v ) / 3)
+
+air_trn_fit3 |> 
+  forecast(h = "1 year") |>
+  accuracy(air_prepped) |>
+  arrange(RMSE) |>
+  select(.model:MAPE) |> 
+  gt() |>
+  fmt_number(decimals = 1)
+```
+
+::: fragment
+What happens if we add the baseline model to the ensemble?
+:::
+
+::: fragment
+```{r}
+#| echo: true
+#| warning: false
+#| output-location: column-fragment
+
+air_trn_fit4 <- air_trn_fit2 |>
+  mutate(combo = (arima_sqrt + arima_v + ets_v + baseline) / 4)
+
+air_trn_fit4 |>
+  forecast(h = "1 year") |>
+  accuracy(air_prepped) |>
+  select(.model:MAPE) |> 
+  arrange(RMSE) |>
+  gt() |>
+  fmt_number(decimals = 1)
+```
+:::
+
+# Intermission
+
+# Week 4 Lab - Part 2 {.smaller}
+
+## Model Selection {.smaller}
+
+:::::: columns
+:::: column
+::: fragment
+```{r}
+air_trn_fit4 |>
+  forecast(h = "1 year") |>
+  autoplot() +
+  facet_wrap(. ~ .model) +
+  autolayer(air_prepped, value)
+```
+:::
+::::
+
+::: column
+```{r}
+gt_fit4_metrics <- air_trn_fit4 |>
+  select(-snaive) |>
+  forecast(h = "1 year") |>
+  accuracy(air_prepped) |>
+  select(.model:MAPE) |>
+  arrange(RMSE) |>
+  gt() |>
+  fmt_number(decimals = 1) |>
+  tab_header(sprintf(
+    "1yr Forecast Metrics for %s",
+    paste0(range(air_trn$index), collapse = '-')
+  ))
+gt_fit4_metrics
+```
+:::
+::::::
+
+### Motivating questions
+
+-   Does the forecast horizon matter?
+-   Do we need the full training set?
+-   Do we trust that the last period is representative of the next?
+    -   i.e. How robust is our model?
+
+## Model Selection - forecast horizons {.smaller}
+
+```{r}
+#| echo: true
+#| warning: false
+#| output-location: column-fragment
+#| code-line-numbers: "1-13,15,19"
+
+model_airp <- function(ts) {
+  ts |>
+    model(
+      arima_v = ARIMA(value),
+      arima_sqrt = ARIMA(sqrt(value)),
+      ets_v = ETS(value),
+      baseline = decomposition_model(
+        STL(log(value) ~ season(window = "periodic")),
+        SNAIVE(season_year),
+        TSLM(season_adjust ~ trend())
+      )
+    )
+}
+air_trn |>
+  model_airp() |>
+  mutate(
+    combo = (arima_sqrt + arima_v + ets_v + baseline) / 4
+  ) |>
+  forecast(h = "3 months") |>
+  accuracy(air_prepped) |>
+  arrange(RMSE) |>
+  select(.model:MAPE) |>
+  gt() |>
+  fmt_number(decimals = 1) |>
+  tab_header(sprintf(
+    "3mo Forecast Metrics for %s",
+    paste0(range(air_trn[1:48, ]$index), collapse = '-')
+  ))
+
+gt_fit4_metrics
+```
+
+## Model Selection - training subsets {.smaller}
+
+4 years of data (start of series)
+
+```{r}
+#| echo: true
+#| warning: false
+#| output-location: column-fragment
+#| code-line-numbers: "1,6,14"
+
+air_trn[1:48, ] |>
+  model_airp() |>
+  mutate(
+    combo = (arima_sqrt + arima_v + ets_v + baseline) / 4
+  ) |>
+  forecast(h = "1 year") |>
+  accuracy(air_prepped) |>
+  arrange(RMSE) |>
+  select(.model:MAPE) |>
+  gt() |>
+  fmt_number(decimals = 1) |>
+  tab_header(sprintf(
+    "Forecast Metrics for %s",
+    paste0(range(air_trn[1:48, ]$index), collapse = '-')
+  ))
+
+gt_fit4_metrics
+```
+
+## Model Selection - training subsets {.smaller}
+
+6 years of data (start of series)
+
+```{r}
+#| echo: true
+#| warning: false
+#| output-location: column-fragment
+#| code-line-numbers: "1,14"
+
+air_trn[1:72, ] |>
+  model_airp() |>
+  mutate(
+    combo = (arima_sqrt + arima_v + ets_v + baseline) / 4
+  ) |>
+  forecast(h = "1 year") |>
+  accuracy(air_prepped) |>
+  arrange(RMSE) |>
+  select(.model:MAPE) |>
+  gt() |>
+  fmt_number(decimals = 1) |>
+  tab_header(sprintf(
+    "1yr Forecast Metrics for %s",
+    paste0(range(air_trn[1:72, ]$index), collapse = '-')
+  ))
+
+gt_fit4_metrics
+```
+
+## Model Selection - training subsets {.smaller}
+
+5 years of data (start of series)
+
+```{r}
+#| echo: true
+#| warning: false
+#| output-location: column-fragment
+#| code-line-numbers: "1,14"
+
+air_trn[1:60, ] |>
+  model_airp() |>
+  mutate(
+    combo = (arima_sqrt + arima_v + ets_v + baseline) / 4
+  ) |>
+  forecast(h = "1 year") |>
+  accuracy(air_prepped) |>
+  arrange(RMSE) |>
+  select(.model:MAPE) |>
+  gt() |>
+  fmt_number(decimals = 1) |>
+  tab_header(sprintf(
+    "Forecast Metrics for %s",
+    paste0(range(air_trn[1:60, ]$index), collapse = '-')
+  ))
+
+gt_fit4_metrics
+```
+
+## Model Selection - training subsets {.smaller}
+
+5 years of data (start of 2nd year of series)
+
+```{r}
+#| echo: true
+#| warning: false
+#| output-location: column-fragment
+#| code-line-numbers: "1,14"
+
+air_trn[13:72, ] |>
+  model_airp() |>
+  mutate(
+    combo = (arima_sqrt + arima_v + ets_v + baseline) / 4
+  ) |>
+  forecast(h = "1 year") |>
+  accuracy(air_prepped) |>
+  arrange(RMSE) |>
+  select(.model:MAPE) |>
+  gt() |>
+  fmt_number(decimals = 1) |>
+  tab_header(sprintf(
+    "Forecast Metrics for %s",
+    paste0(range(air_trn[13:72, ]$index), collapse = '-')
+  ))
+
+gt_fit4_metrics
+```
+
+## Cross Validation with stretch_tsibble {.smaller}
+
+```{r cv-model}
+#| echo: true
+#| warning: false
+#| output-location: column-fragment
+#| code-line-numbers: "1-3,11"
+
+tic('cv model')
+air_cv_fit <- air_trn |>
+  stretch_tsibble(.init = 12 * 5, .step = 12) |>
+  model_airp() |>
+  mutate(
+    combo = (arima_sqrt + arima_v + ets_v + baseline) / 4
+  )
+
+air_cv_fc <- air_cv_fit |>
+  forecast(h = "1 year")
+toc_cv <- toc(quiet = TRUE)
+
+gt_cv_metrics <- air_cv_fc |>
+  accuracy(air_prepped) |>
+  arrange(RMSE) |>
+  select(.model:MAPE) |>
+  gt() |>
+  fmt_number(decimals = 1) |>
+  tab_header(sprintf(
+    "CV Forecast Metrics for %s",
+    paste0(range(air_trn$index), collapse = '-')
+  ))
+gt_cv_metrics
+gt_fit4_metrics
+toc_cv$callback_msg
+```
+
+## stretch_tsibble - lifting the hood
+
+```{r}
+#| echo: true
+#| warning: false
+air_cv_fc |> autoplot() + autolayer(air_trn, color = 'lightgray')
+```
+
+## Cross Validation - Try It
+
+Each CV models that we built using `stretch_tsibble` has an additional year of training data. This is referred to as a `rolling origin` CV. What if we wanted a fixed window?
+
+-   Copy/Modify the code from the `cv-model` chunk above
+-   change the `model()` input tsibble so that each `.id` contains only 5 years
+-   Compare the 1 year forecast RMSE's to the rolling origin CV metrics
+
+## The `tidyverts` object structures
+
+```{r}
+#| echo: true
+class(air_trn)  # a tsibble
+class(air_cv_fit) #a mable
+class(air_cv_fc)  #a fable
+```
+
+## The `tidyverts` object structures {.smaller}
+
+```{r}
+#| echo: true
+#| warning: true
+air_trn_fit #  |> t() to transpose
+air_trn_fit |> report()
+air_trn_fit |> select(arima_v) |> report()
+```
+
+## The `tidyverts` *stretched* structures {.smaller}
+
+```{r}
+#| echo: true
+#| warning: true
+air_cv_fit |> select(arima_v) |> report()
+air_cv_fit |> select(arima_v) |> filter(.id == 1) |> report()
+```
+
+## The `tidyverts` *stretched* structures {.smaller}
+
+```{r}
+#| echo: true
+air_trn_fc |> head(5)
+air_cv_fc |> head(5)
+```
+
+## Quarto Caching {.smaller}
+
+```{r cache_slide}
+#| cache: false
+#| echo: true
+
+tic('cache slide')
+```
+
+```{r}
+#| echo: true
+#| cache: true
+# #| cache: true
+
+tic('cached_model_step')
+scratch2 <- air_trn |> model_airp()
+toc_cached <- toc()
+```
+
+```{r}
+#| echo: true
+#| cache: false
+# #| cache: false
+
+tic('uncached_model_step')
+scratch <- air_trn |> model_airp()
+toc_uncached <- toc()
+toc_slide <- toc()
+toc_prez <- toc()
+```
+
