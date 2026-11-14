@@ -2,8 +2,46 @@
 title: "ADS-506 Assignment 4.1"
 author: "Jordan Blackman"
 format: 
-    pdf:
-        geometry: "top=1in, bottom=1in, left=0.75in, right=0.75in"
+  pdf:
+    geometry:
+      - top=0.45in
+      - bottom=0.45in
+      - left=0.48in
+      - right=0.48in
+    fig-align: center
+    fig-height: 2.6
+    fig-width: 6.2
+    fig-pos: "H"
+    tbl-pos: "H"
+    include-in-header:
+      text: |
+        \usepackage{needspace}
+        \usepackage{float}
+        \floatplacement{table}{H}
+        \floatplacement{figure}{H}
+        \usepackage{caption}
+        \captionsetup[table]{justification=centering}
+        \captionsetup[figure]{justification=centering}
+        \usepackage{enumitem}
+        \setlist{nosep,topsep=1.5pt,partopsep=0pt,itemsep=1.5pt}
+        \linespread{0.96}
+        \usepackage{fvextra}
+        \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+        \usepackage{etoolbox}
+        \BeforeBeginEnvironment{Shaded}{\par\nopagebreak\begin{minipage}{\linewidth}}
+        \AfterEndEnvironment{Shaded}{\end{minipage}\par}
+        \AddToHook{env/tabular*/before}{\centering}
+        \AddToHook{env/tabular*/after}{\par}
+        \AtBeginEnvironment{table}{\centering}
+        \AtBeginEnvironment{figure}{\centering}
+        \usepackage{letltxmacro}
+        \AtBeginDocument{
+          \LetLtxMacro\origpandocbounded\pandocbounded
+          \renewcommand{\pandocbounded}[1]{{\centering\origpandocbounded{#1}\par}}
+        }
+        \RedeclareSectionCommand[beforeskip=0.2\baselineskip,afterskip=0.1\baselineskip]{section}
+        \RedeclareSectionCommand[beforeskip=0.2\baselineskip,afterskip=0.1\baselineskip]{subsection}
+        \RedeclareSectionCommand[beforeskip=0.15\baselineskip,afterskip=0.1\baselineskip]{subsubsection}
 ---
 
 ```{r}
@@ -14,10 +52,6 @@ library(gt)
 ```
 
 # Module 4 Assignment Exercises
-
-This assignment is due on Day 7 of the learning week. The assignment for this module consists of code, outputs and short written responses. Use R with [tidyverts](tidyverts.org) (`fpp3`) Complete the assignment in a [Quarto Document](quarto.org). Leave the questions and instructions intact so that it is clear which sections your response is addressing. Once completed, you will render your deliverable to a PDF file such that the text in the document is selectable.
-
-Your submission should show all code executed and must not exceed 10 pages.
 
 The figure below shows time plots of monthly sales of six types of Australian wines (red, rose, sweet white, dry white, sparkling, and fortified) for 1980-1994. Data available in AustralianWines.csv. The units are thousands of liters.
 
@@ -48,8 +82,10 @@ Focus on fortified wine sales alone and produce as accurate a monthly forecast a
 - Plot the model residuals, autocorrelations and histogram.
 - Perform a Ljung-Box test
 
-```{r wine_fort_acf}
+```{r wine_fort_fit}
 #| warning: false
+#| fig-height: 4.8
+#| fig-width: 7.0
 
 # create a time series object for fortified wine sales (tsibble)
 aus_wine_ts <- aus_wine |>
@@ -65,10 +101,18 @@ auto_fit <- fort_trn |>
   model(auto = ARIMA(Fortified))
 
 # plot residuals, acf, hist
-auto_fit |> gg_tsresiduals(type = 'innovation') +
+res_plot <- auto_fit |> gg_tsresiduals(type = 'innovation')
+res_plot[[2]] <- res_plot[[2]] + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+res_plot +
   labs(title = "Innovation Residual Diagnostics: Auto-ARIMA Model",
     subtitle = "ARIMA(0,0,0)(2,1,1)[12] w/ drift — Fortified Wine Sales (1980–1993)",
     caption = "Note: Sales units are in thousands of liters.")
+```
+
+\Needspace{4.5in}
+
+```{r wine_fort_ljung_box}
+#| warning: false
 
 # perform a ljung-box test with sufficient lags
 auto_fit |> augment() |>
@@ -78,13 +122,12 @@ auto_fit |> augment() |>
   select(Model, `Test Lags` = Lags, DoF, `Q* Stat` = lb_stat,
          `p-value` = lb_pvalue, Conclusion) |>
   gt() |>
-  tab_header(title = md("**Ljung-Box Autocorrelation Test on Innovation Residuals**"),
+  tab_header(title = md("**Ljung-Box Test on Innovation Residuals**"),
     subtitle = "Fortified Wine Sales Training Period (1980–1993)") |>
   fmt_number(columns = `Q* Stat`, decimals = 2) |>
   fmt_number(columns = `p-value`, decimals = 3) |>
   cols_align(align = "center", columns = everything()) |>
-  tab_options(table.width = pct(85), latex.tbl.pos = "H")
-
+  tab_options(table.font.size = px(13), latex.tbl.pos = "H")
 ```
 
 **Interpret the plots and test results. Do the linear regression assumptions from [7.1 The linear model \| Forecasting: Principles and Practice](https://otexts.com/fpp3/regression-intro.html) hold? Should the data be transformed prior to fitting?**
@@ -126,12 +169,14 @@ fit |> pivot_longer(everything(), names_to = "Model", values_to = "Specification
   tab_header(title = md("**Fitted Auto ARIMA Models**"),
     subtitle = "Fortified Wine Sales (Training Period: 1980–1993)") |>
   cols_align(align = "center", columns = everything()) |>
-  tab_options(table.width = pct(60), latex.tbl.pos = "H")
+  tab_options(table.width = pct(65), table.font.size = px(13), latex.tbl.pos = "H")
 ```
 
 **What model did the auto ARIMAs choose?**
 
 The auto ARIMA model using original fortified wine sales is an ARIMA(0,0,0)(2,1,1)\[12\] with drift, while the auto ARIMA using logged fortified wine sales is an ARIMA(0,0,0)(1,1,2)\[12\] with drift.
+
+\Needspace{4.5in}
 
 ### c) Compare the model fits using RMSE
 
@@ -147,11 +192,12 @@ fit |> accuracy() |>
   fmt_number(columns = c(RMSE, MAE), decimals = 2) |>
   fmt_percent(columns = c(MPE, MAPE), scale_values = FALSE, decimals = 2) |>
   cols_align(align = "center", columns = everything()) |>
-  tab_options(table.width = pct(75), latex.tbl.pos = "H") |>
-  tab_source_note(
-    source_note = md("*Note: Sales units are reported in thousands of liters.*")
-  )
+  tab_options(table.width = pct(75), table.font.size = px(13), latex.tbl.pos = "H")
 ```
+
+\begin{center}
+\textit{Note: Sales units are reported in thousands of liters.}
+\end{center}
 
 ### d) Forecast the data for each month of 1994 for each model and compare the resulting metrics.
 
@@ -175,11 +221,12 @@ accuracy(forecast_1994, fort_tst) |>
   fmt_number(columns = c(RMSE, MAE), decimals = 2) |>
   fmt_percent(columns = c(MPE, MAPE), scale_values = FALSE, decimals = 2) |>
   cols_align(align = "center", columns = everything()) |>
-  tab_options(table.width = pct(70), latex.tbl.pos = "H") |>
-  tab_source_note(
-    source_note = md("*Note: Sales units are reported in thousands of liters.*")
-  )
+  tab_options(table.width = pct(70), table.font.size = px(13), latex.tbl.pos = "H")
 ```
+
+\begin{center}
+\textit{Note: Sales units are reported in thousands of liters.}
+\end{center}
 
 **Interpret the table above. Does transforming the data affect the model performance?**
 
@@ -197,6 +244,8 @@ accuracy(forecast_1994, fort_tst) |>
 - Create an ensemble model of your 3 regression models using a simple average
 - Forecast the next year (1985)
 - Report the model metrics sorted by RMSE
+
+\Needspace{4.5in}
 
 ```{r fortified-first5}
 # build the models
@@ -224,11 +273,12 @@ forecast_1985 |>
   fmt_number(columns = c(RMSE, MAE), decimals = 2) |> 
   fmt_percent(columns = c(MPE, MAPE), scale_values = FALSE, decimals = 2) |> 
   cols_align(align = "center", columns = everything()) |> 
-  tab_options(table.width = pct(75), latex.tbl.pos = "H") |> 
-  tab_source_note(
-    source_note = md("*Note: Sales units are reported in thousands of liters.*")
-  )
+  tab_options(table.width = pct(75), table.font.size = px(13), latex.tbl.pos = "H")
 ```
+
+\begin{center}
+\textit{Note: Sales units are reported in thousands of liters.}
+\end{center}
 
 **How do the results for the first 5 years of data compare to the results of the entire dataset? What is the best model? How did the ensemble model rank?**
 
@@ -243,6 +293,8 @@ Note: Comparing 1985 directly to 1994 is not an apples-to-apples comparison due 
 - create a tsibble with cross-validation series that starts with 5 years of data and adds one year at time through Dec 1993. (Hint: use `stretch_tsibble`)
 - Fit the same 5 models from the previous step
 - Report the model metrics sorted by RMSE for each model across all validation intervals.
+
+\Needspace{4.5in}
 
 ```{r fortified-cv}
 # create a tsibble with cross-validation series for fortified wine
@@ -270,11 +322,12 @@ forecast_cv |>
   fmt_number(columns = c(RMSE, MAE), decimals = 2) |> 
   fmt_percent(columns = c(MPE, MAPE), scale_values = FALSE, decimals = 2) |> 
   cols_align(align = "center", columns = everything()) |> 
-  tab_options(table.width = pct(75), latex.tbl.pos = "H") |> 
-  tab_source_note(
-    source_note = md("*Note: Sales units are reported in thousands of liters.*")
-  )
+  tab_options(table.width = pct(75), table.font.size = px(13), latex.tbl.pos = "H")
 ```
+
+\begin{center}
+\textit{Note: Sales units are reported in thousands of liters.}
+\end{center}
 
 **How many models are there in total? (Count a model once for each CV interval it is fit to)**
 
@@ -290,42 +343,45 @@ forecast_cv |>
 
 - The seasonal naive model performance was consistent with question 2a as it was the least accurate model (300.45 RMSE). The seasonal naive model was not present in question 1d.
 
+\Needspace{4.5in}
+
 ### c) Choosing the best model
 
 **If you had to choose one model to forecast all of 1995 which would you choose?. Why ?**
 
-- If I had to choose one model to forecast all of 1995 I would chose the logged auto ARIMA because it has consistently shown the best accuracy out-of-sample (251.09 RMSE in cross validation), even outperforming the ensemble model.
+- If I had to choose one model to forecast all of 1995 I would choose the logged auto ARIMA because it has consistently shown the best accuracy out-of-sample (251.09 RMSE in cross validation), even outperforming the ensemble model.
+
+\Needspace{3.5in}
 
 **Which would you choose if you only cared about January 1995?. Use code / output to support your answer ?**
 
 ```{r}
-forecast_cv |> 
-  filter(month(Month) == 1) |> 
-  accuracy(aus_wine_ts) |> 
-  select(Model = .model, RMSE, MAE, MPE, MAPE) |> 
-  arrange(RMSE) |> 
+forecast_cv |> filter(month(Month) == 1) |> accuracy(aus_wine_ts) |> 
+  select(Model = .model, RMSE, MAE, MPE, MAPE) |> arrange(RMSE) |> 
   gt() |> 
   tab_header(title = md("**January (1-Step Ahead) Forecast Accuracy**"),
-    subtitle = "Cross-Validation Performance for January Across 10 Folds (1985–1994)"
-  ) |> 
+    subtitle = "Cross-Validation Performance for January Across 10 Folds (1985–1994)") |> 
   fmt_number(columns = c(RMSE, MAE), decimals = 2) |> 
   fmt_percent(columns = c(MPE, MAPE), scale_values = FALSE, decimals = 2) |> 
   cols_align(align = "center", columns = everything()) |> 
-  tab_options(table.width = pct(75), latex.tbl.pos = "H") |> 
-  tab_source_note(
-    source_note = md("*Note: Sales units are reported in thousands of liters.*")
-    )
+  tab_options(table.width = pct(75), table.font.size = px(13), latex.tbl.pos = "H")
 ```
+
+\begin{center}
+\textit{Note: Sales units are reported in thousands of liters.}
+\end{center}
 
 - If I only cared about accurately predicting January 1995, I would actually choose the logged ETS model (143.18 RMSE) because it does the best job forecasting the month of January.
 
 - The ensemble model is a close second place (146.46 RMSE), followed by the logged TSLM model (149.19 RMSE), then the logged auto ARIMA model (151.09 RMSE) which is the most surprising result. The seasonal naive comes in last place again (219.82 RMSE).
 
+\newpage
+
 ## 3) Reflections
 
 a\. What was the most challenging part of this assignment?
 
-- The most challenging part of this assignment was check all of the assumptions in question 1a, I had to go back and review that section of the text to answer that question successfully.
+- The most challenging part of this assignment was checking all of the assumptions in question 1a, I had to go back and review that section of the text to answer that question successfully.
 
 b\. What was your most valuable takeaway from this assignment?
 
@@ -333,7 +389,7 @@ b\. What was your most valuable takeaway from this assignment?
 
 c\. What improvements do you suggest for future courses?
 
-- No improvement, I think this was a good assignment and continued to reinforce topics from past assignments such as ETS and TSLM, its good to practice that syntax throughout all assignments to ensure I retain those concepts.
+- No improvement, I think this was a good assignment and continued to reinforce topics from past assignments such as ETS and TSLM, it's good to practice that syntax throughout all assignments to ensure I retain those concepts.
 
 d\. What LLMs did you use (if any) to help you complete this assignment?
 
