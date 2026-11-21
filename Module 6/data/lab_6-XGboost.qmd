@@ -1,0 +1,310 @@
+---
+title: "ADS-506 Lab6 XGBoost"
+author: "Dave Hurst"
+format: 
+    html:
+        toc: true
+        code-fold: true
+    pdf:
+        geometry: "top=1in, bottom=1in, left=0.75in, right=0.75in"
+    revealjs:
+        incremental: true
+        logo: images/usd-smlogo.jpeg
+        css: styles.cssexecute:
+  echo: true
+bibliography: references.bib
+bibliographystyle: apa
+---
+
+```{r}
+#| message: false
+#| echo: false
+library(tidyverse)
+library(fpp3)
+library(gt)
+library(tictoc)
+```
+
+## Module 6 Lab: XGBoost {.smaller}
+
+```{r data_prep}
+#| echo: false
+aus_wine <- read_csv(
+  here::here("data/AustralianWines.csv"),
+  na = "*",
+  col_types = cols(Rose = col_number()),
+  show_col_types = FALSE
+) |>
+  fill(Rose, .direction = "down") |>
+  mutate(Month = mdy(str_replace(Month, '-', '-01-')))
+
+wines_ts <- aus_wine |>
+  pivot_longer(cols = -Month, names_to = 'Varietal', values_to = 'Sales') |>
+  mutate(Month = yearmonth(Month)) |>
+  as_tsibble(index = Month, key = Varietal)
+
+wines_ts |>
+  autoplot(Sales) +
+  labs(
+    title = "Australian Wine Sales",
+    y = "Sales (thousands of liters)"
+  ) +
+  facet_wrap(~Varietal, nrow = 2, scales = "free_y") +
+  theme(legend.position = "none") # hide legend
+```
+
+XGBoost[@chen2016xgboost] is an efficient and scalable implementation of the [gradient boosting]{.underline} framework. It has gained popularity for its performance in machine learning competitions and is widely used for structured/tabular data.
+
+We will use caret to fit an XGBoost model wine series to predict 1994 for all varietals and compare to ARIMA results.
+
+
+## XGBoost Model Implementation
+
+
+```{r}
+#| output-location: column
+#| warning: true
+library(caret)
+```
+```{r}
+#| output-location: column
+#| warning: true
+library(xgboost)
+```
+
+
+## Build in autoregression and rolling features {.smaller}
+
+```{r feature_engineering}
+build_features <- function(ts_data) {
+  ts_data |>
+    as_tibble() |>
+    arrange(Varietal, Month) |>
+    group_by(Varietal) |>
+    mutate(
+      # Time-based features
+      month_num = month(Month),
+      year = year(Month),
+      quarter = quarter(Month),
+      # Lag features
+      lag_1 = lag(Sales, 1),
+      lag_2 = lag(Sales, 2),
+      lag_3 = lag(Sales, 3),
+      lag_12 = lag(Sales, 12),
+      # Rolling averages
+      ma_3 = slider::slide_dbl(Sales, mean, .before = 2, .complete = TRUE),
+      ma_12 = slider::slide_dbl(Sales, mean, .before = 11, .complete = TRUE),
+      # Trend feature
+      time_trend = row_number()
+    ) |>
+    ungroup()
+}
+
+```
+
+## Setup training and test data for caret {.smaller}
+
+```{r data_prep_caret}
+# Prepare data for caret
+prepare_caret_data <- function(ts_data, is_test = FALSE, train_data = NULL) {
+  result <- build_features(ts_data)
+
+  if (!is_test) {
+    # Training data: convert Varietal to factor and remove Month
+    result <- result |>
+      mutate(Varietal = factor(Varietal)) |>
+      select(-Month) |>
+      drop_na()
+  } else {
+    if (!is.null(train_data)) {
+      # Get last 12 months from training data
+      last_train <- train_data |>
+        as_tibble() |>
+        arrange(Varietal, Month) |>
+        group_by(Varietal) |>
+        slice_tail(n = 12) |>
+        ungroup()
+
+      # Combine and recalculate features
+      combined <- bind_rows(last_train, ts_data) |>
+        build_features() |>
+        filter(Month >= yearmonth('1994 Jan')) |>
+        # Let caret handle the factor automatically
+        mutate(Varietal = factor(Varietal)) |>
+        select(-Month)
+
+      result <- combined
+    }
+  }
+  result |> as_tibble()
+}
+```
+
+## Prepare training and test datasets {.smaller}
+```{r data_split}
+# Prepare training data
+tic("Caret XGBoost Data Prep")
+train_data <- wines_ts |>
+  filter(Month < yearmonth('1994 Jan'))
+prepped_train_data <- train_data |>
+  prepare_caret_data(is_test = FALSE)
+
+# Prepare test data
+prepped_test_data <- wines_ts |>
+  filter(Month >= yearmonth('1994 Jan')) |>
+  prepare_caret_data(is_test = TRUE, train_data = train_data)
+toc()
+```
+```{r view_data, echo=FALSE}
+prepped_train_data |>
+  DT::datatable(
+    options = list(
+      initComplete = DT::JS(
+        "function(settings, json) {",
+        "$(this.api().table().container()).css('font-size', '10px');",
+        "}"
+      )
+    )
+  )
+```
+
+## Train XGBoost model with caret {.smaller}
+
+```{r model_training}
+
+# Set up training control
+train_control <- trainControl(
+  method = "cv",
+  number = 5,
+  verboseIter = FALSE
+)
+
+# Define XGBoost parameters grid
+xgb_grid <- expand.grid(
+  nrounds = 100,
+  max_depth = 6,
+  eta = 0.3,
+  gamma = 0,
+  colsample_bytree = 1,
+  min_child_weight = 1,
+  subsample = 1
+)
+
+# Fit XGBoost model
+tic("Caret XGBoost Model Training")
+caret_xgb_model <- train(
+  Sales ~ .,
+  data = prepped_train_data,
+  method = "xgbTree",
+  trControl = train_control,
+  tuneGrid = xgb_grid,
+  verbose = FALSE
+)
+time_caret_fit <- toc()
+
+```
+
+## Forecast and evaluate accuracy {.smaller}
+```{r predictions}
+# Make predictions
+tic("Caret XGBoost Predictions")
+caret_predictions <- predict(caret_xgb_model, newdata = prepped_test_data)
+
+# Combine predictions with test metadata
+test_metadata <- wines_ts |>
+  filter(Month >= yearmonth('1994 Jan')) |>
+  select(Month, Varietal, Sales) |>
+  as_tibble()
+
+caret_results <- test_metadata |>
+  mutate(predicted = caret_predictions)
+time_caret_predict <- toc()
+
+# Calculate accuracy by varietal
+caret_accuracy <- caret_results |>
+  group_by(Varietal) |>
+  summarise(
+    RMSE = sqrt(mean((Sales - predicted)^2)),
+    MAE = mean(abs(Sales - predicted)),
+    MAPE = mean(abs((Sales - predicted) / Sales)) * 100,
+    .groups = "drop"
+  ) |>
+  arrange(MAPE)
+```
+
+## {.smaller} 
+```{r accuracy_table}
+make_gt <- function(df, header = "Accuracy Table") {
+  df |>
+    gt() |>
+    tab_header(header) |>
+    fmt_number(columns = c(RMSE, MAE), decimals = 1) |>
+    fmt_number(columns = MAPE, decimals = 2)
+}
+
+# Display accuracy table
+xgboost_gt <- caret_accuracy |>
+  arrange(Varietal) |>
+  make_gt('Accuracy of Caret XGBoost Model')
+xgboost_gt
+```
+
+## Visualize results  {.smaller}
+```{r results_viz}  
+#| output-location: column
+#| figure-height: 5
+# Convert back to tsibble format for analysis
+xgboost_results <- caret_results |>
+  select(-Sales) |> 
+  rename(Sales = predicted) |>
+  as_tsibble(index = Month, key = Varietal)
+
+# Create comparison plot
+wines_ts |>
+  filter_index('1992 Jan' ~ '1994 Dec') |>
+  autoplot(Sales) +
+  autolayer(xgboost_results, Sales, size = 2, linestyle = "dashed") +
+  facet_wrap(~Varietal, scales = "free_y", ncol = 2) +
+  theme(legend.position = "none") 
+```
+
+## Feature Importance {.smaller}
+```{r feature_importance}
+# Feature importance
+feature_importance <- varImp(caret_xgb_model, scale = FALSE)
+plot(feature_importance, top = 15, main = "Caret XGBoost Feature Importance")
+```
+
+
+## ARIMA comparison: {.smaller}
+
+```{r}
+# Fit log transformed ARIMA models
+arima_gt <- wines_ts |>
+  filter_index(. ~ '1993 Dec') |>
+  model(ARIMA(Sales)) |>
+  forecast(h = "1 year") |>
+  accuracy(wines_ts) |>
+  select(Varietal, RMSE, MAE, MAPE) |>
+  arrange(Varietal) |>
+  make_gt('Accuracy of auto-ARIMA Model') 
+
+```
+
+::::: columns
+::: column
+```{r echo=FALSE}
+xgboost_gt
+```
+:::
+
+::: column
+```{r echo=FALSE}
+arima_gt
+```
+:::
+:::::
+
+
+
+

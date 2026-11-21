@@ -1,0 +1,249 @@
+---
+title: "ADS-506 Lab6 TimeGPT"
+author: "Dave Hurst"
+format: 
+    revealjs:
+        incremental: true
+        logo: images/usd-smlogo.jpeg
+        css: styles.css
+    html:
+        toc: true
+        code-fold: true
+    pdf:
+        geometry: "top=1in, bottom=1in, left=0.75in, right=0.75in"
+execute:
+  echo: true
+bibliography: references.bib
+bibliographystyle: apa
+---
+
+```{r}
+#| message: false
+#| echo: false
+library(tidyverse)
+library(fpp3)
+library(gt)
+library(tictoc)
+library(nixtlar)
+
+tic("Total Run Time")
+```
+
+# Module 6 Lab: TimeGPT {.smaller}
+
+```{r data_prep}
+#| echo: false
+aus_wine <- read_csv(
+  here::here("data/AustralianWines.csv"),
+  na = "*",
+  col_types = cols(Rose = col_number()),
+  show_col_types = FALSE
+) |>
+  fill(Rose, .direction = "down") |>
+  mutate(Month = mdy(str_replace(Month, '-', '-01-')))
+
+wines <- aus_wine |>
+  pivot_longer(cols = -Month, names_to = 'Varietal', values_to = 'Sales') |>
+  mutate(Month = yearmonth(Month)) |>
+  as_tsibble(index = Month, key = Varietal)
+
+wines |>
+  autoplot(Sales) +
+  labs(
+    title = "Australian Wine Sales",
+    y = "Sales (thousands of liters)"
+  ) +
+  facet_wrap(~Varietal, nrow = 2, scales = "free_y") +
+  theme(legend.position = "none") # hide legend
+```
+
+
+TimeGPT[@garza2023timegpt1] is Nixtla's foundation model for time series forecasting that can be accessed via their API. It is a large language model (LLM) trained on 1 million time series and can be used for zero-shot forecasting of new time series.
+
+## Getting Started with TimeGPT {.smaller}
+
+: Write code and instructions to predict all months of 1994 of the Wines dataset for all varietals, using TimeGPT.
+
+Positron Assistant: I'll help you set up TimeGPT to predict all months of 1994 for all wine varietals. TimeGPT is Nixtla's foundation model for time series forecasting that can be accessed via their API.
+
+## Setup Instructions {.smaller}
+
+::::::: columns
+:::: column
+### 1. Install Required Packages
+
+First, install the necessary packages:
+
+```         
+# Install nixtlar package for TimeGPT access
+install.packages("nixtlar")
+
+# Load required libraries
+library(tidyverse)
+library(fpp3)
+library(nixtlar)
+library(gt)
+```
+
+::: fragment
+### 2. Get TimeGPT API Key
+
+1.  Go to <https://dashboard.nixtla.io/>
+2.  Sign up for a free account
+3.  Get your API token from the dashboard
+:::
+::::
+
+:::: column
+::: fragment
+### 3. Set up your API key (choose one method):
+
+**Option A: Environment variable (persistent)**
+
+``` r
+# Add to your .Renviron file
+NIXTLA_API_KEY = "your_api_key_here"
+```
+
+**Option B: Set in session**
+
+``` r
+nixtla_set_api_key("your_api_key_here")
+```
+:::
+::::
+:::::::
+
+##
+
+![](images/nixtla-subscription.png)
+
+## 3. Data Preparation
+
+```{r}
+# Prepare training data (through December 1993)
+wines_train <- wines |>
+  filter_index(. ~ '1993 Dec') |>
+  mutate(Month = as.Date(Month)) |>  # Convert to Date for TimeGPT
+  as_tibble()
+```
+
+TimeGPT requires a `tibble` (it doesn't use `tsibble`) with columns for unique ID, time, and target variable.
+
+## 4. Generate TimeGPT Forecasts {.smaller}
+
+```{r}
+#| output-location: column
+# If you want to rerun the forecast, set use_stored_results to FALSE
+use_stored_results <- TRUE
+timegpt_forecasts_rds <- here::here("labs/lab6-timegpt-forecasts.RDS")
+
+if (use_stored_results & file.exists(timegpt_forecasts_rds)) {
+  timegpt_forecasts <- read_rds(here::here(timegpt_forecasts_rds))
+} else {
+  # Generate forecasts for all varietals for 1994 (12 months)
+  timegpt_forecasts <- nixtla_client_forecast(
+    df = wines_train,
+    h = 12, # 12 months ahead
+    freq = "MS", # Monthly start frequency
+    id_col = "Varietal", # "unique_id",
+    time_col = "Month", # "ds",
+    target_col = "Sales", # "y",
+    level = c(80, 95) # Confidence intervals
+  )
+  # Save results to avoid repeated API calls
+  write_rds(timegpt_forecasts, here::here("labs/lab6-timegpt-forecasts.RDS"))
+}
+
+# View results
+head(timegpt_forecasts)
+```
+
+Change `use_stored_results` to `FALSE` or delete `.../labs/lab6-timegpt-forecasts.RDS` to call the service. The results are saved to an RDS file to avoid repeated API calls.
+
+## 5. Process and Visualize Results {.smaller}
+
+```{r}
+#| output-location: column
+#| figure-height: 5
+# Convert back to tsibble format for analysis
+timegpt_results <- timegpt_forecasts |>
+  mutate(Month = yearmonth(Month)) |>
+  rename(Sales = TimeGPT) |>
+  as_tsibble(index = Month, key = Varietal)
+
+# Create comparison plot
+wines |>
+  filter_index('1992 Jan' ~ '1994 Dec') |>
+  autoplot(Sales) +
+  geom_ribbon(
+    data = timegpt_results,
+    aes(ymin = `TimeGPT-lo-95`, ymax = `TimeGPT-hi-95`),
+    alpha = 0.2, color = NA
+  ) +
+  autolayer(timegpt_results, Sales, size = 2) +
+  facet_wrap(~Varietal, scales = "free_y", ncol = 2) +
+  theme(legend.position = "none") 
+```
+
+## 6. Calculate Accuracy Metrics {.smaller}
+
+```{r}
+#| output-location: column
+# Convert to forecast object format
+timegpt_forecast_obj <- timegpt_results |>
+  select(Month, Varietal, Sales) |>
+  rename(.mean = Sales) |>
+  mutate(dist = distributional::dist_normal(.mean, 1)) |> # Add fake distribution
+  as_fable(response = "Sales", distribution = dist)
+
+# Calculate accuracy for each varietal
+accuracy_results <- timegpt_forecast_obj |>
+  accuracy(wines)
+
+make_gt <- function(df, header = "Accuracy Table") {
+  df |>
+    gt() |>
+    tab_header(header) |>
+    fmt_number(columns = c(RMSE, MAE), decimals = 1) |>
+    fmt_number(columns = MAPE, decimals = 2) 
+}
+
+# Display accuracy table
+timegpt_gt <- accuracy_results |>
+  select(Varietal, RMSE, MAE, MAPE) |>
+  arrange(Varietal) |>
+  make_gt('Accuracy of TimeGPT Model') 
+timegpt_gt
+```
+
+## ARIMA comparison: {.smaller}
+
+```{r}
+# Fit log transformed ARIMA models
+arima_gt <- wines |>
+  filter_index(. ~ '1993 Dec') |>
+  model(
+    arima = ARIMA(Sales)
+  ) |>
+  forecast(h = "1 year") |>
+  accuracy(wines) |>
+  select(Varietal, RMSE, MAE, MAPE) |>
+  arrange(Varietal) |>
+  make_gt('Accuracy of auto-ARIMA Model') 
+
+```
+
+::::: columns
+::: column
+```{r echo=FALSE}
+timegpt_gt
+```
+:::
+
+::: column
+```{r echo=FALSE}
+arima_gt
+```
+:::
+:::::
