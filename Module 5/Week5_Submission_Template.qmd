@@ -69,25 +69,25 @@ To salvage TSLM for retail operations, planners must: (a) employ **Dynamic Regre
 
 *Figure 2: 12-Month Out-of-Sample Backtest: Actuals vs. Model Forecasts (quantified in Table 1 below, numbers from Model & Accuracy tab). TSLM (red dashed) severely misjudges holiday amplitude and trend levels; ARIMA and ETS capture turning points. **Reproduce in App:** Tab 'Comparative Forecasts'* $\rightarrow$ Mode: Validation Backtest $\rightarrow$ Horizon: 12 $\rightarrow$ Layout: Overlay / Facet. Data: Census MRTS. \normalsize
 
-\vspace{1pt}
+\vspace{2pt}
 
 \footnotesize
 \begin{center}
-\setlength{\tabcolsep}{6pt}
-\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}l c c c p{1.45in}}
+\setlength{\tabcolsep}{10pt}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}l c c c}
 \hline
-\textbf{Retail Vertical} & \textbf{Top Fig. 2 Model \& Form} & \textbf{Best RMSE (MAPE)} & \textbf{TSLM RMSE (MAPE)} & \textbf{Key Takeaway} \\
+\textbf{Retail Vertical} & \textbf{Top Fig. 2 Model \& Form} & \textbf{Best RMSE (MAPE)} & \textbf{TSLM RMSE (MAPE)} \\
 \hline
-\textbf{Building \& Garden} & $\text{ARIMA}(3,0,1)(0,1,2)_{12}\text{ w/ drift}$ & \$1,810M (3.5\%) & \$3,815M (7.3\%) & Buffers seasonal construction ramp. \\
-\textbf{Clothing \& Apparel} & $\text{ETS}(M,A,M)$ & \$757M (2.2\%) & \$1,895M (5.8\%) & Captures multiplicative holiday surge. \\
-\textbf{Health \& Personal Care} & Ensemble: Equal Avg (3 Models) & \$1,867M (4.0\%) & \$4,237M (9.2\%) & Diversifies risk on compounding staple. \\
-\textbf{Macro Retail Total} & $\text{ETS}(M,A,M)$ & \$1,975M (1.5\%) & \$9,108M (7.4\%) & Manages aggregate corporate cash flow. \\
+\textbf{Building \& Garden} & $\text{ARIMA}(3,0,1)(0,1,2)_{12}\text{ w/ drift}$ & \$1,810M (3.5\%) & \$3,815M (7.3\%) \\
+\textbf{Clothing \& Apparel} & $\text{ETS}(M,A,M)$ & \$757M (2.2\%) & \$1,895M (5.8\%) \\
+\textbf{Health \& Personal Care} & Ensemble: Equal Avg (3 Models) & \$1,867M (4.0\%) & \$4,237M (9.2\%) \\
+\textbf{Macro Retail Total} & $\text{ETS}(M,A,M)$ & \$1,975M (1.5\%) & \$9,108M (7.4\%) \\
 \hline
 \end{tabular*}
 \end{center}
 \normalsize
 
-\vspace{-4pt}
+\vspace{-2pt}
 
 **Resolution & Implementation:** Operational planners must abandon rigid OLS models for inventory commitments. Supply chains should deploy $\text{ETS}(M,A,M)$ for apparel holiday planning and Seasonal ARIMA for housing materials, preventing costly stockouts while maintaining lean working capital.\
 *Data Citations:* U.S. Census Bureau MRTS (`MRTSSM444USN`, `MRTSSM446USN`, `MRTSSM448USN`); U.S. BLS (`CPIAUCNS`).
