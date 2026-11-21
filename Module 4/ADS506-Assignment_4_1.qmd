@@ -282,7 +282,7 @@ forecast_1985 |>
 
 **How do the results for the first 5 years of data compare to the results of the entire dataset? What is the best model? How did the ensemble model rank?**
 
-- RMSE, MAE, and MAPE are lower for forecasts produced by the logged models using only 5 years of data to forecast the next year (1985) compared to the entire dataset minus 1994. MPE is actually farther from zero when a shorter time frame was considered, the negative MPE values indicate that forecasts for 1985 over predicted on average.
+- RMSE, MAE, and MAPE are lower for forecasts produced by the logged models using only 5 years of data to forecast the next year (1985) compared to the entire dataset without 1994. MPE is actually farther from zero when a shorter time frame was considered, the negative MPE values indicate that forecasts for 1985 over predicted on average.
 
 - The best model is still the logged auto ARIMA (252.35 RMSE), the ensemble model performed second best (265.05 RMSE), and the seasonal naive performed worst (316.67 RMSE).
 
@@ -337,9 +337,9 @@ forecast_cv |>
 
 - The logged auto ARIMA model is still the most accurate (251.09 RMSE), which is consistent with question 1d and 2a.
 
-- The ensemble model is still the second most accurate model (258.61 RMSE), which is consistent with question 2a, that ensemble model was not present in question 1d. The ensemble model did outperform the logged auto ARIMA model in MPE (1.59% vs. 1.60%), but all other metrics favor the logged auto ARIMA model.
+- The ensemble model is still the second most accurate model (258.61 RMSE), which is consistent with question 2a, that ensemble model was not present in question 1d. The ensemble model did outperform the logged auto ARIMA model in MPE (-1.59% vs. -1.60%), but all other metrics favor the logged auto ARIMA model.
 
-- The logged ETS and logged TSLM models swapped places between question 2a and 2b, the logged ETS model (268.31 RMSE) is now more accurate than the logged TSLM model (269.27 RMSE) when using 10 cross validation folds. The logged ETS model outperforming the logged TSLM model is in line with question 1d, indicating that the logged ETS model was less reliable when a shorter training period was considered. The logged ETS model did outperform the logged auto ARIMA in terms of MPE (1.44% vs. 1.60%), but all other metrics favor the logged auto ARIMA model.
+- The logged ETS and logged TSLM models swapped places between question 2a and 2b, the logged ETS model (268.31 RMSE) is now more accurate than the logged TSLM model (269.27 RMSE) when using 10 cross validation folds. The logged ETS model outperforming the logged TSLM model is in line with question 1d, indicating that the logged ETS model was less reliable when a shorter training period was considered. The logged ETS model did outperform the logged auto ARIMA in terms of MPE (-1.44% vs. -1.60%), but all other metrics favor the logged auto ARIMA model.
 
 - The seasonal naive model performance was consistent with question 2a as it was the least accurate model (300.45 RMSE). The seasonal naive model was not present in question 1d.
 
@@ -371,7 +371,7 @@ forecast_cv |> filter(month(Month) == 1) |> accuracy(aus_wine_ts) |>
 \textit{Note: Sales units are reported in thousands of liters.}
 \end{center}
 
-- If I only cared about accurately predicting January 1995, I would actually choose the logged ETS model (143.18 RMSE) because it does the best job forecasting the month of January.
+- If I only cared about accurately predicting January 1995, I would actually choose the logged ETS model (143.18 RMSE) because it has the lowest RMSE (143.18) forecasting the month of January.
 
 - The ensemble model is a close second place (146.46 RMSE), followed by the logged TSLM model (149.19 RMSE), then the logged auto ARIMA model (151.09 RMSE) which is the most surprising result. The seasonal naive comes in last place again (219.82 RMSE).
 
