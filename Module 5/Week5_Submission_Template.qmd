@@ -25,18 +25,18 @@ execute:
 - **Interactive Shiny App URL:** <https://jordanblackman.shinyapps.io/ads506-retail-forecasting-app/>
 - **Source Code Repository:** <https://github.com/jblackman-bit/ADS-506/tree/main/Module%205>
 
-**Executive Summary:** This cloud-deployed Shiny dashboard provides an interactive forecasting platform analyzing 416 continuous months (1992–2026) of U.S. Census Bureau retail trade sales. Designed for supply chain leaders, the application contrasts real purchasing volume (CPI-adjusted) against nominal cash flows, dynamically fits competing predictive algorithms (TSLM, ETS, Seasonal ARIMA, Ensemble Combo), and decouples retrospective validation backtesting from forward operational projections.
+**App Description:** This Shiny app provides an interactive forecasting platform analyzing 416 months (1992–2026) of U.S. Census Bureau retail trade sales. Designed for people working in supply chain analysis, the application displays real purchasing volume (CPI-adjusted) and nominal retail sales, dynamically fits predictive algorithms (TSLM, ETS, Seasonal ARIMA, Ensemble Combo), and separates validation backtesting from forecasting future periods.
 
 **Core Application Features:**
 
-- **Dynamic Tsibble Exploration:** Interactive vertical filtering, historical date range controls, and real (CPI-deflated) vs. nominal valuation toggle to isolate true consumer demand from monetary inflation.
-- **Decoupled Analytical Engine:** Separates held-out historical validation backtesting (Model & Accuracy tab) from 6- to 36-month forward production forecasts (Comparative Forecasts tab).
-- **Executive Diagnostics & Intervals:** Mathematical model orders, color-coded goodness-of-fit scorecards, and 80%/95% prediction intervals with actual history overlays.
+- **Dynamic Data Exploration:** Interactive vertical filtering, historical date range controls, and real (CPI-deflated) vs. nominal valuation toggle to isolate true consumer demand from monetary inflation.
+- **Decoupled Analytical Engine:** Separates historical validation backtesting (Model & Accuracy tab) from 6- to 36-month forward production forecasts (Comparative Forecasts tab). Forecast data can be downloaded as a CSV on the Comparative Forecasts tab.
+- **Executive Diagnostics & Intervals:** Color-coded out-of-sample and in-sample accuracy metrics in one table and 80%/95% prediction intervals with actual historic data.
 
 ## Part II — Executive Data Story
 
 **Context: Structural Divergence Behind Macro Aggregates**\
-Aggregated retail totals mask critical divergence across consumer sectors. While essential **Health & Personal Care** exhibits compounding, non-cyclical real growth (+180% since 1992), discretionary **Clothing & Accessories** volume has remained completely flat for 24 years despite massive December holiday surges. Building materials peaks in May--June aligned with residential construction cycles. Reliable supply chain planning requires models that accommodate these contrasting seasonal and cyclical dynamics.
+Aggregated retail totals hide important patterns across various consumer sectors. While essential Health & Personal Care exhibits consistent growth (+180% since 1992), discretionary Clothing & Accessories volume has remained completely flat for 24 years with massive December holiday surges. Building materials peaks in May--June aligned with macroeconomic cycles. Reliable supply chain planning requires models that accommodate these contrasting seasonal and cyclical dynamics.
 
 \begin{center}
 \vspace{-4pt}
@@ -45,42 +45,43 @@ Aggregated retail totals mask critical divergence across consumer sectors. While
 \vspace{-8pt}
 \scriptsize
 
-*Figure 1: Historical Monthly Real Sales (1992–2026) across key retail verticals and macro aggregate with LOESS trend. **Reproduce in App:** Tab 'Visualize & Explore'* $\rightarrow$ Measure: Real Sales $\rightarrow$ View: Time Series & Aggregate $\rightarrow$ Free Y: Checked. Data: U.S. Census Bureau (MRTS NAICS 444, 446, 448) & U.S. Bureau of Labor Statistics (CPIAUCNS). \normalsize
+*Figure 1: Historical Monthly Real Sales (1992–2026) across key retail verticals and macro aggregate with LOESS trend. **Reproduce in App (for appropriately sized visuals):** Tab 'Visualize & Explore'* $\rightarrow$ Measure: Real Sales $\rightarrow$ View: Time Series & Aggregate $\rightarrow$ Free Y: Checked. Data: U.S. Census Bureau (MRTS NAICS 444, 446, 448) & U.S. Bureau of Labor Statistics (CPIAUCNS). \normalsize
 
 \newpage
 
 ### Strategic Conflict: Why Does Linear Regression (TSLM) Fail?
 
-When evaluating out-of-sample forecast accuracy over a 12-month validation horizon, **Time Series Linear Models (TSLM)** perform drastically worse than modern dynamic algorithms across every retail vertical, generating **2.1**$\times$ to 4.6$\times$ higher forecast errors (e.g., Macro RMSE of \$9,108M for TSLM vs. \$1,975M for ETS). This severe failure stems from three fundamental mathematical limitations:
+When evaluating out-of-sample forecast accuracy over a 12-month validation horizon, **Time Series Linear Models (TSLM)** perform drastically worse than the other algorithms across every retail vertical, generating **2.1**$\times$ to 4.6$\times$ higher forecast errors (e.g., RMSE of \$9,108M for TSLM vs. \$1,975M for ETS). This severe failure occurs because of three fundamental limitations:
 
-1.  **Rigid Deterministic Trend:** TSLM enforces a static, straight-line slope ($\beta_1 t$). It cannot adapt to structural economic inflections, recessions (2001, 2008, 2020), or compounding curves (Health exponential expansion vs. Apparel stagnation), leading to massive multi-billion-dollar baseline drift.
+1.  **Rigid Deterministic Trend:** By default, TSLM enforces a static, straight-line slope ($\beta_1 t$). It cannot adapt to structural economic inflections, recessions (2001, 2008, 2020), or compounding curves (Health exponential expansion vs. Apparel stagnation), leading to massive multi-billion-dollar baseline drift.
 2.  **Static Additive Seasonality:** TSLM fits constant seasonal dummy coefficients ($\sum \gamma_j D_j$), forcing identical dollar swings each year. Because real retail demand is *multiplicative*, holiday surges expand in dollar scale as total revenue grows; TSLM severely underestimates Q4 peaks and distorts troughs.
-3.  **Zero Dynamic Memory (White Noise Error Assumption):** Ordinary least squares assumes independent errors ($\varepsilon_t \sim i.i.d.$), ignoring serial correlation, inventory momentum, and multi-month supply shocks. Unlike ARIMA and ETS, TSLM cannot self-correct after an initial forecast error.
+3.  **Zero Dynamic Memory (White Noise Error Assumption):** Ordinary least squares assumes independent errors, ignoring serial correlation and multi-month supply shocks. Unlike ARIMA and ETS, TSLM cannot self-correct after an initial forecast error.
 
-**Remedying Linear Regression in Practice:**\
-To salvage regression for retail operations, planners must: (a) employ **Dynamic Regression (ARMAX)** incorporating macroeconomic regressors such as **CPI (inflation deflator)**, disposable income, and consumer sentiment into the error structure; (b) incorporate **calendar/trading-day regressors** (counting peak shopping Saturdays and days between Thanksgiving and Christmas); and (c) apply **logarithmic transformations** ($\log Y_t$) or spline trends to model multiplicative seasonal growth and cyclical bending.
+**Remedying TSLM Issues in Practice:**\
+To salvage TSLM for retail operations, planners must: (a) employ **Dynamic Regression (ARMAX)** incorporating macroeconomic regressors such as **CPI (inflation deflator)**, disposable income, and consumer sentiment into the error structure; (b) incorporate **calendar/trading-day regressors** (counting peak shopping Saturdays and days between Thanksgiving and Christmas); and (c) apply **logarithmic transformations** ($\log Y_t$) or spline trends to model multiplicative seasonal growth and cyclical bending.
 
 \begin{center}
 \vspace{-4pt}
-\includegraphics[width=0.92\textwidth,height=2.35in,keepaspectratio]{figures/fig2_forecasts.png}
+\includegraphics[width=0.92\textwidth,height=2.30in,keepaspectratio]{figures/fig2_forecasts.png}
 \end{center}
 \vspace{-8pt}
 \scriptsize
 
-*Figure 2: 12-Month Out-of-Sample Backtest: Actuals vs. Model Forecasts. TSLM (red dashed) severely misjudges holiday amplitude and trend levels; ARIMA and ETS capture turning points. **Reproduce in App:** Tab 'Comparative Forecasts'* $\rightarrow$ Mode: Validation Backtest $\rightarrow$ Horizon: 12 $\rightarrow$ Layout: Overlay / Facet. Data: Census MRTS. \normalsize
+*Figure 2: 12-Month Out-of-Sample Backtest: Actuals vs. Model Forecasts (quantified in Table 1 below, numbers from Model & Accuracy tab). TSLM (red dashed) severely misjudges holiday amplitude and trend levels; ARIMA and ETS capture turning points. **Reproduce in App:** Tab 'Comparative Forecasts'* $\rightarrow$ Mode: Validation Backtest $\rightarrow$ Horizon: 12 $\rightarrow$ Layout: Overlay / Facet. Data: Census MRTS. \normalsize
 
 \vspace{1pt}
 
 \footnotesize
 \begin{center}
-\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}l c c c c p{1.8in}}
+\setlength{\tabcolsep}{6pt}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}l c c c p{1.45in}}
 \hline
-\textbf{Retail Vertical} & \textbf{Top Model} & \textbf{Specification / Form} & \textbf{Best RMSE} & \textbf{TSLM RMSE} & \textbf{Key Takeaway} \\
+\textbf{Retail Vertical} & \textbf{Top Fig. 2 Model \& Form} & \textbf{Best RMSE (MAPE)} & \textbf{TSLM RMSE (MAPE)} & \textbf{Key Takeaway} \\
 \hline
-\textbf{Building \& Garden} & ARIMA & $\text{ARIMA}(3,0,1)(0,1,2)_{12}\text{ w/ drift}$ & \$1,810M (3.5\%) & \$3,815M (7.3\%) & Buffers seasonal construction ramp. \\
-\textbf{Clothing \& Apparel} & ETS & $\text{ETS}(M,A,M)$ & \$757M (2.2\%) & \$1,895M (5.8\%) & Captures multiplicative holiday surge. \\
-\textbf{Health \& Personal Care} & Ensemble & Equal Average (ARIMA+ETS+TSLM) & \$1,867M (4.0\%) & \$4,237M (9.2\%) & Diversifies risk on compounding staple. \\
-\textbf{Macro Retail Total} & ETS & $\text{ETS}(M,A,M)$ & \$1,975M (1.5\%) & \$9,108M (7.4\%) & Manages aggregate corporate cash flow. \\
+\textbf{Building \& Garden} & $\text{ARIMA}(3,0,1)(0,1,2)_{12}\text{ w/ drift}$ & \$1,810M (3.5\%) & \$3,815M (7.3\%) & Buffers seasonal construction ramp. \\
+\textbf{Clothing \& Apparel} & $\text{ETS}(M,A,M)$ & \$757M (2.2\%) & \$1,895M (5.8\%) & Captures multiplicative holiday surge. \\
+\textbf{Health \& Personal Care} & Ensemble: Equal Avg (3 Models) & \$1,867M (4.0\%) & \$4,237M (9.2\%) & Diversifies risk on compounding staple. \\
+\textbf{Macro Retail Total} & $\text{ETS}(M,A,M)$ & \$1,975M (1.5\%) & \$9,108M (7.4\%) & Manages aggregate corporate cash flow. \\
 \hline
 \end{tabular*}
 \end{center}
@@ -94,4 +95,4 @@ To salvage regression for retail operations, planners must: (a) employ **Dynamic
 \vfill
 \scriptsize
 
-*AI Disclosure: Analysis workflow, Shiny dashboard, and data story were drafted and refined using Google DeepMind's Gemini 3.8 Flash (High) per instructor syllabus guidelines.*
+*AI Disclosure: Analysis workflow, Shiny dashboard, and data story were drafted and refined in collaboration with Google Gemini 3.8 Flash (High) per instructor syllabus guidelines.*

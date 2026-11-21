@@ -1,0 +1,10 @@
+name: ads506-retail-forecasting-app
+title: U.S. Retail Sales Time Series & Forecasting Dashboard
+username: jordanblackman
+account: jordanblackman
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 18497966
+bundleId: 12850103
+url: https://jordanblackman.shinyapps.io/ads506-retail-forecasting-app/
+version: 1

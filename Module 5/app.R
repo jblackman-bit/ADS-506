@@ -15,7 +15,6 @@ suppressPackageStartupMessages({
   library(tidyverse)
   library(fpp3)
   library(urca)
-  library(here)
   library(gt)
   library(scales)
   library(patchwork)
@@ -23,14 +22,12 @@ suppressPackageStartupMessages({
   library(DT)
 })
 
-# Robust multi-path lookup for retail_data_clean.csv
+# Clean relative path lookup for retail_data_clean.csv
 candidate_paths <- c(
   "data/retail_data_clean.csv",
   "Module 5/data/retail_data_clean.csv",
-  here::here("data", "retail_data_clean.csv"),
-  here::here("Module 5", "data", "retail_data_clean.csv"),
-  "/Users/Jordan/Desktop/ADS 506/Module 5/data/retail_data_clean.csv",
-  "/Users/Jordan/Desktop/ADS-506-Final-Project/data/retail_data_clean.csv"
+  file.path("..", "data", "retail_data_clean.csv"),
+  file.path("..", "Module 5", "data", "retail_data_clean.csv")
 )
 data_path <- candidate_paths[file.exists(candidate_paths)][1]
 if (is.na(data_path)) {
@@ -40,9 +37,8 @@ if (is.na(data_path)) {
 candidate_about <- c(
   "about.md",
   "Module 5/about.md",
-  here::here("about.md"),
-  here::here("Module 5", "about.md"),
-  "/Users/Jordan/Desktop/ADS 506/Module 5/about.md"
+  file.path("..", "about.md"),
+  file.path("..", "Module 5", "about.md")
 )
 about_path <- candidate_about[file.exists(candidate_about)][1]
 
